@@ -2909,11 +2909,12 @@
           
           if (dateStr && amount !== 0) {
             const date = `${dateStr.slice(0,4)}-${dateStr.slice(4,6)}-${dateStr.slice(6,8)}`;
+            const txType = amount > 0 ? 'income' : 'expense';
             transactions.push({
               description: sanitize(name || memo || 'Unknown'),
-              amount: Math.abs(amount),
-              type: amount > 0 ? 'income' : 'expense',
-              category: this.guessCategory(name || memo, amount > 0 ? 'income' : 'expense'),
+              amount: sanitizeNumber(Math.abs(amount), 0.01),
+              type: txType,
+              category: this.guessCategory(name || memo, txType),
               date,
               month: date.substring(0, 7),
               createdAt: new Date().toISOString()
@@ -2954,11 +2955,15 @@
           });
           
           if (date && amount !== 0) {
+            const txType = amount > 0 ? 'income' : 'expense';
+            // Validate category from QIF or use guessed category
+            const validCats = Object.keys(CATEGORY_ICONS);
+            const safeCat = validCats.includes(category) ? category : this.guessCategory(payee, txType);
             transactions.push({
               description: sanitize(payee || 'Unknown'),
-              amount: Math.abs(amount),
-              type: amount > 0 ? 'income' : 'expense',
-              category: category || this.guessCategory(payee, amount > 0 ? 'income' : 'expense'),
+              amount: sanitizeNumber(Math.abs(amount), 0.01),
+              type: txType,
+              category: safeCat,
               date,
               month: date.substring(0, 7),
               createdAt: new Date().toISOString()
@@ -2997,11 +3002,12 @@
           
           if (!dateStr) return null;
           
+          const txType = amount > 0 ? 'income' : 'expense';
           return {
             description: sanitize(desc),
-            amount: Math.abs(amount),
-            type: amount > 0 ? 'income' : 'expense',
-            category: this.guessCategory(desc, amount > 0 ? 'income' : 'expense'),
+            amount: sanitizeNumber(Math.abs(amount), 0.01),
+            type: txType,
+            category: this.guessCategory(desc, txType),
             date: dateStr,
             month: dateStr.substring(0, 7),
             createdAt: new Date().toISOString()
@@ -3907,11 +3913,15 @@
           return;
         }
 
+        // Validate category against allowed list
+        const validCategories = Object.keys(CATEGORY_ICONS);
+        const safeCategory = validCategories.includes(category) ? category : 'Other Expenses';
+
         const tx = {
           description: sanitize(desc),
           amount: sanitizeNumber(amount, 0.01),
           type: this.txType,
-          category,
+          category: safeCategory,
           date,
           month: date.substring(0, 7),
           createdAt: new Date().toISOString()
@@ -4008,7 +4018,17 @@
         const input = document.getElementById('ai-endpoint-input');
         const endpoint = input.value.trim();
 
-        if (!endpoint || !endpoint.startsWith('https://')) {
+        // Validate URL structure
+        try {
+          const url = new URL(endpoint);
+          if (url.protocol !== 'https:') {
+            throw new Error('Must use HTTPS');
+          }
+          // Block javascript:, data:, etc.
+          if (!/^https:\/\/[a-z0-9][\w.-]*\.[a-z]{2,}/i.test(endpoint)) {
+            throw new Error('Invalid domain');
+          }
+        } catch (e) {
           this.toast('Please enter a valid HTTPS URL', 'error');
           return;
         }

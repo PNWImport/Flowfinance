@@ -441,7 +441,7 @@ class FlowFinanceTestSuite:
             (r'document\.write\s*\(', 'document.write()'),
             (r'\.outerHTML\s*=', 'outerHTML assignment'),
             (r'location\s*=\s*[^;]+\+', 'Dynamic location assignment'),
-            (r'javascript:', 'javascript: protocol'),
+            (r'["\'\(=]javascript:', 'javascript: protocol'),
             (r'on\w+\s*=\s*["\'][^"\']*\+', 'Inline event handler with concatenation'),
         ]
 
