@@ -155,9 +155,10 @@ Flowfinance/
 ├── CHANGELOG.md             # Version history
 ├── LICENSE                  # MIT License
 ├── .gitignore               # Git ignore patterns
-├── test_suite.py            # Comprehensive test suite
-├── stress_test.py           # Parser stress testing
-├── redteam_test.py          # Security red team tests
+├── tests/                   # Test suite
+│   ├── test_suite.py        # Comprehensive test suite
+│   ├── stress_test.py       # Parser stress testing
+│   └── redteam_test.py      # Security red team tests
 └── worker/                  # Cloudflare AI Worker (optional)
     ├── src/index.js         # Worker source code
     ├── wrangler.toml        # Worker configuration
@@ -205,13 +206,13 @@ source venv/bin/activate  # or venv\Scripts\activate on Windows
 pip install beautifulsoup4
 
 # Run test suite (95%+ quality score expected)
-python test_suite.py flowfinance-beast.html
+python tests/test_suite.py flowfinance-beast.html
 
 # Run stress tests
-python stress_test.py
+python tests/stress_test.py
 
 # Run security red team tests
-python redteam_test.py flowfinance-beast.html
+python tests/redteam_test.py flowfinance-beast.html
 ```
 
 ## AI Insights (Optional)
