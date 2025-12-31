@@ -1362,20 +1362,87 @@
       color: var(--text-secondary);
     }
 
-    /* Desktop Styles */
+    /* Tablet (768px+) */
     @media (min-width: 768px) {
       .app-shell {
-        max-width: 480px;
+        max-width: 720px;
         margin: 0 auto;
-        box-shadow: 0 0 80px rgba(0, 0, 0, 0.5);
       }
 
       .summary-cards {
         grid-template-columns: repeat(3, 1fr);
       }
 
+      .quick-actions {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
       .flow-node {
         min-width: 160px;
+      }
+
+      .main-content {
+        padding: 16px 24px;
+      }
+    }
+
+    /* Desktop (1024px+) */
+    @media (min-width: 1024px) {
+      body {
+        background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+      }
+
+      .app-shell {
+        max-width: 900px;
+        margin: 20px auto;
+        box-shadow: 0 0 60px rgba(0, 0, 0, 0.4);
+        border-radius: 16px;
+        height: calc(100vh - 40px);
+      }
+
+      .header {
+        border-radius: 16px 16px 0 0;
+      }
+
+      .insights-scroll {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        overflow-x: visible;
+        padding-bottom: 0;
+      }
+
+      .insight-card {
+        flex-shrink: 0;
+        min-width: auto;
+      }
+
+      .flow-row {
+        justify-content: center;
+        gap: 24px;
+      }
+
+      .category-item {
+        padding: 16px;
+      }
+
+      .transaction-item {
+        padding: 16px;
+      }
+    }
+
+    /* Large Desktop (1280px+) */
+    @media (min-width: 1280px) {
+      .app-shell {
+        max-width: 1100px;
+      }
+
+      .insights-scroll {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .import-options {
+        grid-template-columns: repeat(3, 1fr);
       }
     }
 
