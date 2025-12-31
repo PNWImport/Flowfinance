@@ -355,6 +355,34 @@
       margin-top: 2px;
     }
 
+    /* Month Picker - Calendar Input */
+    .month-picker {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      min-width: 44px;
+      min-height: 44px;
+      transition: all 0.2s;
+    }
+
+    .month-picker:hover {
+      border-color: var(--accent-green);
+    }
+
+    .month-picker:focus {
+      outline: 2px solid var(--accent-green);
+      outline-offset: 2px;
+    }
+
+    /* Hide on mobile by default, show on desktop */
+    .month-picker {
+      display: none;
+    }
+
     /* Summary Cards - Horizontal Scroll on Mobile */
     .summary-section {
       padding: 16px;
@@ -1495,28 +1523,154 @@
       }
     }
 
-    /* Desktop (1024px+) */
+    /* Desktop (1024px+) - REAL DESKTOP LAYOUT */
     @media (min-width: 1024px) {
       body {
         background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
       }
 
       .app-shell {
-        max-width: 900px;
-        margin: 20px auto;
-        box-shadow: 0 0 60px rgba(0, 0, 0, 0.4);
-        border-radius: 16px;
-        height: calc(100vh - 40px);
-      }
-
-      .header {
-        border-radius: 16px 16px 0 0;
-      }
-
-      .insights-scroll {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 240px 1fr;
+        grid-template-rows: auto 1fr;
+        max-width: 1400px;
+        margin: 0 auto;
+        height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      /* Desktop Header - spans full width */
+      .header {
+        grid-column: 1 / -1;
+        border-radius: 0;
+        padding: 16px 32px;
+      }
+
+      /* Hide mobile bottom nav on desktop */
+      .bottom-nav {
+        display: none !important;
+      }
+
+      /* Desktop Sidebar Navigation */
+      .desktop-sidebar {
+        display: flex !important;
+        flex-direction: column;
+        background: var(--bg-secondary);
+        border-right: 1px solid var(--border-color);
+        padding: 24px 16px;
+        gap: 8px;
+      }
+
+      .desktop-sidebar .nav-item {
+        display: flex;
+        align-items: center;
         gap: 12px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .desktop-sidebar .nav-item:hover {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+      }
+
+      .desktop-sidebar .nav-item.active {
+        background: var(--accent-green-dim);
+        color: var(--accent-green);
+      }
+
+      .desktop-sidebar .nav-item:focus {
+        outline: 2px solid var(--accent-green);
+        outline-offset: 2px;
+      }
+
+      .desktop-sidebar .nav-item:focus-visible {
+        outline: 2px solid var(--accent-green);
+        outline-offset: 2px;
+      }
+
+      .desktop-sidebar .nav-item .nav-icon {
+        font-size: 20px;
+      }
+
+      .desktop-sidebar .sidebar-section {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 16px 16px 8px;
+        margin-top: 16px;
+      }
+
+      .desktop-sidebar .sidebar-section:first-child {
+        margin-top: 0;
+      }
+
+      /* Month bar adjustments */
+      .month-bar {
+        grid-column: 2;
+        justify-content: flex-start;
+        padding-left: 32px;
+        gap: 24px;
+      }
+
+      /* Month picker - visible on desktop */
+      .month-picker {
+        display: block;
+        margin-left: auto;
+        margin-right: 32px;
+      }
+
+      /* Summary section */
+      .summary-section {
+        padding: 0 32px;
+      }
+
+      /* Main content - desktop grid layout */
+      .main-content {
+        grid-column: 2;
+        padding: 24px 32px;
+        padding-bottom: 32px;
+        overflow-y: auto;
+      }
+
+      /* Dashboard grid - two column layout */
+      .page.active#page-dashboard {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        align-content: start;
+      }
+
+      /* Quick actions - span full width */
+      .quick-actions {
+        grid-column: 1 / -1;
+        display: flex;
+        gap: 16px;
+      }
+
+      .quick-action {
+        flex: 1;
+      }
+
+      /* Section headers */
+      .section-header {
+        grid-column: 1 / -1;
+      }
+
+      /* Insights - full width on desktop */
+      .insights-scroll {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
         overflow-x: visible;
         padding-bottom: 0;
       }
@@ -1526,33 +1680,96 @@
         min-width: auto;
       }
 
+      /* Budget section */
+      #budget-card {
+        margin: 0 !important;
+      }
+
+      /* Chart section - full width */
+      .chart-section {
+        grid-column: 1 / -1;
+      }
+
+      /* Categories and flow side by side */
+      .categories-section,
+      .flow-section {
+        grid-column: span 1;
+      }
+
+      /* Subscriptions page */
+      .page#page-subs {
+        max-width: 800px;
+      }
+
+      /* Transactions page - better list */
+      .page#page-transactions {
+        max-width: 900px;
+      }
+
+      .transaction-item {
+        padding: 16px 20px;
+      }
+
+      .transaction-item:hover {
+        background: var(--bg-tertiary);
+      }
+
+      /* Flow section improvements */
       .flow-row {
         justify-content: center;
         gap: 24px;
       }
 
+      .flow-node {
+        min-width: 180px;
+      }
+
+      /* Category items */
       .category-item {
         padding: 16px;
       }
 
-      .transaction-item {
-        padding: 16px;
+      /* Modal adjustments for desktop */
+      .modal {
+        max-width: 500px;
+        border-radius: 16px;
+        margin: auto;
+        position: relative;
+        bottom: auto;
+      }
+
+      .modal-overlay {
+        align-items: center;
       }
     }
 
-    /* Large Desktop (1280px+) */
-    @media (min-width: 1280px) {
+    /* Large Desktop (1440px+) */
+    @media (min-width: 1440px) {
       .app-shell {
-        max-width: 1100px;
+        grid-template-columns: 280px 1fr;
+        max-width: 1600px;
+      }
+
+      .page.active#page-dashboard {
+        grid-template-columns: 1fr 1fr 1fr;
       }
 
       .insights-scroll {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .quick-actions {
+        max-width: none;
       }
 
       .import-options {
         grid-template-columns: repeat(3, 1fr);
       }
+    }
+
+    /* Desktop sidebar - hidden by default, shown on desktop */
+    .desktop-sidebar {
+      display: none;
     }
 
     /* File input hidden */
@@ -1612,7 +1829,52 @@
       </div>
     </header>
 
-    <!-- Month Bar -->
+    <!-- Desktop Sidebar Navigation (hidden on mobile) -->
+    <aside class="desktop-sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-section">Navigation</div>
+      <div class="nav-item active" data-page="dashboard" role="button" tabindex="0" aria-current="page">
+        <span class="nav-icon" aria-hidden="true">🏠</span>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-item" data-page="flow" role="button" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📊</span>
+        <span>Cash Flow</span>
+      </div>
+      <div class="nav-item" data-page="subs" role="button" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">🔄</span>
+        <span>Subscriptions</span>
+      </div>
+      <div class="nav-item" data-page="transactions" role="button" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📝</span>
+        <span>All Transactions</span>
+      </div>
+
+      <div class="sidebar-section">Actions</div>
+      <div class="nav-item" data-action="add-income" role="button" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">💵</span>
+        <span>Add Income</span>
+      </div>
+      <div class="nav-item" data-action="add-expense" role="button" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">💸</span>
+        <span>Add Expense</span>
+      </div>
+      <div class="nav-item" data-action="set-budget" role="button" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">🎯</span>
+        <span>Set Budget</span>
+      </div>
+
+      <div class="sidebar-section">Data</div>
+      <div class="nav-item" id="sidebar-import" role="button" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📥</span>
+        <span>Import</span>
+      </div>
+      <div class="nav-item" id="sidebar-export" role="button" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📤</span>
+        <span>Export</span>
+      </div>
+    </aside>
+
+    <!-- Month Bar with Calendar Picker -->
     <nav class="month-bar" role="navigation" aria-label="Month navigation">
       <button class="month-nav" id="prev-month" aria-label="Previous month">◀</button>
       <div class="month-display" aria-live="polite">
@@ -1620,6 +1882,7 @@
         <div class="month-range" id="month-range">Dec 1 - Dec 31</div>
       </div>
       <button class="month-nav" id="next-month" aria-label="Next month">▶</button>
+      <input type="month" id="month-picker" class="month-picker" aria-label="Select month">
     </nav>
 
     <!-- Summary -->
@@ -2608,6 +2871,44 @@
             this.renderChart(parseInt(btn.dataset.period));
           });
         });
+
+        // Month picker (calendar input)
+        const monthPicker = document.getElementById('month-picker');
+        if (monthPicker) {
+          monthPicker.value = this.currentMonth;
+          monthPicker.addEventListener('change', () => {
+            if (monthPicker.value) {
+              this.currentMonth = monthPicker.value;
+              this.loadData().then(() => this.renderAll());
+            }
+          });
+        }
+
+        // Desktop sidebar action handlers
+        document.querySelectorAll('.desktop-sidebar .nav-item[data-action]').forEach(item => {
+          item.addEventListener('click', () => {
+            const action = item.dataset.action;
+            if (action === 'add-income') { this.txType = 'income'; this.openAddModal(); }
+            if (action === 'add-expense') { this.txType = 'expense'; this.openAddModal(); }
+            if (action === 'set-budget') this.openBudgetModal();
+          });
+        });
+
+        // Desktop sidebar import/export
+        const sidebarImport = document.getElementById('sidebar-import');
+        const sidebarExport = document.getElementById('sidebar-export');
+        if (sidebarImport) sidebarImport.addEventListener('click', () => this.openImportModal());
+        if (sidebarExport) sidebarExport.addEventListener('click', () => this.exportData());
+
+        // Keyboard support for sidebar nav items (Enter/Space to activate)
+        document.querySelectorAll('.desktop-sidebar .nav-item').forEach(item => {
+          item.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              item.click();
+            }
+          });
+        });
       }
 
       async loadData() {
@@ -2629,8 +2930,14 @@
       switchPage(page) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(`page-${page}`).classList.add('active');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => {
+          n.classList.remove('active');
+          n.removeAttribute('aria-current');
+        });
+        document.querySelectorAll(`.nav-item[data-page="${page}"]`).forEach(n => {
+          n.classList.add('active');
+          n.setAttribute('aria-current', 'page');
+        });
       }
 
       renderAll() {
@@ -2639,6 +2946,10 @@
         document.getElementById('month-name').textContent = d.toLocaleString('default', { month: 'long', year: 'numeric' });
         const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
         document.getElementById('month-range').textContent = `${d.toLocaleString('default', { month: 'short' })} 1 - ${d.toLocaleString('default', { month: 'short' })} ${lastDay}`;
+
+        // Update month picker value
+        const monthPicker = document.getElementById('month-picker');
+        if (monthPicker) monthPicker.value = this.currentMonth;
 
         // Summary
         document.getElementById('sum-income').textContent = this.fmt(this.analytics.totalIncome);
