@@ -22,11 +22,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cash flow diagram showing income sources and expense categories
 
 #### User Interface
-- Mobile-first responsive design
+- Desktop AND Mobile responsive design
 - Dark theme with carefully chosen color palette
 - Swipe-to-delete for transactions on touch devices
 - Bottom navigation with quick access to all sections
-- Modal-based forms for adding transactions and settings
+- Modal-based forms with close buttons
 - Toast notifications for user feedback
 - Empty states with helpful guidance
 
@@ -55,25 +55,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Focus restoration when modals close
 - Visible focus indicators for keyboard navigation
 
-#### Performance
-- Single HTML file architecture (no build step required)
-- Shared CATEGORY_ICONS constant (eliminated 4 duplications)
-- DocumentFragment for efficient batch DOM updates
-- Optimized swipe handler attachment (prevents re-binding)
-- Cached flow chart rendering
+---
 
-### Fixed
-- Missing FlowFinanceApp class definition (critical bug)
-- Race condition in bulk transaction imports
-- Unbounded cache growth causing memory issues
-- Two-digit year parsing in QIF files (now uses dynamic pivot)
-- Error swallowing in getSetting database calls
-- Unused `remaining` variable in budget display
+### Fixed (Before → After)
 
-### Security
-- Added CSP headers to prevent XSS attacks
-- Added SRI hash for XLSX CDN resource
-- Added `crossorigin` and `referrerpolicy` attributes
+| Issue | Before | After |
+|-------|--------|-------|
+| **FlowFinanceApp class** | Class definition completely missing - app crashed on load with `ReferenceError` | Full class with constructor, init(), bindEvents(), loadData(), renderAll(), and 10+ methods |
+| **Cache growth** | `this.cache = new Map()` with no size limit - memory leak over time | `new LRUCache(24)` - auto-evicts oldest entries when over 24 months |
+| **addTransactions race condition** | `months.forEach(m => this.invalidateCache(m))` called immediately before DB commit | Moved to `transaction.oncomplete` callback - only invalidates after successful commit |
+| **getSetting error handling** | `request.onerror = () => resolve(null)` - errors silently swallowed | `reject(request.error)` with try-catch wrapper for proper error propagation |
+| **QIF year parsing** | `parseInt(y) > 50 ? '19' : '20'` - hardcoded cutoff at year 50 | `parseInt(y) <= (currentYear % 100) + 10 ? '20' : '19'` - dynamic pivot adapts yearly |
+| **Budget remaining variable** | `const remaining = Math.max(0, this.budget - spent)` - calculated but never displayed | Now shows "($XXX left)" or "$XXX over budget!" in budget detail text |
+| **Viewport zoom** | `maximum-scale=1.0, user-scalable=no` - blocked pinch zoom | `maximum-scale=5.0` - allows zoom for accessibility |
+| **Color contrast (text-secondary)** | `#8b8b9e` - 3.8:1 ratio (failed WCAG AA) | `#a0a0b8` - 4.6:1 ratio (passes WCAG AA) |
+| **Color contrast (text-muted)** | `#5a5a6e` - 3.2:1 ratio (failed WCAG AA) | `#7a7a94` - 4.5:1 ratio (passes WCAG AA) |
+| **Touch targets** | `width: 40px; height: 40px` - below WCAG minimum | `min-width: 44px; min-height: 44px` (WCAG 2.5.5 compliant) |
+| **Transaction rendering** | `this.transactions.slice(0, 100).map(...)` - all 100 rendered at once | 20-item initial batch with "Load More" button for progressive loading |
+| **Icon maps** | `const icons = {...}` duplicated in 4 render methods | Single `const CATEGORY_ICONS = {...}` at top, shared across all methods |
+| **Modal focus** | No focus management - keyboard users got lost | Focus trap with Tab cycling, Escape to close, focus restored to trigger on close |
+| **Modal UX** | Long scrolling content, no close button, handle bar only | Modal header with title + close button, scrollable body, better organization |
+| **Script security** | `<script src="...xlsx.min.js">` with no integrity check | Added `integrity="sha512-..."`, `crossorigin="anonymous"`, `referrerpolicy="no-referrer"` |
+
+---
+
+### Security Additions (Before → After)
+
+| Header | Before | After |
+|--------|--------|-------|
+| Content-Security-Policy | None | `default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self';` |
+| X-Content-Type-Options | None | `nosniff` |
+| X-Frame-Options | None | `SAMEORIGIN` |
+| Referrer-Policy | None | `strict-origin-when-cross-origin` |
+| SRI Hash | None | `sha512-WJBbKFKzEP8WQnLmFJ4HVQX4jEtrGMq3h9hmdM7s9S3tFgK+...` |
+
+---
+
+### Performance Improvements (Before → After)
+
+| Area | Before | After | Impact |
+|------|--------|-------|--------|
+| Cache | `new Map()` unbounded | `LRUCache(24)` with eviction | Prevents memory leaks |
+| Transactions | 100 items at once | 20 + "Load More" lazy loading | Faster initial paint |
+| Icons | 4 duplicate objects (~1KB each) | 1 shared constant | Less memory, DRY code |
+| Flow chart | Re-rendered every `renderAll()` | Cached with signature key | Skip redundant renders |
+| Swipe handlers | Re-attached every render | `data-swipe-attached` check | No duplicate event listeners |
+| Scrollbar | Default browser style | Custom slim 4px scrollbar | Better modal UX |
+
+---
 
 ## [0.9.0] - 2024-12-30 (Pre-release)
 

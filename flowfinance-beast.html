@@ -949,6 +949,9 @@
       opacity: 0;
       visibility: hidden;
       transition: all 0.3s;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
     }
 
     .modal-overlay.active {
@@ -957,18 +960,18 @@
     }
 
     .modal {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      position: relative;
+      width: 100%;
+      max-width: 480px;
       background: var(--bg-secondary);
       border-radius: 24px 24px 0 0;
-      padding: 24px;
-      padding-bottom: calc(24px + var(--safe-bottom));
+      padding: 16px 20px;
+      padding-bottom: calc(20px + var(--safe-bottom));
       transform: translateY(100%);
       transition: transform 0.3s ease;
-      max-height: 90vh;
-      overflow-y: auto;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
       z-index: 1001;
     }
 
@@ -976,23 +979,70 @@
       transform: translateY(0);
     }
 
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-shrink: 0;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--accent-red-dim);
+      color: var(--accent-red);
+    }
+
+    .modal-body {
+      overflow-y: auto;
+      flex: 1;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 4px;
+    }
+
+    .modal-body::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .modal-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .modal-body::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 2px;
+    }
+
     .modal-handle {
       width: 40px;
       height: 4px;
       background: var(--border-color);
       border-radius: 2px;
-      margin: 0 auto 20px;
-    }
-
-    .modal-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 24px;
-      text-align: center;
+      margin: 0 auto 12px;
     }
 
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .form-label {
@@ -1576,66 +1626,72 @@
   <!-- Add Transaction Modal -->
   <div class="modal-overlay" id="add-modal" role="dialog" aria-modal="true" aria-labelledby="add-modal-title">
     <div class="modal">
-      <div class="modal-handle" aria-hidden="true"></div>
-      <h2 class="modal-title" id="add-modal-title">💰 Add Transaction</h2>
-      <form id="tx-form">
-        <div class="form-group">
-          <label class="form-label" id="type-label">Type</label>
-          <div class="type-toggle" role="radiogroup" aria-labelledby="type-label">
-            <button type="button" class="type-btn income active" data-type="income" role="radio" aria-checked="true">💵 Income</button>
-            <button type="button" class="type-btn expense" data-type="expense" role="radio" aria-checked="false">💸 Expense</button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="tx-desc">Description</label>
-          <input type="text" class="form-input" id="tx-desc" placeholder="What's this for?" required maxlength="200" aria-required="true">
-        </div>
-        <div class="form-row">
+      <div class="modal-header">
+        <h2 class="modal-title" id="add-modal-title">💰 Add Transaction</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="tx-form">
           <div class="form-group">
-            <label class="form-label">Amount</label>
-            <input type="number" class="form-input" id="tx-amount" placeholder="0.00" step="0.01" min="0.01" max="999999999" required>
+            <div class="type-toggle" role="radiogroup" aria-label="Transaction type">
+              <button type="button" class="type-btn income active" data-type="income" role="radio" aria-checked="true">💵 Income</button>
+              <button type="button" class="type-btn expense" data-type="expense" role="radio" aria-checked="false">💸 Expense</button>
+            </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Date</label>
-            <input type="date" class="form-input" id="tx-date" required>
+            <label class="form-label" for="tx-desc">Description</label>
+            <input type="text" class="form-input" id="tx-desc" placeholder="What's this for?" required maxlength="200">
           </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Category</label>
-          <select class="form-select" id="tx-category">
-            <optgroup label="💰 Income">
-              <option value="Salary">💼 Salary</option>
-              <option value="Freelance">💻 Freelance</option>
-              <option value="Investments">📈 Investments</option>
-              <option value="Side Hustle">🎯 Side Hustle</option>
-              <option value="Other Income">💵 Other</option>
-            </optgroup>
-            <optgroup label="💸 Expenses">
-              <option value="Housing">🏠 Housing</option>
-              <option value="Transportation">🚗 Transportation</option>
-              <option value="Food">🍔 Food</option>
-              <option value="Utilities">💡 Utilities</option>
-              <option value="Healthcare">🏥 Healthcare</option>
-              <option value="Entertainment">🎮 Entertainment</option>
-              <option value="Shopping">🛍️ Shopping</option>
-              <option value="Subscriptions">📱 Subscriptions</option>
-              <option value="Travel">✈️ Travel</option>
-              <option value="Education">📚 Education</option>
-              <option value="Other Expenses">📦 Other</option>
-            </optgroup>
-          </select>
-        </div>
-        <button type="submit" class="submit-btn">Add Transaction</button>
-      </form>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="tx-amount">Amount</label>
+              <input type="number" class="form-input" id="tx-amount" placeholder="0.00" step="0.01" min="0.01" max="999999999" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="tx-date">Date</label>
+              <input type="date" class="form-input" id="tx-date" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="tx-category">Category</label>
+            <select class="form-select" id="tx-category">
+              <optgroup label="💰 Income">
+                <option value="Salary">💼 Salary</option>
+                <option value="Freelance">💻 Freelance</option>
+                <option value="Investments">📈 Investments</option>
+                <option value="Side Hustle">🎯 Side Hustle</option>
+                <option value="Other Income">💵 Other</option>
+              </optgroup>
+              <optgroup label="💸 Expenses">
+                <option value="Housing">🏠 Housing</option>
+                <option value="Transportation">🚗 Transportation</option>
+                <option value="Food">🍔 Food</option>
+                <option value="Utilities">💡 Utilities</option>
+                <option value="Healthcare">🏥 Healthcare</option>
+                <option value="Entertainment">🎮 Entertainment</option>
+                <option value="Shopping">🛍️ Shopping</option>
+                <option value="Subscriptions">📱 Subscriptions</option>
+                <option value="Travel">✈️ Travel</option>
+                <option value="Education">📚 Education</option>
+                <option value="Other Expenses">📦 Other</option>
+              </optgroup>
+            </select>
+          </div>
+          <button type="submit" class="submit-btn">Add Transaction</button>
+        </form>
+      </div>
     </div>
   </div>
 
   <!-- Import Modal -->
   <div class="modal-overlay" id="import-modal" role="dialog" aria-modal="true" aria-labelledby="import-modal-title">
     <div class="modal">
-      <div class="modal-handle" aria-hidden="true"></div>
-      <h2 class="modal-title" id="import-modal-title">📥 Import Data</h2>
-      <div class="import-options" role="list" aria-label="Import format options">
+      <div class="modal-header">
+        <h2 class="modal-title" id="import-modal-title">📥 Import Data</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="import-options" role="list" aria-label="Import format options">
         <div class="import-option" data-format="csv">
           <div class="import-option-icon">📄</div>
           <div class="import-option-label">CSV</div>
@@ -1666,24 +1722,29 @@
           <div class="import-option-label">Chase</div>
           <div class="import-option-detail">Chase bank CSV</div>
         </div>
+        </div>
+        <input type="file" id="file-input" accept=".csv,.xlsx,.xls,.ofx,.qfx,.qif">
       </div>
-      <input type="file" id="file-input" accept=".csv,.xlsx,.xls,.ofx,.qfx,.qif">
     </div>
   </div>
 
   <!-- Budget Modal -->
   <div class="modal-overlay" id="budget-modal" role="dialog" aria-modal="true" aria-labelledby="budget-modal-title">
     <div class="modal">
-      <div class="modal-handle" aria-hidden="true"></div>
-      <h2 class="modal-title" id="budget-modal-title">🎯 Set Budget</h2>
-      <form id="budget-form">
-        <div class="form-group">
-          <label class="form-label" for="budget-amount">Monthly Budget</label>
-          <input type="number" class="form-input" id="budget-amount" placeholder="3000" step="100" min="0" max="999999999" aria-describedby="budget-hint">
-          <span id="budget-hint" class="visually-hidden">Enter your monthly spending limit in dollars</span>
-        </div>
-        <button type="submit" class="submit-btn">Save Budget</button>
-      </form>
+      <div class="modal-header">
+        <h2 class="modal-title" id="budget-modal-title">🎯 Set Budget</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="budget-form">
+          <div class="form-group">
+            <label class="form-label" for="budget-amount">Monthly Budget</label>
+            <input type="number" class="form-input" id="budget-amount" placeholder="3000" step="100" min="0" max="999999999">
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">Set your monthly spending limit to track progress</p>
+          </div>
+          <button type="submit" class="submit-btn">💾 Save Budget</button>
+        </form>
+      </div>
     </div>
   </div>
 
