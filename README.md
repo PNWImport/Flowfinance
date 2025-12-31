@@ -24,11 +24,13 @@ A powerful, privacy-first personal finance management app that runs entirely in 
 
 ### User Experience
 - **Responsive Design** - Optimized for desktop, tablet, AND mobile
-- **Desktop Mode** - Centered card layout with enhanced readability on large screens
-- **Mobile Mode** - Full-width layout with touch gestures and safe area support
+- **Desktop Mode** - Full sidebar navigation with proper dashboard layout
+- **Mobile Mode** - Full-width layout with touch gestures and quick month navigation
+- **Quick Month Jump** - Buttons for "3M Ago", "Last Month", "This Month", "Today"
 - **Dark Theme** - Easy on the eyes, designed for extended use
 - **Swipe to Delete** - Intuitive touch gestures for transaction management (mobile)
 - **Keyboard Navigation** - Full keyboard support for desktop users
+- **AI Insights** - Optional Cloudflare Workers AI integration for financial analysis
 
 ### Accessibility (WCAG 2.1 AA)
 - Full keyboard navigation with visible focus indicators
@@ -127,8 +129,16 @@ Upload `flowfinance-beast.html` to any static hosting:
 - Content Security Policy (CSP) headers
 - Subresource Integrity (SRI) for external scripts
 - Input sanitization for XSS prevention
+- CSV injection protection on export
+- URL validation for AI endpoints
+- Category validation against allowed list
 - No external data transmission
 - No cookies or tracking
+
+### Testing
+- **Comprehensive Test Suite** - HTML, security, accessibility, performance checks
+- **Stress Testing** - Parser limits, edge cases, large data handling
+- **Red Team Security** - XSS, injection, prototype pollution, ReDoS testing
 
 ### Performance
 - LRU caching for database queries
@@ -140,10 +150,18 @@ Upload `flowfinance-beast.html` to any static hosting:
 
 ```
 Flowfinance/
-├── flowfinance-beast.html   # Complete application
+├── flowfinance-beast.html   # Complete application (~135KB)
 ├── README.md                # This file
 ├── CHANGELOG.md             # Version history
-└── LICENSE                  # MIT License
+├── LICENSE                  # MIT License
+├── .gitignore               # Git ignore patterns
+├── test_suite.py            # Comprehensive test suite
+├── stress_test.py           # Parser stress testing
+├── redteam_test.py          # Security red team tests
+└── worker/                  # Cloudflare AI Worker (optional)
+    ├── src/index.js         # Worker source code
+    ├── wrangler.toml        # Worker configuration
+    └── README.md            # Worker documentation
 ```
 
 ## Privacy
@@ -176,6 +194,38 @@ Since this is a single HTML file, development is straightforward:
 - Use template literals for HTML
 - Add ARIA labels for accessibility
 - Test with keyboard navigation
+
+### Running Tests
+```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # or venv\Scripts\activate on Windows
+
+# Install dependencies
+pip install beautifulsoup4
+
+# Run test suite (95%+ quality score expected)
+python test_suite.py flowfinance-beast.html
+
+# Run stress tests
+python stress_test.py
+
+# Run security red team tests
+python redteam_test.py flowfinance-beast.html
+```
+
+## AI Insights (Optional)
+
+FlowFinance can optionally connect to a Cloudflare Worker for AI-powered financial insights:
+
+1. Deploy the worker from `worker/` directory
+2. Click the 🤖 AI Insights button in the app
+3. Enter your Worker URL
+4. Get personalized spending analysis
+
+See [worker/README.md](worker/README.md) for setup instructions.
+
+**Security**: No financial data is stored on the server - it's processed and discarded immediately.
 
 ## License
 

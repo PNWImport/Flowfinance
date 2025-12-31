@@ -5,7 +5,48 @@ All notable changes to FlowFinance Pro will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2024-12-31
+## [1.1.0] - 2024-12-31
+
+### Added
+
+#### Desktop Layout
+- Full sidebar navigation with Home, Analytics, Transactions, Budget, Settings sections
+- Proper grid layout with responsive breakpoints
+- Stat cards with income, expenses, net, and savings rate
+- Clean dashboard design for large screens
+
+#### Mobile Improvements
+- Quick month jump bar with "3M Ago", "Last Month", "This Month", "Today" buttons
+- Tappable month display with native date picker
+- Improved calendar navigation
+
+#### AI Insights Integration
+- Optional Cloudflare Workers AI integration
+- Secure proxy architecture (no secrets in client)
+- CORS protection, rate limiting, input validation
+- Uses Llama 3.1 8B model (free tier)
+- Modal-based UI for AI insights
+
+#### Security Enhancements
+- CSV injection protection on export (escapes formula characters)
+- URL validation for AI endpoints
+- Category validation against allowed list
+- Numeric sanitization across all parsers (OFX, QIF, Chase)
+
+#### Testing Suite
+- `test_suite.py` - Comprehensive HTML, security, accessibility, performance tests
+- `stress_test.py` - Parser limits, edge cases, large data handling (100K records)
+- `redteam_test.py` - Adversarial security testing (XSS, injection, ReDoS, etc.)
+- All tests passing: 95.2% quality score, 0 vulnerabilities
+
+#### Repository Improvements
+- Added `.gitignore` for Python venv, IDE files, Node modules
+- Complete `worker/` directory with Cloudflare Worker code
+- Updated documentation
+
+---
+
+## [1.0.0] - 2024-12-30
 
 ### Added
 
@@ -133,14 +174,21 @@ Open `flowfinance-beast.html` in any modern browser. No installation or setup re
 
 ## Roadmap
 
-### Planned for 1.1.0
+### Completed in 1.1.0
+- [x] AI-powered financial insights (Cloudflare Workers)
+- [x] Desktop layout with sidebar navigation
+- [x] Mobile quick month navigation
+- [x] Comprehensive test suite
+- [x] Security red team testing
+
+### Planned for 1.2.0
 - [ ] Data backup/restore to JSON file
 - [ ] Multiple currency support
 - [ ] Custom category creation
 - [ ] Recurring transaction templates
 - [ ] Search functionality
 
-### Planned for 1.2.0
+### Planned for 1.3.0
 - [ ] PWA manifest for home screen installation
 - [ ] Service worker for offline support
 - [ ] Data sync between devices (optional, encrypted)
