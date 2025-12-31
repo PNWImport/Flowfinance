@@ -2560,7 +2560,7 @@
           <div class="import-option-detail">Chase bank CSV</div>
         </div>
         </div>
-        <input type="file" id="file-input" accept=".csv,.xlsx,.xls,.ofx,.qfx,.qif">
+        <input type="file" id="file-input" accept=".csv,.xlsx,.xls,.ofx,.qfx,.qif" aria-label="Select file to import">
       </div>
     </div>
   </div>
@@ -2609,7 +2609,7 @@
         </div>
         <div class="ai-config" id="ai-config" style="display: none;">
           <p>To enable AI insights, deploy the worker and set your endpoint:</p>
-          <input type="url" id="ai-endpoint-input" class="form-input" placeholder="https://your-worker.workers.dev">
+          <input type="url" id="ai-endpoint-input" class="form-input" placeholder="https://your-worker.workers.dev" aria-label="AI Worker endpoint URL">
           <button class="submit-btn" onclick="app.saveAIEndpoint()">💾 Save Endpoint</button>
         </div>
       </div>
@@ -3958,9 +3958,20 @@
 
       async exportData() {
         const txs = await this.db.getAll();
+        // Escape CSV injection - prefix dangerous chars with single quote
+        const escapeCSV = (val) => {
+          const s = String(val);
+          if (/^[=+\-@\t\r]/.test(s)) {
+            return `"'${s.replace(/"/g, '""')}"`;
+          }
+          if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+            return `"${s.replace(/"/g, '""')}"`;
+          }
+          return s;
+        };
         const csv = [
           ['Date', 'Description', 'Amount', 'Type', 'Category'].join(','),
-          ...txs.map(t => [t.date, `"${t.description.replace(/"/g, '""')}"`, t.amount, t.type, t.category].join(','))
+          ...txs.map(t => [t.date, escapeCSV(t.description), t.amount, t.type, escapeCSV(t.category)].join(','))
         ].join('\n');
 
         const blob = new Blob([csv], { type: 'text/csv' });
