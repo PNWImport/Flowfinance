@@ -237,10 +237,10 @@
       max-height: -webkit-fill-available;
     }
 
-    /* Header - Mobile Optimized */
+    /* Header - Mobile Optimized (Compact) */
     .header {
       background: var(--bg-secondary);
-      padding: 12px 16px;
+      padding: 8px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -253,21 +253,21 @@
     .logo {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 18px;
+      gap: 8px;
+      font-size: 16px;
       font-weight: 700;
     }
 
     .logo-icon {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       background: linear-gradient(135deg, #00d4aa 0%, #00b894 100%);
-      border-radius: 10px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
-      box-shadow: 0 0 20px rgba(0, 212, 170, 0.3);
+      font-size: 16px;
+      box-shadow: 0 0 15px rgba(0, 212, 170, 0.3);
     }
 
     .logo span {
@@ -278,22 +278,22 @@
 
     .header-actions {
       display: flex;
-      gap: 8px;
+      gap: 6px;
     }
 
     .icon-btn {
-      width: 44px; /* Min 44px for touch targets (WCAG 2.5.5) */
-      height: 44px;
-      min-width: 44px;
-      min-height: 44px;
-      border-radius: 10px;
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      min-height: 40px;
+      border-radius: 8px;
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
       color: var(--text-primary);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 16px;
       cursor: pointer;
       transition: all 0.2s;
     }
@@ -309,29 +309,30 @@
       color: #000;
     }
 
-    /* Month Selector - Swipeable */
+    /* Month Selector - Compact Mobile */
     .month-bar {
       background: var(--bg-secondary);
-      padding: 12px 16px;
+      padding: 8px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border-color);
       flex-shrink: 0;
+      gap: 6px;
     }
 
     .month-nav {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
       color: var(--text-secondary);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 14px;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
     .month-nav:active {
@@ -341,36 +342,34 @@
 
     .month-display {
       text-align: center;
-    }
-
-    .month-name {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .month-range {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 2px;
-    }
-
-    /* Mobile Month Picker - tappable calendar */
-    .month-display {
       position: relative;
       cursor: pointer;
+      padding: 5px 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--accent-green);
+      border-radius: 14px;
     }
 
     .month-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-green);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 4px;
+      white-space: nowrap;
     }
 
     .month-name::after {
-      content: '📅';
-      font-size: 14px;
+      content: '▾';
+      font-size: 10px;
+      opacity: 0.8;
+    }
+
+    .month-range {
+      display: none; /* Hide on mobile for space */
     }
 
     .mobile-month-picker {
@@ -384,29 +383,33 @@
       font-size: 16px; /* Prevents iOS zoom */
     }
 
-    /* Quick Month Jump Bar */
+    /* Quick Month Jump - Combined with month bar */
     .quick-month-bar {
+      display: none; /* Hidden by default, shown inline in month-bar */
+    }
+
+    .month-bar .quick-btns {
       display: flex;
-      gap: 8px;
-      padding: 8px 16px 12px;
-      background: var(--bg-secondary);
+      gap: 4px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
+      flex: 1;
+      justify-content: center;
     }
 
-    .quick-month-bar::-webkit-scrollbar {
+    .month-bar .quick-btns::-webkit-scrollbar {
       display: none;
     }
 
     .quick-month-btn {
       flex-shrink: 0;
-      padding: 8px 14px;
+      padding: 5px 10px;
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
-      border-radius: 20px;
+      border-radius: 14px;
       color: var(--text-secondary);
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s;
@@ -427,28 +430,30 @@
 
     /* Summary Cards - Horizontal Scroll on Mobile */
     .summary-section {
-      padding: 16px;
+      padding: 10px 12px;
       flex-shrink: 0;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
     }
 
     .summary-cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      display: flex;
+      gap: 8px;
     }
 
     .summary-card {
+      flex: 1;
       background: var(--bg-card);
       border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 14px;
+      border-radius: 10px;
+      padding: 10px 8px;
       text-align: center;
     }
 
     .summary-value {
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .summary-value.green { color: var(--accent-green); }
@@ -456,18 +461,14 @@
     .summary-value.blue { color: var(--accent-blue); }
 
     .summary-label {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-secondary);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
     }
 
     .summary-trend {
-      font-size: 10px;
-      margin-top: 4px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      display: inline-block;
+      display: none; /* Hide trends on mobile for space */
     }
 
     .summary-trend.up { background: var(--accent-green-dim); color: var(--accent-green); }
@@ -2229,19 +2230,24 @@
       </div>
     </aside>
 
-    <!-- Month Bar with Calendar Picker -->
+    <!-- Combined Month Bar with Quick Jump -->
     <nav class="month-bar" role="navigation" aria-label="Month navigation">
       <button class="month-nav" id="prev-month" aria-label="Previous month">◀</button>
-      <div class="month-display" aria-live="polite">
-        <label for="mobile-month-picker" class="month-name" id="month-name">December 2024</label>
-        <div class="month-range" id="month-range">Dec 1 - Dec 31</div>
-        <input type="month" id="mobile-month-picker" class="mobile-month-picker" aria-label="Select month">
+      <div class="quick-btns">
+        <button class="quick-month-btn" data-offset="-3">-3M</button>
+        <button class="quick-month-btn" data-offset="-1">Prev</button>
+        <div class="month-display" aria-live="polite">
+          <label for="mobile-month-picker" class="month-name" id="month-name">Dec 2025</label>
+          <input type="month" id="mobile-month-picker" class="mobile-month-picker" aria-label="Select month">
+        </div>
+        <button class="quick-month-btn active" data-offset="0">Now</button>
+        <button class="quick-month-btn" data-jump="today">Today</button>
       </div>
       <button class="month-nav" id="next-month" aria-label="Next month">▶</button>
     </nav>
 
-    <!-- Quick Month Jump (Mobile) -->
-    <div class="quick-month-bar">
+    <!-- Quick Month Jump (hidden, for JS compatibility) -->
+    <div class="quick-month-bar" style="display:none;">
       <button class="quick-month-btn" data-offset="-3">3M Ago</button>
       <button class="quick-month-btn" data-offset="-1">Last Month</button>
       <button class="quick-month-btn active" data-offset="0">This Month</button>
