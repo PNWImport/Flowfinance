@@ -354,32 +354,75 @@
       margin-top: 2px;
     }
 
-    /* Month Picker - Calendar Input */
-    .month-picker {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      color: var(--text-primary);
-      padding: 8px 12px;
-      font-size: 14px;
+    /* Mobile Month Picker - tappable calendar */
+    .month-display {
+      position: relative;
       cursor: pointer;
-      min-width: 44px;
-      min-height: 44px;
-      transition: all 0.2s;
     }
 
-    .month-picker:hover {
-      border-color: var(--accent-green);
+    .month-name {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
-    .month-picker:focus {
-      outline: 2px solid var(--accent-green);
-      outline-offset: 2px;
+    .month-name::after {
+      content: '📅';
+      font-size: 14px;
     }
 
-    /* Hide on mobile by default, show on desktop */
-    .month-picker {
+    .mobile-month-picker {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      font-size: 16px; /* Prevents iOS zoom */
+    }
+
+    /* Quick Month Jump Bar */
+    .quick-month-bar {
+      display: flex;
+      gap: 8px;
+      padding: 8px 16px 12px;
+      background: var(--bg-secondary);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .quick-month-bar::-webkit-scrollbar {
       display: none;
+    }
+
+    .quick-month-btn {
+      flex-shrink: 0;
+      padding: 8px 14px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-height: 36px;
+    }
+
+    .quick-month-btn:hover,
+    .quick-month-btn:active {
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
+
+    .quick-month-btn.active {
+      background: var(--accent-green-dim);
+      border-color: var(--accent-green);
+      color: var(--accent-green);
     }
 
     /* Summary Cards - Horizontal Scroll on Mobile */
@@ -1570,6 +1613,10 @@
         display: none !important;
       }
 
+      .quick-month-bar {
+        display: none !important;
+      }
+
       .summary-section {
         display: none !important;
       }
@@ -2071,12 +2118,20 @@
     <nav class="month-bar" role="navigation" aria-label="Month navigation">
       <button class="month-nav" id="prev-month" aria-label="Previous month">◀</button>
       <div class="month-display" aria-live="polite">
-        <div class="month-name" id="month-name">December 2024</div>
+        <label for="mobile-month-picker" class="month-name" id="month-name">December 2024</label>
         <div class="month-range" id="month-range">Dec 1 - Dec 31</div>
+        <input type="month" id="mobile-month-picker" class="mobile-month-picker" aria-label="Select month">
       </div>
       <button class="month-nav" id="next-month" aria-label="Next month">▶</button>
-      <input type="month" id="month-picker" class="month-picker" aria-label="Select month">
     </nav>
+
+    <!-- Quick Month Jump (Mobile) -->
+    <div class="quick-month-bar">
+      <button class="quick-month-btn" data-offset="-3">3M Ago</button>
+      <button class="quick-month-btn" data-offset="-1">Last Month</button>
+      <button class="quick-month-btn active" data-offset="0">This Month</button>
+      <button class="quick-month-btn" data-jump="today">Today</button>
+    </div>
 
     <!-- Summary -->
     <div class="summary-section">
@@ -3040,6 +3095,42 @@
         document.getElementById('prev-month').addEventListener('click', () => this.changeMonth(-1));
         document.getElementById('next-month').addEventListener('click', () => this.changeMonth(1));
 
+        // Mobile month picker
+        const mobileMonthPicker = document.getElementById('mobile-month-picker');
+        if (mobileMonthPicker) {
+          mobileMonthPicker.value = this.currentMonth;
+          mobileMonthPicker.addEventListener('change', () => {
+            if (mobileMonthPicker.value) {
+              this.currentMonth = mobileMonthPicker.value;
+              this.loadData().then(() => {
+                this.renderAll();
+                this.updateQuickMonthButtons();
+              });
+            }
+          });
+        }
+
+        // Quick month jump buttons
+        document.querySelectorAll('.quick-month-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const offset = btn.dataset.offset;
+            const jump = btn.dataset.jump;
+
+            if (jump === 'today') {
+              this.currentMonth = new Date().toISOString().substring(0, 7);
+            } else if (offset !== undefined) {
+              const today = new Date();
+              today.setMonth(today.getMonth() + parseInt(offset));
+              this.currentMonth = today.toISOString().substring(0, 7);
+            }
+
+            this.loadData().then(() => {
+              this.renderAll();
+              this.updateQuickMonthButtons();
+            });
+          });
+        });
+
         // Quick actions
         document.getElementById('quick-actions').addEventListener('click', (e) => {
           const action = e.target.closest('[data-action]')?.dataset.action;
@@ -3169,7 +3260,38 @@
         const d = new Date(this.currentMonth + '-01');
         d.setMonth(d.getMonth() + delta);
         this.currentMonth = d.toISOString().substring(0, 7);
-        this.loadData().then(() => this.renderAll());
+        this.loadData().then(() => {
+          this.renderAll();
+          this.updateQuickMonthButtons();
+        });
+      }
+
+      updateQuickMonthButtons() {
+        const today = new Date();
+        const currentMonthDate = new Date(this.currentMonth + '-01');
+
+        document.querySelectorAll('.quick-month-btn').forEach(btn => {
+          btn.classList.remove('active');
+          const offset = btn.dataset.offset;
+          const jump = btn.dataset.jump;
+
+          if (offset !== undefined) {
+            const targetDate = new Date(today.getFullYear(), today.getMonth() + parseInt(offset), 1);
+            if (targetDate.getFullYear() === currentMonthDate.getFullYear() &&
+                targetDate.getMonth() === currentMonthDate.getMonth()) {
+              btn.classList.add('active');
+            }
+          } else if (jump === 'today') {
+            if (today.getFullYear() === currentMonthDate.getFullYear() &&
+                today.getMonth() === currentMonthDate.getMonth()) {
+              btn.classList.add('active');
+            }
+          }
+        });
+
+        // Update mobile month picker
+        const mobileMonthPicker = document.getElementById('mobile-month-picker');
+        if (mobileMonthPicker) mobileMonthPicker.value = this.currentMonth;
       }
 
       switchPage(page) {
