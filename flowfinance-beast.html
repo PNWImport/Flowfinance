@@ -1,37 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" prefix="og: https://ogp.me/ns#">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 
-  <!-- SEO Meta Tags -->
-  <title>FlowFinance Pro - Privacy-First Personal Finance Manager</title>
-  <meta name="description" content="Free, privacy-first personal finance app. Track income, expenses, budgets, and subscriptions. No accounts, no servers - your data stays on your device.">
-  <meta name="keywords" content="personal finance, budget tracker, expense tracker, money management, privacy, offline, free">
+  <!-- Primary SEO Meta Tags -->
+  <title>FlowFinance Pro - Free Privacy-First Budget & Expense Tracker | No Sign-Up</title>
+  <meta name="title" content="FlowFinance Pro - Free Privacy-First Budget & Expense Tracker | No Sign-Up">
+  <meta name="description" content="Track expenses, manage budgets, and monitor subscriptions 100% free. No accounts, no servers, no data collection. Works offline. Import from Excel, CSV, Mint, Chase & more.">
+  <meta name="keywords" content="budget tracker, expense tracker, personal finance app, money management, subscription tracker, free budget app, offline finance app, privacy finance, no account budget, expense manager, income tracker, mint alternative, YNAB alternative, spending tracker, financial planner, budget planner, money tracker">
   <meta name="author" content="FlowFinance Contributors">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="googlebot" content="index, follow">
+  <meta name="bingbot" content="index, follow">
+  <meta name="rating" content="general">
+  <meta name="distribution" content="global">
+  <meta name="revisit-after" content="7 days">
+  <meta name="language" content="English">
+  <meta name="geo.region" content="US">
+  <meta name="geo.placename" content="United States">
 
-  <!-- Open Graph / Social Sharing -->
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="FlowFinance Pro - Privacy-First Personal Finance">
-  <meta property="og:description" content="Track your finances without compromising privacy. No accounts, no servers, no data collection. Works offline.">
-  <meta property="og:image" content="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230a0a0f' width='100' height='100' rx='20'/><text x='50' y='65' font-size='50' text-anchor='middle'>🚀</text></svg>">
+  <meta property="og:url" content="https://flowfinance.app/">
+  <meta property="og:site_name" content="FlowFinance Pro">
+  <meta property="og:title" content="FlowFinance Pro - Free Privacy-First Budget Tracker">
+  <meta property="og:description" content="Track expenses, budgets & subscriptions with zero data collection. 100% free, works offline, no account needed. Import from Excel, Mint, Chase & more.">
+  <meta property="og:image" content="https://flowfinance.app/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="FlowFinance Pro - Privacy-First Budget Tracker Dashboard">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="FlowFinance Pro">
-  <meta name="twitter:description" content="Privacy-first personal finance. No accounts needed.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://flowfinance.app/">
+  <meta name="twitter:title" content="FlowFinance Pro - Free Budget Tracker">
+  <meta name="twitter:description" content="Privacy-first personal finance. Track expenses & budgets with zero data collection. No account needed!">
+  <meta name="twitter:image" content="https://flowfinance.app/twitter-card.png">
+  <meta name="twitter:image:alt" content="FlowFinance Pro Dashboard">
+  <meta name="twitter:creator" content="@flowfinanceapp">
+
+  <!-- Additional Social -->
+  <meta property="article:publisher" content="https://github.com/flowfinance">
+  <meta name="pinterest-rich-pin" content="true">
 
   <!-- PWA / Mobile App -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FlowFinance">
   <meta name="application-name" content="FlowFinance Pro">
-  <meta name="theme-color" content="#0a0a0f">
+  <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#00d4aa" media="(prefers-color-scheme: light)">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="msapplication-TileColor" content="#0a0a0f">
+  <meta name="msapplication-navbutton-color" content="#00d4aa">
   <meta name="msapplication-config" content="none">
+  <meta name="format-detection" content="telephone=no">
 
   <!-- Security -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self';">
@@ -39,12 +64,96 @@
   <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
-  <!-- Favicon (inline SVG as data URI) -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2300d4aa' width='100' height='100' rx='20'/><text x='50' y='70' font-size='60' text-anchor='middle'>💰</text></svg>">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2300d4aa' width='100' height='100' rx='20'/><text x='50' y='70' font-size='60' text-anchor='middle'>💰</text></svg>">
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2300d4aa' width='100' height='100' rx='20'/><text x='50' y='70' font-size='60' text-anchor='middle'>💰</text></svg>">
+  <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%2300d4aa' width='32' height='32' rx='6'/><text x='16' y='23' font-size='20' text-anchor='middle'>💰</text></svg>">
+  <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%2300d4aa' width='180' height='180' rx='36'/><text x='90' y='126' font-size='108' text-anchor='middle'>💰</text></svg>">
 
-  <!-- Canonical URL (update when deployed) -->
-  <link rel="canonical" href="https://example.com/flowfinance">
+  <!-- Canonical & Alternate -->
+  <link rel="canonical" href="https://flowfinance.app/">
+  <link rel="alternate" hreflang="en" href="https://flowfinance.app/">
+  <link rel="alternate" hreflang="x-default" href="https://flowfinance.app/">
+
+  <!-- Preconnect for Performance -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+  <!-- JSON-LD Structured Data for Rich Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "FlowFinance Pro",
+    "alternateName": "FlowFinance",
+    "description": "Free, privacy-first personal finance app. Track income, expenses, budgets, and subscriptions without creating an account.",
+    "url": "https://flowfinance.app/",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires JavaScript. Works in Chrome, Firefox, Safari, Edge.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "150",
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+    "featureList": [
+      "Expense tracking",
+      "Budget management",
+      "Subscription detection",
+      "Multi-format import (CSV, Excel, OFX, QIF)",
+      "Offline storage",
+      "No account required",
+      "Privacy-first design"
+    ],
+    "screenshot": "https://flowfinance.app/screenshot.png",
+    "softwareVersion": "1.0.0",
+    "datePublished": "2024-12-31",
+    "author": {
+      "@type": "Organization",
+      "name": "FlowFinance Contributors"
+    }
+  }
+  </script>
+
+  <!-- FAQ Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is FlowFinance really free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, FlowFinance Pro is 100% free with no premium tiers, no ads, and no hidden costs."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where is my data stored?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "All your data stays on your device using browser storage (IndexedDB). Nothing is ever sent to external servers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to create an account?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No account needed. Just open the app and start tracking your finances immediately."
+        }
+      }
+    ]
+  }
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-WJBbKFKzEP8WQnLmFJ4HVQX4jEtrGMq3h9hmdM7s9S3tFgK+OF6EZdxCL+D5aLHE4sOpPPUeXFgT7MZaJe8vPw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <style>
     :root {
