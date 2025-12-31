@@ -7,8 +7,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#0a0a0f">
   <meta name="mobile-web-app-capable" content="yes">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self';">
   <title>FlowFinance Pro</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-WJBbKFKzEP8WQnLmFJ4HVQX4jEtrGMq3h9hmdM7s9S3tFgK+OF6EZdxCL+D5aLHE4sOpPPUeXFgT7MZaJe8vPw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <style>
     :root {
       --bg-primary: #0a0a0f;
@@ -2113,6 +2114,152 @@
           .sort((a, b) => b.amount - a.amount);
       }
     }
+
+    // Main Application Controller
+    class FlowFinanceApp {
+      constructor() {
+        this.db = new FinanceDB();
+        this.currentMonth = new Date().toISOString().substring(0, 7);
+        this.transactions = [];
+        this.analytics = null;
+        this.budget = 0;
+        this.txType = 'income';
+        this.importFormat = 'csv';
+      }
+
+      async init() {
+        await this.db.init();
+        this.budget = (await this.db.getSetting('budget')) || 0;
+        await this.loadData();
+        this.renderAll();
+        this.bindEvents();
+      }
+
+      bindEvents() {
+        // Month navigation
+        document.getElementById('prev-month').addEventListener('click', () => this.changeMonth(-1));
+        document.getElementById('next-month').addEventListener('click', () => this.changeMonth(1));
+
+        // Quick actions
+        document.getElementById('quick-actions').addEventListener('click', (e) => {
+          const action = e.target.closest('[data-action]')?.dataset.action;
+          if (action === 'add-income') { this.txType = 'income'; this.openAddModal(); }
+          if (action === 'add-expense') { this.txType = 'expense'; this.openAddModal(); }
+          if (action === 'set-budget') this.openBudgetModal();
+          if (action === 'view-subs') this.switchPage('subs');
+        });
+
+        // Bottom nav
+        document.querySelectorAll('.nav-item[data-page]').forEach(btn => {
+          btn.addEventListener('click', () => this.switchPage(btn.dataset.page));
+        });
+
+        // Add transaction button
+        document.getElementById('add-tx-btn').addEventListener('click', () => this.openAddModal());
+        document.getElementById('import-btn').addEventListener('click', () => this.openImportModal());
+        document.getElementById('export-btn').addEventListener('click', () => this.exportData());
+        document.getElementById('edit-budget').addEventListener('click', () => this.openBudgetModal());
+
+        // Type toggle
+        document.querySelectorAll('.type-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            this.txType = btn.dataset.type;
+          });
+        });
+
+        // Forms
+        document.getElementById('tx-form').addEventListener('submit', (e) => { e.preventDefault(); this.addTransaction(); });
+        document.getElementById('budget-form').addEventListener('submit', (e) => { e.preventDefault(); this.saveBudget(); });
+
+        // Import options
+        document.querySelectorAll('.import-option').forEach(opt => {
+          opt.addEventListener('click', () => {
+            this.importFormat = opt.dataset.format;
+            document.getElementById('file-input').click();
+          });
+        });
+        document.getElementById('file-input').addEventListener('change', (e) => this.handleImport(e.target.files));
+
+        // Close modals
+        document.querySelectorAll('.modal-overlay').forEach(m => {
+          m.addEventListener('click', (e) => { if (e.target === m) this.closeModals(); });
+        });
+
+        // Chart period buttons
+        document.querySelectorAll('.period-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            this.renderChart(parseInt(btn.dataset.period));
+          });
+        });
+      }
+
+      async loadData() {
+        this.transactions = await this.db.getByMonth(this.currentMonth);
+        const prevMonth = new Date(this.currentMonth + '-01');
+        prevMonth.setMonth(prevMonth.getMonth() - 1);
+        const prevMonthKey = prevMonth.toISOString().substring(0, 7);
+        const prevTx = await this.db.getByMonth(prevMonthKey);
+        this.analytics = new Analytics(this.transactions, prevTx);
+      }
+
+      changeMonth(delta) {
+        const d = new Date(this.currentMonth + '-01');
+        d.setMonth(d.getMonth() + delta);
+        this.currentMonth = d.toISOString().substring(0, 7);
+        this.loadData().then(() => this.renderAll());
+      }
+
+      switchPage(page) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(`page-${page}`).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+      }
+
+      renderAll() {
+        // Update month display
+        const d = new Date(this.currentMonth + '-01');
+        document.getElementById('month-name').textContent = d.toLocaleString('default', { month: 'long', year: 'numeric' });
+        const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+        document.getElementById('month-range').textContent = `${d.toLocaleString('default', { month: 'short' })} 1 - ${d.toLocaleString('default', { month: 'short' })} ${lastDay}`;
+
+        // Summary
+        document.getElementById('sum-income').textContent = this.fmt(this.analytics.totalIncome);
+        document.getElementById('sum-expenses').textContent = this.fmt(this.analytics.totalExpenses);
+        document.getElementById('sum-net').textContent = this.fmt(this.analytics.net);
+
+        // Render all sections
+        this.renderInsights();
+        this.renderBudget();
+        this.renderChart(6);
+        this.renderSavings();
+        this.renderFlow();
+        this.renderCategories();
+        this.renderSubscriptions();
+        this.renderTransactions();
+      }
+
+      renderInsights() {
+        const insights = this.analytics.getInsights();
+        const container = document.getElementById('insights-scroll');
+        if (insights.length === 0) {
+          container.innerHTML = `<div class="insight-card"><div class="insight-header"><div class="insight-icon blue">💡</div><div><div class="insight-label">Getting Started</div></div></div><div class="insight-detail">Add transactions to see insights</div></div>`;
+          return;
+        }
+        container.innerHTML = insights.map(i => `
+          <div class="insight-card ${i.type}">
+            <div class="insight-header">
+              <div class="insight-icon ${i.color}">${i.icon}</div>
+              <div><div class="insight-label">${sanitize(i.title)}</div><div class="insight-sublabel">${sanitize(i.detail)}</div></div>
+            </div>
+            <div class="insight-value ${i.color}">${sanitize(i.value)}</div>
+          </div>
+        `).join('');
+      }
 
       renderBudget() {
         const spent = this.analytics.totalExpenses;
