@@ -1531,7 +1531,12 @@
       .app-shell {
         display: grid;
         grid-template-columns: 240px 1fr;
-        grid-template-rows: auto 1fr;
+        grid-template-rows: auto auto auto 1fr;
+        grid-template-areas:
+          "header header"
+          "sidebar monthbar"
+          "sidebar summary"
+          "sidebar content";
         max-width: 1400px;
         margin: 0 auto;
         height: 100vh;
@@ -1541,7 +1546,7 @@
 
       /* Desktop Header - spans full width */
       .header {
-        grid-column: 1 / -1;
+        grid-area: header;
         border-radius: 0;
         padding: 16px 32px;
       }
@@ -1553,12 +1558,14 @@
 
       /* Desktop Sidebar Navigation */
       .desktop-sidebar {
+        grid-area: sidebar;
         display: flex !important;
         flex-direction: column;
         background: var(--bg-secondary);
         border-right: 1px solid var(--border-color);
         padding: 24px 16px;
         gap: 8px;
+        overflow-y: auto;
       }
 
       .desktop-sidebar .nav-item {
@@ -1614,7 +1621,7 @@
 
       /* Month bar adjustments */
       .month-bar {
-        grid-column: 2;
+        grid-area: monthbar;
         justify-content: flex-start;
         padding-left: 32px;
         gap: 24px;
@@ -1629,12 +1636,13 @@
 
       /* Summary section */
       .summary-section {
+        grid-area: summary;
         padding: 0 32px;
       }
 
       /* Main content - desktop grid layout */
       .main-content {
-        grid-column: 2;
+        grid-area: content;
         padding: 24px 32px;
         padding-bottom: 32px;
         overflow-y: auto;
