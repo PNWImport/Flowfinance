@@ -1312,6 +1312,121 @@
       transform: scale(0.98);
     }
 
+    /* AI Insights Button */
+    .ai-insights-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      border: none;
+      border-radius: 20px;
+      padding: 8px 14px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-left: auto;
+    }
+
+    .ai-insights-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    }
+
+    .ai-insights-btn:active {
+      transform: scale(0.98);
+    }
+
+    .ai-insights-btn .ai-icon {
+      font-size: 14px;
+    }
+
+    /* AI Modal Styles */
+    .ai-modal {
+      max-width: 500px;
+    }
+
+    .ai-loading {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .ai-spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid var(--border-color);
+      border-top-color: var(--accent-purple);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .ai-loading p {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .ai-result {
+      padding: 8px 0;
+    }
+
+    .ai-insights-content {
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+      padding: 20px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+    }
+
+    .ai-insights-content strong,
+    .ai-insights-content b {
+      color: var(--accent-green);
+    }
+
+    .ai-disclaimer {
+      margin-top: 16px;
+      padding: 12px;
+      background: var(--accent-orange-dim);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .ai-disclaimer small {
+      color: var(--accent-orange);
+      font-size: 11px;
+    }
+
+    .ai-error {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .ai-error p {
+      color: var(--accent-red);
+      margin-bottom: 16px;
+    }
+
+    .ai-config {
+      padding: 20px 0;
+    }
+
+    .ai-config p {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .ai-config .form-input {
+      margin-bottom: 12px;
+    }
+
     /* Import Modal */
     .import-options {
       display: grid;
@@ -2212,6 +2327,10 @@
         <!-- Insights -->
         <div class="section-header">
           <div class="section-title">💡 Smart Insights</div>
+          <button class="ai-insights-btn" id="ai-insights-btn" title="Get AI-powered insights">
+            <span class="ai-icon">🤖</span>
+            <span class="ai-label">AI Analysis</span>
+          </button>
         </div>
         <div class="insights-scroll" id="insights-scroll">
           <!-- Dynamic insights -->
@@ -2462,6 +2581,37 @@
           </div>
           <button type="submit" class="submit-btn">💾 Save Budget</button>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Insights Modal -->
+  <div class="modal-overlay" id="ai-modal" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
+    <div class="modal ai-modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="ai-modal-title">🤖 AI Financial Analysis</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-content">
+        <div class="ai-loading" id="ai-loading">
+          <div class="ai-spinner"></div>
+          <p>Analyzing your finances...</p>
+        </div>
+        <div class="ai-result" id="ai-result" style="display: none;">
+          <div class="ai-insights-content" id="ai-insights-content"></div>
+          <div class="ai-disclaimer">
+            <small>AI insights are suggestions only. Always consult a financial advisor for major decisions.</small>
+          </div>
+        </div>
+        <div class="ai-error" id="ai-error" style="display: none;">
+          <p>Unable to get insights. Please try again later.</p>
+          <button class="submit-btn" onclick="app.getAIInsights()">🔄 Retry</button>
+        </div>
+        <div class="ai-config" id="ai-config" style="display: none;">
+          <p>To enable AI insights, deploy the worker and set your endpoint:</p>
+          <input type="url" id="ai-endpoint-input" class="form-input" placeholder="https://your-worker.workers.dev">
+          <button class="submit-btn" onclick="app.saveAIEndpoint()">💾 Save Endpoint</button>
+        </div>
       </div>
     </div>
   </div>
@@ -3080,11 +3230,13 @@
         this.budget = 0;
         this.txType = 'income';
         this.importFormat = 'csv';
+        this.aiEndpoint = null; // Set after deploying worker
       }
 
       async init() {
         await this.db.init();
         this.budget = (await this.db.getSetting('budget')) || 0;
+        this.aiEndpoint = await this.db.getSetting('aiEndpoint');
         await this.loadData();
         this.renderAll();
         this.bindEvents();
@@ -3150,6 +3302,9 @@
         document.getElementById('import-btn').addEventListener('click', () => this.openImportModal());
         document.getElementById('export-btn').addEventListener('click', () => this.exportData());
         document.getElementById('edit-budget').addEventListener('click', () => this.openBudgetModal());
+
+        // AI Insights button
+        document.getElementById('ai-insights-btn').addEventListener('click', () => this.openAIModal());
 
         // Type toggle
         document.querySelectorAll('.type-btn').forEach(btn => {
@@ -3816,6 +3971,101 @@
         a.click();
         URL.revokeObjectURL(url);
         this.toast('📤 Exported!', 'success');
+      }
+
+      // AI Insights Methods
+      openAIModal() {
+        document.getElementById('ai-modal').classList.add('open');
+        document.getElementById('ai-loading').style.display = 'block';
+        document.getElementById('ai-result').style.display = 'none';
+        document.getElementById('ai-error').style.display = 'none';
+        document.getElementById('ai-config').style.display = 'none';
+
+        if (!this.aiEndpoint) {
+          document.getElementById('ai-loading').style.display = 'none';
+          document.getElementById('ai-config').style.display = 'block';
+          const savedEndpoint = localStorage.getItem('flowfinance_ai_endpoint');
+          if (savedEndpoint) {
+            document.getElementById('ai-endpoint-input').value = savedEndpoint;
+          }
+        } else {
+          this.getAIInsights();
+        }
+      }
+
+      async saveAIEndpoint() {
+        const input = document.getElementById('ai-endpoint-input');
+        const endpoint = input.value.trim();
+
+        if (!endpoint || !endpoint.startsWith('https://')) {
+          this.toast('Please enter a valid HTTPS URL', 'error');
+          return;
+        }
+
+        this.aiEndpoint = endpoint;
+        await this.db.setSetting('aiEndpoint', endpoint);
+        localStorage.setItem('flowfinance_ai_endpoint', endpoint);
+        this.toast('AI endpoint saved!', 'success');
+
+        document.getElementById('ai-config').style.display = 'none';
+        document.getElementById('ai-loading').style.display = 'block';
+        this.getAIInsights();
+      }
+
+      async getAIInsights() {
+        try {
+          document.getElementById('ai-loading').style.display = 'block';
+          document.getElementById('ai-result').style.display = 'none';
+          document.getElementById('ai-error').style.display = 'none';
+
+          // Prepare data for AI (no sensitive details, just aggregates)
+          const categories = this.analytics.expensesByCategory;
+          const topCategories = Object.entries(categories)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(([name, amount]) => ({ name, amount }));
+
+          const subscriptions = this.analytics.subscriptions.map(s => ({
+            name: s.description,
+            amount: s.amount
+          }));
+
+          const payload = {
+            income: this.analytics.totalIncome,
+            expenses: this.analytics.totalExpenses,
+            budget: this.budget,
+            monthLabel: new Date(this.currentMonth + '-01').toLocaleString('default', { month: 'long', year: 'numeric' }),
+            categories: topCategories,
+            subscriptions: subscriptions
+          };
+
+          const response = await fetch(this.aiEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          const data = await response.json();
+
+          if (data.success && data.insights) {
+            document.getElementById('ai-loading').style.display = 'none';
+            document.getElementById('ai-result').style.display = 'block';
+
+            // Format insights with basic markdown-like styling
+            const formatted = data.insights
+              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+              .replace(/\*(.*?)\*/g, '<em>$1</em>')
+              .replace(/^(\d+\.)/gm, '<br><strong>$1</strong>');
+
+            document.getElementById('ai-insights-content').innerHTML = formatted;
+          } else {
+            throw new Error(data.error || 'Unknown error');
+          }
+        } catch (error) {
+          console.error('AI Insights Error:', error);
+          document.getElementById('ai-loading').style.display = 'none';
+          document.getElementById('ai-error').style.display = 'block';
+        }
       }
 
       fmt(n) {
