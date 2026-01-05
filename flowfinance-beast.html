@@ -4909,7 +4909,9 @@
 
         // Type toggle
         document.querySelectorAll('.type-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             this.txType = btn.dataset.type;
@@ -4918,7 +4920,9 @@
 
         // Category picker
         document.querySelectorAll('.category-option').forEach(btn => {
-          btn.addEventListener('click', () => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             document.querySelectorAll('.category-option').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
             document.getElementById('tx-category').value = btn.dataset.value;
