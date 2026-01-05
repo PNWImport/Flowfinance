@@ -153,7 +153,7 @@
     ]
   }
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- XLSX loaded lazily on first import for better performance -->
   <style>
     :root {
       --bg-primary: #0a0a0f;
@@ -182,6 +182,316 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    /* Offline Banner */
+    .offline-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+      color: white;
+      padding: 8px 16px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 9999;
+      transform: translateY(-100%);
+      transition: transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .offline-banner.visible {
+      transform: translateY(0);
+    }
+    .offline-banner.online {
+      background: linear-gradient(135deg, #00d4aa 0%, #00b894 100%);
+    }
+
+    /* Undo Toast */
+    .undo-toast {
+      position: fixed;
+      bottom: calc(80px + var(--safe-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      z-index: 1000;
+      animation: slideUp 0.3s ease;
+    }
+    .undo-toast-message {
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+    .undo-toast-btn {
+      background: var(--accent-green);
+      color: #000;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .undo-toast-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: var(--accent-green);
+      border-radius: 0 0 12px 12px;
+      animation: undoProgress 5s linear forwards;
+    }
+    @keyframes undoProgress {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+    @keyframes slideUp {
+      from { transform: translateX(-50%) translateY(100%); opacity: 0; }
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
+
+    /* Skeleton Loading */
+    .skeleton {
+      background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-card) 50%, var(--bg-tertiary) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 8px;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .skeleton-text { height: 16px; margin-bottom: 8px; }
+    .skeleton-text.short { width: 60%; }
+    .skeleton-card { height: 80px; margin-bottom: 12px; }
+    .skeleton-summary { height: 60px; }
+
+    /* Loading Spinner Overlay */
+    .loading-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 10, 15, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 100;
+      border-radius: inherit;
+    }
+    .loading-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border-color);
+      border-top-color: var(--accent-green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .loading-text {
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    /* Import Progress */
+    .import-progress {
+      margin-top: 16px;
+      padding: 16px;
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+      display: none;
+    }
+    .import-progress.active { display: block; }
+    .import-progress-bar {
+      height: 6px;
+      background: var(--bg-primary);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .import-progress-fill {
+      height: 100%;
+      background: var(--accent-green);
+      border-radius: 3px;
+      transition: width 0.2s ease;
+      width: 0%;
+    }
+    .import-progress-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Pull to Refresh */
+    .pull-indicator {
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      background: var(--bg-card);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
+      opacity: 0;
+    }
+    .pull-indicator.visible { opacity: 1; }
+    .pull-indicator.refreshing .pull-icon {
+      animation: spin 0.8s linear infinite;
+    }
+    .pull-icon { font-size: 18px; }
+
+    /* Delete Confirmation Dialog */
+    .confirm-dialog {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border-radius: 24px 24px 0 0;
+      padding: 20px;
+      padding-bottom: calc(20px + var(--safe-bottom));
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      z-index: 1002;
+    }
+    .confirm-dialog.active { transform: translateY(0); }
+    .confirm-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+      z-index: 1001;
+    }
+    .confirm-backdrop.active { opacity: 1; visibility: visible; }
+    .confirm-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .confirm-message {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+    .confirm-buttons {
+      display: flex;
+      gap: 12px;
+    }
+    .confirm-btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    .confirm-btn.cancel {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+    .confirm-btn.danger {
+      background: var(--accent-red);
+      color: white;
+    }
+
+    /* Button loading state */
+    .submit-btn.loading {
+      position: relative;
+      color: transparent;
+      pointer-events: none;
+    }
+    .submit-btn.loading::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top-color: #000;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* Interactive element styling - clear affordance */
+    .insight-card {
+      cursor: default;
+      pointer-events: none;
+    }
+    .summary-card {
+      cursor: default;
+    }
+
+    /* Make clickable items obvious */
+    .quick-action,
+    .import-option,
+    .nav-item,
+    .subscription-item,
+    .category-item {
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .quick-action:hover,
+    .import-option:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    /* Transaction item tap hint */
+    .transaction-item {
+      cursor: pointer;
+      position: relative;
+    }
+    .transaction-item::after {
+      content: '←';
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .transaction-item:hover::after {
+      opacity: 0.5;
+    }
+    .transaction-item.selected {
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+    }
+
+    /* Non-interactive visual hint */
+    .flow-node,
+    .desktop-stat-card {
+      cursor: default;
+    }
+
+    /* Chart is not interactive - remove pointer */
+    .chart-canvas {
+      cursor: default;
+    }
+    .chart-bar-group {
+      cursor: default;
+    }
 
     /* Skip Link for Accessibility */
     .skip-link {
@@ -309,29 +619,34 @@
       color: #000;
     }
 
-    /* Month Selector - Swipeable */
-    .month-bar {
+    /* Unified Mobile Navigation Bar - consolidated header */
+    .mobile-nav-bar {
       background: var(--bg-secondary);
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      padding: 10px 16px;
       border-bottom: 1px solid var(--border-color);
       flex-shrink: 0;
     }
 
+    .mobile-nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
     .month-nav {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
       color: var(--text-secondary);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 14px;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
     .month-nav:active {
@@ -340,27 +655,15 @@
     }
 
     .month-display {
+      flex: 1;
       text-align: center;
-    }
-
-    .month-name {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .month-range {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 2px;
-    }
-
-    /* Mobile Month Picker - tappable calendar */
-    .month-display {
       position: relative;
       cursor: pointer;
     }
 
     .month-name {
+      font-size: 16px;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -370,7 +673,7 @@
 
     .month-name::after {
       content: '📅';
-      font-size: 14px;
+      font-size: 12px;
     }
 
     .mobile-month-picker {
@@ -384,15 +687,15 @@
       font-size: 16px; /* Prevents iOS zoom */
     }
 
-    /* Quick Month Jump Bar */
+    /* Quick Jump Buttons - inline with month */
     .quick-month-bar {
       display: flex;
-      gap: 8px;
-      padding: 8px 16px 12px;
-      background: var(--bg-secondary);
+      gap: 6px;
+      margin-top: 10px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
+      padding-bottom: 2px;
     }
 
     .quick-month-bar::-webkit-scrollbar {
@@ -401,16 +704,16 @@
 
     .quick-month-btn {
       flex-shrink: 0;
-      padding: 8px 14px;
+      padding: 6px 12px;
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
-      border-radius: 20px;
+      border-radius: 16px;
       color: var(--text-secondary);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s;
-      min-height: 36px;
+      min-height: 28px;
     }
 
     .quick-month-btn:hover,
@@ -424,6 +727,9 @@
       border-color: var(--accent-green);
       color: var(--accent-green);
     }
+
+    /* Legacy month-bar hidden - using unified bar */
+    .month-bar { display: none; }
 
     /* Summary Cards - Horizontal Scroll on Mobile */
     .summary-section {
@@ -2164,6 +2470,12 @@
   </style>
 </head>
 <body>
+  <!-- Offline Detection Banner -->
+  <div class="offline-banner" id="offline-banner" role="alert" aria-live="assertive">
+    <span>📡</span>
+    <span id="offline-message">You're offline - changes saved locally</span>
+  </div>
+
   <!-- Skip Navigation for Accessibility -->
   <a href="#main-content" class="skip-link" id="skip-link">Skip to main content</a>
 
@@ -2229,24 +2541,23 @@
       </div>
     </aside>
 
-    <!-- Month Bar with Calendar Picker -->
-    <nav class="month-bar" role="navigation" aria-label="Month navigation">
-      <button class="month-nav" id="prev-month" aria-label="Previous month">◀</button>
-      <div class="month-display" aria-live="polite">
-        <label for="mobile-month-picker" class="month-name" id="month-name">December 2024</label>
-        <div class="month-range" id="month-range">Dec 1 - Dec 31</div>
-        <input type="month" id="mobile-month-picker" class="mobile-month-picker" aria-label="Select month">
+    <!-- Unified Mobile Navigation Bar -->
+    <nav class="mobile-nav-bar" role="navigation" aria-label="Month navigation">
+      <div class="mobile-nav-row">
+        <button class="month-nav" id="prev-month" aria-label="Previous month">◀</button>
+        <div class="month-display" aria-live="polite">
+          <label for="mobile-month-picker" class="month-name" id="month-name">December 2024</label>
+          <input type="month" id="mobile-month-picker" class="mobile-month-picker" aria-label="Select month">
+        </div>
+        <button class="month-nav" id="next-month" aria-label="Next month">▶</button>
       </div>
-      <button class="month-nav" id="next-month" aria-label="Next month">▶</button>
+      <div class="quick-month-bar" role="group" aria-label="Quick month navigation">
+        <button class="quick-month-btn" data-offset="-3">3M Ago</button>
+        <button class="quick-month-btn" data-offset="-1">Last Month</button>
+        <button class="quick-month-btn active" data-offset="0">This Month</button>
+        <button class="quick-month-btn" data-jump="today">Today</button>
+      </div>
     </nav>
-
-    <!-- Quick Month Jump (Mobile) -->
-    <div class="quick-month-bar">
-      <button class="quick-month-btn" data-offset="-3">3M Ago</button>
-      <button class="quick-month-btn" data-offset="-1">Last Month</button>
-      <button class="quick-month-btn active" data-offset="0">This Month</button>
-      <button class="quick-month-btn" data-jump="today">Today</button>
-    </div>
 
     <!-- Summary -->
     <div class="summary-section">
@@ -2561,7 +2872,29 @@
         </div>
         </div>
         <input type="file" id="file-input" accept=".csv,.xlsx,.xls,.ofx,.qfx,.qif" aria-label="Select file to import">
+
+        <!-- Import Progress -->
+        <div class="import-progress" id="import-progress">
+          <div class="import-progress-text">
+            <span id="import-status">Parsing file...</span>
+            <span id="import-count">0 transactions</span>
+          </div>
+          <div class="import-progress-bar">
+            <div class="import-progress-fill" id="import-progress-fill"></div>
+          </div>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Dialog -->
+  <div class="confirm-backdrop" id="confirm-backdrop"></div>
+  <div class="confirm-dialog" id="confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div class="confirm-title" id="confirm-title">Delete Transaction?</div>
+    <div class="confirm-message" id="confirm-message">This action cannot be undone.</div>
+    <div class="confirm-buttons">
+      <button class="confirm-btn cancel" id="confirm-cancel">Cancel</button>
+      <button class="confirm-btn danger" id="confirm-delete">Delete</button>
     </div>
   </div>
 
@@ -2631,6 +2964,99 @@
     // =====================================================
 
     'use strict';
+
+    // =====================================================
+    // Lazy XLSX Library Loader
+    // =====================================================
+    let xlsxLoaded = false;
+    async function loadXLSX() {
+      if (xlsxLoaded || typeof XLSX !== 'undefined') {
+        xlsxLoaded = true;
+        return true;
+      }
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+        script.integrity = 'sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==';
+        script.crossOrigin = 'anonymous';
+        script.onload = () => { xlsxLoaded = true; resolve(true); };
+        script.onerror = () => reject(new Error('Failed to load Excel parser'));
+        document.head.appendChild(script);
+      });
+    }
+
+    // =====================================================
+    // Offline Detection
+    // =====================================================
+    function initOfflineDetection() {
+      const banner = document.getElementById('offline-banner');
+      const message = document.getElementById('offline-message');
+
+      function updateStatus() {
+        if (!navigator.onLine) {
+          banner.classList.add('visible');
+          banner.classList.remove('online');
+          message.textContent = "You're offline - changes saved locally";
+        } else {
+          banner.classList.remove('visible');
+        }
+      }
+
+      function showOnlineToast() {
+        banner.classList.add('visible', 'online');
+        message.textContent = "Back online!";
+        setTimeout(() => banner.classList.remove('visible'), 2000);
+      }
+
+      window.addEventListener('online', showOnlineToast);
+      window.addEventListener('offline', updateStatus);
+      updateStatus();
+    }
+
+    // =====================================================
+    // Global Error Handler
+    // =====================================================
+    window.addEventListener('error', (e) => {
+      console.error('Global error:', e.error);
+      if (window.app?.toast) {
+        app.toast('Something went wrong. Please try again.', 'error');
+      }
+    });
+
+    window.addEventListener('unhandledrejection', (e) => {
+      console.error('Unhandled promise rejection:', e.reason);
+      if (window.app?.toast) {
+        app.toast('Operation failed. Please try again.', 'error');
+      }
+    });
+
+    // =====================================================
+    // Visual Viewport Handler (iOS keyboard fix)
+    // =====================================================
+    function initViewportHandler() {
+      if (window.visualViewport) {
+        let pendingUpdate = false;
+        const handler = () => {
+          if (pendingUpdate) return;
+          pendingUpdate = true;
+          requestAnimationFrame(() => {
+            const modal = document.querySelector('.modal-overlay.active .modal');
+            if (modal) {
+              const keyboardHeight = window.innerHeight - visualViewport.height;
+              if (keyboardHeight > 100) {
+                modal.style.maxHeight = `${visualViewport.height - 20}px`;
+                modal.style.transition = 'max-height 0.15s ease';
+              } else {
+                modal.style.maxHeight = '85vh';
+              }
+            }
+            pendingUpdate = false;
+          });
+        };
+        visualViewport.addEventListener('resize', handler);
+        visualViewport.addEventListener('scroll', handler);
+      }
+    }
 
     // Security: Input sanitization
     const sanitize = (str) => {
@@ -2849,17 +3275,43 @@
 
     // File Parsers - Multi-format support
     class FileParser {
-      static async parse(file, format) {
+      static async parse(file, format, onProgress = null) {
+        // Show initial progress
+        if (onProgress) onProgress(10, 'Reading file...');
+
         const text = await file.text();
+        if (onProgress) onProgress(30, 'Parsing data...');
+
+        let result;
         switch (format) {
-          case 'csv': return this.parseCSV(text);
-          case 'xlsx': case 'xls': return this.parseExcel(await file.arrayBuffer());
-          case 'ofx': case 'qfx': return this.parseOFX(text);
-          case 'qif': return this.parseQIF(text);
-          case 'mint': return this.parseMint(text);
-          case 'chase': return this.parseChase(text);
-          default: return this.parseCSV(text);
+          case 'csv':
+            result = this.parseCSV(text);
+            break;
+          case 'xlsx': case 'xls':
+            // Lazy load XLSX library
+            if (onProgress) onProgress(40, 'Loading Excel parser...');
+            await loadXLSX();
+            if (onProgress) onProgress(50, 'Parsing Excel file...');
+            result = this.parseExcel(await file.arrayBuffer());
+            break;
+          case 'ofx': case 'qfx':
+            result = this.parseOFX(text);
+            break;
+          case 'qif':
+            result = this.parseQIF(text);
+            break;
+          case 'mint':
+            result = this.parseMint(text);
+            break;
+          case 'chase':
+            result = this.parseChase(text);
+            break;
+          default:
+            result = this.parseCSV(text);
         }
+
+        if (onProgress) onProgress(80, 'Categorizing transactions...');
+        return result;
       }
 
       static parseCSV(text) {
@@ -3236,16 +3688,186 @@
         this.budget = 0;
         this.txType = 'income';
         this.importFormat = 'csv';
-        this.aiEndpoint = null; // Set after deploying worker
+        this.aiEndpoint = null;
+        this.pendingDelete = null; // For undo functionality
+        this.undoTimeout = null;
+        this.isLoading = false;
       }
 
       async init() {
-        await this.db.init();
-        this.budget = (await this.db.getSetting('budget')) || 0;
-        this.aiEndpoint = await this.db.getSetting('aiEndpoint');
-        await this.loadData();
-        this.renderAll();
-        this.bindEvents();
+        try {
+          await this.db.init();
+          this.budget = (await this.db.getSetting('budget')) || 0;
+          this.aiEndpoint = await this.db.getSetting('aiEndpoint');
+          await this.loadData();
+          this.renderAll();
+          this.bindEvents();
+
+          // Initialize new features
+          initOfflineDetection();
+          initViewportHandler();
+          this.initSwipeToDismiss();
+          this.initPullToRefresh();
+          this.initDeleteConfirmation();
+        } catch (err) {
+          console.error('Init error:', err);
+          this.toast('Failed to initialize app', 'error');
+        }
+      }
+
+      // Initialize swipe-to-dismiss for modals
+      initSwipeToDismiss() {
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+          const modal = overlay.querySelector('.modal');
+          if (!modal) return;
+
+          let startY = 0;
+          let currentY = 0;
+          let isDragging = false;
+
+          modal.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.modal-body') && e.target.closest('.modal-body').scrollTop > 0) return;
+            startY = e.touches[0].clientY;
+            isDragging = true;
+          }, { passive: true });
+
+          modal.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            currentY = e.touches[0].clientY;
+            const diff = currentY - startY;
+            if (diff > 0) {
+              modal.style.transform = `translateY(${Math.min(diff, 200)}px)`;
+              modal.style.transition = 'none';
+            }
+          }, { passive: true });
+
+          modal.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            const diff = currentY - startY;
+            modal.style.transition = 'transform 0.3s ease';
+            if (diff > 100) {
+              this.closeModals();
+            } else {
+              modal.style.transform = 'translateY(0)';
+            }
+          }, { passive: true });
+        });
+      }
+
+      // Initialize pull-to-refresh
+      initPullToRefresh() {
+        const mainContent = document.getElementById('main-content');
+        let startY = 0;
+        let isPulling = false;
+
+        mainContent.addEventListener('touchstart', (e) => {
+          if (mainContent.scrollTop === 0) {
+            startY = e.touches[0].clientY;
+            isPulling = true;
+          }
+        }, { passive: true });
+
+        mainContent.addEventListener('touchmove', (e) => {
+          if (!isPulling || mainContent.scrollTop > 0) return;
+          const diff = e.touches[0].clientY - startY;
+          if (diff > 60 && diff < 150) {
+            mainContent.style.transform = `translateY(${diff / 3}px)`;
+          }
+        }, { passive: true });
+
+        mainContent.addEventListener('touchend', async () => {
+          if (!isPulling) return;
+          isPulling = false;
+          mainContent.style.transition = 'transform 0.3s ease';
+          mainContent.style.transform = 'translateY(0)';
+
+          const diff = parseInt(mainContent.style.transform.replace(/[^0-9]/g, '') || '0');
+          if (diff > 20) {
+            await this.loadData();
+            this.renderAll();
+            this.toast('Refreshed!', 'success');
+          }
+          setTimeout(() => { mainContent.style.transition = ''; }, 300);
+        }, { passive: true });
+      }
+
+      // Delete confirmation system
+      initDeleteConfirmation() {
+        const backdrop = document.getElementById('confirm-backdrop');
+        const dialog = document.getElementById('confirm-dialog');
+        const cancelBtn = document.getElementById('confirm-cancel');
+        const deleteBtn = document.getElementById('confirm-delete');
+
+        backdrop.addEventListener('click', () => this.hideDeleteConfirm());
+        cancelBtn.addEventListener('click', () => this.hideDeleteConfirm());
+        deleteBtn.addEventListener('click', () => this.executeDelete());
+      }
+
+      showDeleteConfirm(id, description) {
+        this.pendingDelete = id;
+        document.getElementById('confirm-message').textContent = `Delete "${description}"?`;
+        document.getElementById('confirm-backdrop').classList.add('active');
+        document.getElementById('confirm-dialog').classList.add('active');
+      }
+
+      hideDeleteConfirm() {
+        this.pendingDelete = null;
+        document.getElementById('confirm-backdrop').classList.remove('active');
+        document.getElementById('confirm-dialog').classList.remove('active');
+      }
+
+      async executeDelete() {
+        if (!this.pendingDelete) return;
+        const id = this.pendingDelete;
+        const tx = this.transactions.find(t => t.id === id);
+        this.hideDeleteConfirm();
+
+        if (tx) {
+          // Store for undo
+          const deletedTx = { ...tx };
+          await this.db.delete(id, tx.month);
+          await this.loadData();
+          this.renderAll();
+
+          // Show undo toast
+          this.showUndoToast(deletedTx);
+        }
+      }
+
+      showUndoToast(tx) {
+        // Clear any existing undo
+        if (this.undoTimeout) clearTimeout(this.undoTimeout);
+
+        // Create undo toast
+        const existing = document.querySelector('.undo-toast');
+        if (existing) existing.remove();
+
+        const toast = document.createElement('div');
+        toast.className = 'undo-toast';
+        toast.innerHTML = `
+          <span class="undo-toast-message">Deleted "${tx.description.substring(0, 20)}..."</span>
+          <button class="undo-toast-btn">Undo</button>
+          <div class="undo-toast-progress"></div>
+        `;
+
+        toast.querySelector('.undo-toast-btn').addEventListener('click', async () => {
+          clearTimeout(this.undoTimeout);
+          toast.remove();
+          // Restore transaction
+          const { id, ...restoreTx } = tx;
+          await this.db.addTransaction(restoreTx);
+          await this.loadData();
+          this.renderAll();
+          this.toast('Transaction restored!', 'success');
+        });
+
+        document.body.appendChild(toast);
+
+        // Auto-dismiss after 5 seconds
+        this.undoTimeout = setTimeout(() => {
+          toast.remove();
+        }, 5000);
       }
 
       bindEvents() {
@@ -3789,27 +4411,48 @@
         container.querySelectorAll('.transaction-item:not([data-swipe-attached])').forEach(item => {
           item.setAttribute('data-swipe-attached', 'true');
           let startX = 0;
-          item.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+          let currentX = 0;
+
+          item.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            currentX = startX;
+            item.style.transition = 'none';
+          }, { passive: true });
+
           item.addEventListener('touchmove', (e) => {
-            const diff = startX - e.touches[0].clientX;
-            if (diff > 20) item.style.transform = `translateX(-${Math.min(80, diff)}px)`;
+            currentX = e.touches[0].clientX;
+            const diff = startX - currentX;
+            if (diff > 20) {
+              item.style.transform = `translateX(-${Math.min(80, diff)}px)`;
+              item.style.background = diff > 60 ? 'rgba(255, 71, 87, 0.1)' : '';
+            }
             if (diff < -20) item.style.transform = 'translateX(0)';
           }, { passive: true });
-          item.addEventListener('touchend', async (e) => {
-            const diff = startX - e.changedTouches[0].clientX;
+
+          item.addEventListener('touchend', () => {
+            const diff = startX - currentX;
+            item.style.transition = 'transform 0.2s ease, background 0.2s';
+            item.style.background = '';
+
             if (diff > 80) {
+              // Show confirmation dialog instead of immediate delete
               const id = parseInt(item.dataset.id);
               const tx = this.transactions.find(t => t.id === id);
               if (tx) {
-                await this.db.delete(id, tx.month);
-                await this.loadData();
-                this.renderAll();
-                this.toast('🗑️ Deleted', 'success');
+                item.style.transform = 'translateX(0)';
+                this.showDeleteConfirm(id, tx.description);
               }
             } else {
               item.style.transform = 'translateX(0)';
             }
           }, { passive: true });
+
+          // Also make tap to select (for desktop and accessibility)
+          item.addEventListener('click', () => {
+            // Remove selection from other items
+            container.querySelectorAll('.transaction-item.selected').forEach(i => i.classList.remove('selected'));
+            item.classList.toggle('selected');
+          });
         });
       }
 
@@ -3894,6 +4537,7 @@
       }
 
       async addTransaction() {
+        const submitBtn = document.querySelector('#tx-form .submit-btn');
         const desc = document.getElementById('tx-desc').value.trim();
         const amount = parseFloat(document.getElementById('tx-amount').value);
         const date = document.getElementById('tx-date').value;
@@ -3901,37 +4545,49 @@
 
         // Validation
         if (!desc || desc.length < 1 || desc.length > 200) {
-          this.toast('Invalid description', 'error');
+          this.toast('Please enter a description', 'error');
           return;
         }
         if (isNaN(amount) || amount <= 0 || amount > 999999999) {
-          this.toast('Invalid amount', 'error');
+          this.toast('Please enter a valid amount', 'error');
           return;
         }
         if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-          this.toast('Invalid date', 'error');
+          this.toast('Please select a date', 'error');
           return;
         }
 
-        // Validate category against allowed list
-        const validCategories = Object.keys(CATEGORY_ICONS);
-        const safeCategory = validCategories.includes(category) ? category : 'Other Expenses';
+        // Show loading state
+        submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
 
-        const tx = {
-          description: sanitize(desc),
-          amount: sanitizeNumber(amount, 0.01),
-          type: this.txType,
-          category: safeCategory,
-          date,
-          month: date.substring(0, 7),
-          createdAt: new Date().toISOString()
-        };
+        try {
+          // Validate category against allowed list
+          const validCategories = Object.keys(CATEGORY_ICONS);
+          const safeCategory = validCategories.includes(category) ? category : 'Other Expenses';
 
-        await this.db.addTransaction(tx);
-        await this.loadData();
-        this.renderAll();
-        this.closeModals();
-        this.toast('✅ Added!', 'success');
+          const tx = {
+            description: sanitize(desc),
+            amount: sanitizeNumber(amount, 0.01),
+            type: this.txType,
+            category: safeCategory,
+            date,
+            month: date.substring(0, 7),
+            createdAt: new Date().toISOString()
+          };
+
+          await this.db.addTransaction(tx);
+          await this.loadData();
+          this.renderAll();
+          this.closeModals();
+          this.toast('Transaction added!', 'success');
+        } catch (err) {
+          console.error('Add transaction error:', err);
+          this.toast('Failed to add transaction', 'error');
+        } finally {
+          submitBtn.classList.remove('loading');
+          submitBtn.disabled = false;
+        }
       }
 
       async saveBudget() {
@@ -3950,18 +4606,48 @@
       async handleImport(files) {
         if (!files || files.length === 0) return;
         const file = files[0];
-        
+
+        // Show progress UI
+        const progressEl = document.getElementById('import-progress');
+        const progressFill = document.getElementById('import-progress-fill');
+        const progressStatus = document.getElementById('import-status');
+        const progressCount = document.getElementById('import-count');
+
+        progressEl.classList.add('active');
+        progressFill.style.width = '0%';
+
+        const onProgress = (percent, status) => {
+          progressFill.style.width = `${percent}%`;
+          progressStatus.textContent = status;
+        };
+
         try {
-          const transactions = await FileParser.parse(file, this.importFormat);
-          if (transactions.length === 0) throw new Error('No valid transactions found');
-          
+          const transactions = await FileParser.parse(file, this.importFormat, onProgress);
+
+          if (transactions.length === 0) {
+            throw new Error('No valid transactions found');
+          }
+
+          onProgress(90, 'Saving to database...');
+          progressCount.textContent = `${transactions.length} transactions`;
+
           await this.db.addTransactions(transactions);
+
+          onProgress(100, 'Complete!');
+          progressCount.textContent = `${transactions.length} imported`;
+
           await this.loadData();
           this.renderAll();
-          this.closeModals();
-          this.toast(`🎉 Imported ${transactions.length}!`, 'success');
+
+          setTimeout(() => {
+            progressEl.classList.remove('active');
+            this.closeModals();
+            this.toast(`Imported ${transactions.length} transactions!`, 'success');
+          }, 500);
+
         } catch (err) {
           console.error('Import error:', err);
+          progressEl.classList.remove('active');
           this.toast(`Import failed: ${err.message}`, 'error');
         }
       }
