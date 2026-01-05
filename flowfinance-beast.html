@@ -2992,6 +2992,9 @@
       const banner = document.getElementById('offline-banner');
       const message = document.getElementById('offline-message');
 
+      // Guard clause
+      if (!banner || !message) return;
+
       function updateStatus() {
         if (!navigator.onLine) {
           banner.classList.add('visible');
@@ -3758,6 +3761,8 @@
       // Initialize pull-to-refresh
       initPullToRefresh() {
         const mainContent = document.getElementById('main-content');
+        if (!mainContent) return; // Guard clause
+
         let startY = 0;
         let isPulling = false;
 
@@ -3795,9 +3800,11 @@
       // Delete confirmation system
       initDeleteConfirmation() {
         const backdrop = document.getElementById('confirm-backdrop');
-        const dialog = document.getElementById('confirm-dialog');
         const cancelBtn = document.getElementById('confirm-cancel');
         const deleteBtn = document.getElementById('confirm-delete');
+
+        // Guard clause - elements may not exist
+        if (!backdrop || !cancelBtn || !deleteBtn) return;
 
         backdrop.addEventListener('click', () => this.hideDeleteConfirm());
         cancelBtn.addEventListener('click', () => this.hideDeleteConfirm());
