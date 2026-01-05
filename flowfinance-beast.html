@@ -807,44 +807,61 @@
       padding-bottom: 100px; /* Space for floating nav */
     }
 
-    /* Bento Quick Actions Grid */
+    /* Quick Actions - Horizontal scrolling pill buttons */
     .quick-actions {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      padding: 0 20px 24px;
+      display: flex;
+      gap: 10px;
+      padding: 0 16px 20px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
     }
 
     .quick-actions::-webkit-scrollbar { display: none; }
 
-    /* Quick action BUTTONS - clearly clickable */
+    /* Quick action BUTTONS - pill style, clearly tappable */
     .quick-action {
-      background: linear-gradient(180deg, #1e4060 0%, #152d45 100%);
-      border: 2px solid #3a6090;
-      border-bottom: 4px solid #2a4a70;
-      border-radius: var(--radius-lg);
-      padding: 16px 12px;
+      background: linear-gradient(135deg, var(--accent-green) 0%, #00a070 100%);
+      border: none;
+      border-radius: 50px;
+      padding: 12px 20px;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
       gap: 8px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
-      color: #fff;
+      color: #000;
       cursor: pointer;
       transition: all 0.15s ease;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      white-space: nowrap;
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      box-shadow: 0 4px 15px rgba(7, 209, 143, 0.4);
+    }
+
+    .quick-action:nth-child(2) {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+    }
+
+    .quick-action:nth-child(3) {
+      background: linear-gradient(135deg, #00a3ff 0%, #0080cc 100%);
+      box-shadow: 0 4px 15px rgba(0, 163, 255, 0.4);
+    }
+
+    .quick-action:nth-child(4) {
+      background: linear-gradient(135deg, #ffb020 0%, #e09000 100%);
+      box-shadow: 0 4px 15px rgba(255, 176, 32, 0.4);
     }
 
     .quick-action:active {
-      transform: translateY(2px);
-      border-bottom-width: 2px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      transform: scale(0.95);
+      opacity: 0.9;
     }
 
     .quick-action-icon {
-      font-size: 22px;
+      font-size: 18px;
     }
 
     /* Section Headers */
