@@ -4095,8 +4095,6 @@
         const d = new Date(this.currentMonth + '-01');
         const monthDisplay = d.toLocaleString('default', { month: 'long', year: 'numeric' });
         document.getElementById('month-name').textContent = monthDisplay;
-        const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-        document.getElementById('month-range').textContent = `${d.toLocaleString('default', { month: 'short' })} 1 - ${d.toLocaleString('default', { month: 'short' })} ${lastDay}`;
 
         // Update month picker value (mobile)
         const monthPicker = document.getElementById('month-picker');
