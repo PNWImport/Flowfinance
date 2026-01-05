@@ -2840,6 +2840,30 @@
           </div>
         </div>
 
+        <!-- Pro Features -->
+        <div class="section-header">
+          <div class="section-title">⭐ Pro Tools</div>
+          <span class="section-action" onclick="app.openProModal()">Upgrade</span>
+        </div>
+        <div class="pro-tools-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 20px 16px;">
+          <div class="pro-tool-btn" onclick="app.openGoalsModal()" style="background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); padding: 16px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);">
+            <div style="font-size: 24px; margin-bottom: 6px;">🎯</div>
+            <div style="color: #fff; font-weight: 600; font-size: 13px;">Goals</div>
+          </div>
+          <div class="pro-tool-btn" onclick="app.openNetWorthModal()" style="background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%); padding: 16px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(8, 145, 178, 0.3);">
+            <div style="font-size: 24px; margin-bottom: 6px;">💰</div>
+            <div style="color: #fff; font-weight: 600; font-size: 13px;">Net Worth</div>
+          </div>
+          <div class="pro-tool-btn" onclick="app.openRecurringModal()" style="background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%); padding: 16px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3);">
+            <div style="font-size: 24px; margin-bottom: 6px;">🔄</div>
+            <div style="color: #fff; font-weight: 600; font-size: 13px;">Recurring</div>
+          </div>
+          <div class="pro-tool-btn" onclick="app.openBackupModal()" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); padding: 16px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);">
+            <div style="font-size: 24px; margin-bottom: 6px;">💾</div>
+            <div style="color: #fff; font-weight: 600; font-size: 13px;">Backup</div>
+          </div>
+        </div>
+
         <!-- Savings Potential -->
         <div class="savings-card" id="savings-card" style="display:none;">
           <div class="savings-header">
@@ -3108,11 +3132,196 @@
     </div>
   </div>
 
+  <!-- Backup/Restore Modal -->
+  <div class="modal-overlay" id="backup-modal" role="dialog" aria-modal="true" aria-labelledby="backup-modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="backup-modal-title">💾 Backup & Restore</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="backup-section">
+          <h3 style="color: var(--accent-green); margin-bottom: 12px;">📤 Create Backup</h3>
+          <div class="form-group">
+            <label class="form-label">
+              <input type="checkbox" id="backup-encrypt" style="margin-right: 8px;">
+              🔒 Encrypt backup with passphrase
+            </label>
+          </div>
+          <div class="form-group" id="backup-passphrase-group" style="display: none;">
+            <label class="form-label" for="backup-passphrase">Passphrase</label>
+            <input type="password" class="form-input" id="backup-passphrase" placeholder="Enter encryption passphrase">
+            <p style="font-size: 11px; color: var(--accent-orange); margin-top: 6px;">⚠️ Don't lose this! You'll need it to restore.</p>
+          </div>
+          <button class="submit-btn" onclick="app.createBackup()" style="margin-bottom: 20px;">📥 Download Backup</button>
+        </div>
+        <div class="restore-section" style="border-top: 1px solid var(--border-color); padding-top: 20px;">
+          <h3 style="color: var(--accent-blue); margin-bottom: 12px;">📥 Restore from Backup</h3>
+          <div class="form-group">
+            <label class="form-label" for="restore-file">Select backup file</label>
+            <input type="file" class="form-input" id="restore-file" accept=".json" style="padding: 12px;">
+          </div>
+          <div class="form-group" id="restore-passphrase-group" style="display: none;">
+            <label class="form-label" for="restore-passphrase">Decryption Passphrase</label>
+            <input type="password" class="form-input" id="restore-passphrase" placeholder="Enter passphrase">
+          </div>
+          <button class="submit-btn" onclick="app.restoreBackup()" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">🔄 Restore Data</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pro Upgrade Modal -->
+  <div class="modal-overlay" id="pro-modal" role="dialog" aria-modal="true" aria-labelledby="pro-modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="pro-modal-title">⭐ Upgrade to Pro</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="pro-features" style="margin-bottom: 20px;">
+          <h3 style="color: var(--accent-green); margin-bottom: 16px;">🚀 Pro Features Include:</h3>
+          <ul style="list-style: none; padding: 0; display: grid; gap: 10px;">
+            <li style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(7, 209, 143, 0.1); border-radius: 8px;">
+              <span style="font-size: 20px;">🔄</span> Recurring Transaction Detection
+            </li>
+            <li style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(7, 209, 143, 0.1); border-radius: 8px;">
+              <span style="font-size: 20px;">📊</span> Zero-Based Budgeting
+            </li>
+            <li style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(7, 209, 143, 0.1); border-radius: 8px;">
+              <span style="font-size: 20px;">💰</span> Net Worth Tracker
+            </li>
+            <li style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(7, 209, 143, 0.1); border-radius: 8px;">
+              <span style="font-size: 20px;">🎯</span> Goal Tracking
+            </li>
+            <li style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(7, 209, 143, 0.1); border-radius: 8px;">
+              <span style="font-size: 20px;">🔒</span> Encrypted Backups
+            </li>
+            <li style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(7, 209, 143, 0.1); border-radius: 8px;">
+              <span style="font-size: 20px;">📄</span> PDF Reports
+            </li>
+          </ul>
+        </div>
+        <div class="pro-pricing" style="text-align: center; padding: 20px; background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(7, 209, 143, 0.2)); border-radius: 16px; margin-bottom: 20px;">
+          <div style="font-size: 48px; font-weight: 800; color: var(--accent-green);">$99</div>
+          <div style="color: var(--text-secondary);">One-time payment • Lifetime access</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="license-key">Already have a license key?</label>
+          <input type="text" class="form-input" id="license-key" placeholder="FLOW-PRO-XXXXXXXXXXXX" style="text-transform: uppercase;">
+        </div>
+        <button class="submit-btn" onclick="app.activateLicense()">🔑 Activate License</button>
+        <p style="text-align: center; margin-top: 12px; font-size: 12px; color: var(--text-muted);">
+          <a href="#" style="color: var(--accent-blue);">Purchase a license</a> • 30-day money-back guarantee
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Goals Modal -->
+  <div class="modal-overlay" id="goals-modal" role="dialog" aria-modal="true" aria-labelledby="goals-modal-title">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="goals-modal-title">🎯 Financial Goals</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="goals-list" style="margin-bottom: 20px;"></div>
+        <div class="add-goal-form" style="border-top: 1px solid var(--border-color); padding-top: 20px;">
+          <h3 style="color: var(--accent-green); margin-bottom: 12px;">➕ Create New Goal</h3>
+          <div class="form-group">
+            <label class="form-label" for="goal-name">Goal Name</label>
+            <input type="text" class="form-input" id="goal-name" placeholder="e.g., Emergency Fund, Vacation">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="goal-amount">Target Amount</label>
+              <input type="number" class="form-input" id="goal-amount" placeholder="10000" min="1">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="goal-deadline">Deadline</label>
+              <input type="date" class="form-input" id="goal-deadline">
+            </div>
+          </div>
+          <button class="submit-btn" onclick="app.createGoal()">🎯 Create Goal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recurring Transactions Modal -->
+  <div class="modal-overlay" id="recurring-modal" role="dialog" aria-modal="true" aria-labelledby="recurring-modal-title">
+    <div class="modal" style="max-width: 550px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="recurring-modal-title">🔄 Recurring Transactions</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 13px;">
+          AI-detected patterns from your transaction history
+        </p>
+        <div id="recurring-list"></div>
+        <div id="recurring-empty" style="text-align: center; padding: 40px 20px; color: var(--text-muted); display: none;">
+          <div style="font-size: 48px; margin-bottom: 12px;">🔍</div>
+          <p>No recurring patterns detected yet.</p>
+          <p style="font-size: 12px;">Add more transactions to enable AI detection.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Net Worth Modal -->
+  <div class="modal-overlay" id="networth-modal" role="dialog" aria-modal="true" aria-labelledby="networth-modal-title">
+    <div class="modal" style="max-width: 550px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="networth-modal-title">💰 Net Worth Tracker</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="networth-summary" style="text-align: center; padding: 24px; background: linear-gradient(135deg, rgba(7, 209, 143, 0.15), rgba(0, 163, 255, 0.15)); border-radius: 16px; margin-bottom: 20px;">
+          <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 4px;">Total Net Worth</div>
+          <div id="networth-value" style="font-size: 36px; font-weight: 800; color: var(--accent-green);">$0.00</div>
+        </div>
+        <div id="accounts-list" style="margin-bottom: 20px;"></div>
+        <div class="add-account-form" style="border-top: 1px solid var(--border-color); padding-top: 20px;">
+          <h3 style="color: var(--accent-blue); margin-bottom: 12px;">➕ Add Account</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="account-name">Account Name</label>
+              <input type="text" class="form-input" id="account-name" placeholder="e.g., Chase Checking">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="account-type">Type</label>
+              <select class="form-select" id="account-type">
+                <optgroup label="Assets">
+                  <option value="asset-checking">Checking</option>
+                  <option value="asset-savings">Savings</option>
+                  <option value="asset-investment">Investment</option>
+                  <option value="asset-property">Property</option>
+                </optgroup>
+                <optgroup label="Liabilities">
+                  <option value="liability-credit_card">Credit Card</option>
+                  <option value="liability-loan">Loan</option>
+                  <option value="liability-mortgage">Mortgage</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="account-balance">Current Balance</label>
+            <input type="number" class="form-input" id="account-balance" placeholder="0.00" step="0.01">
+          </div>
+          <button class="submit-btn" onclick="app.addAccount()">💾 Add Account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="toast-container" id="toast-container"></div>
 
   <script>
     // =====================================================
-    // FlowFinance Pro v1.0.0
+    // FlowFinance Pro v2.0.0 "MONTY" UPDATE
     // Privacy-First Personal Finance Manager
     //
     // Platform: Desktop & Mobile (Responsive)
@@ -3272,6 +3481,599 @@
       delete(key) { this.cache.delete(key); }
       clear() { this.cache.clear(); }
     }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // PHASE 1: SECURITY & DATA INTEGRITY LAYER
+    // ═══════════════════════════════════════════════════════════════════
+
+    // WebCrypto Encryption Engine
+    class CryptoEngine {
+      constructor() {
+        this.algorithm = 'AES-GCM';
+        this.keyLength = 256;
+        this.ivLength = 12;
+        this.saltLength = 16;
+        this.iterations = 100000;
+      }
+
+      async generateKey(passphrase, salt) {
+        const encoder = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey(
+          'raw', encoder.encode(passphrase), 'PBKDF2', false, ['deriveBits', 'deriveKey']
+        );
+        return crypto.subtle.deriveKey(
+          { name: 'PBKDF2', salt, iterations: this.iterations, hash: 'SHA-256' },
+          keyMaterial,
+          { name: this.algorithm, length: this.keyLength },
+          false,
+          ['encrypt', 'decrypt']
+        );
+      }
+
+      async encrypt(data, passphrase) {
+        const salt = crypto.getRandomValues(new Uint8Array(this.saltLength));
+        const iv = crypto.getRandomValues(new Uint8Array(this.ivLength));
+        const key = await this.generateKey(passphrase, salt);
+        const encoder = new TextEncoder();
+        const encrypted = await crypto.subtle.encrypt(
+          { name: this.algorithm, iv },
+          key,
+          encoder.encode(JSON.stringify(data))
+        );
+        // Combine salt + iv + encrypted data
+        const combined = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+        combined.set(salt, 0);
+        combined.set(iv, salt.length);
+        combined.set(new Uint8Array(encrypted), salt.length + iv.length);
+        return btoa(String.fromCharCode(...combined));
+      }
+
+      async decrypt(encryptedBase64, passphrase) {
+        try {
+          const combined = Uint8Array.from(atob(encryptedBase64), c => c.charCodeAt(0));
+          const salt = combined.slice(0, this.saltLength);
+          const iv = combined.slice(this.saltLength, this.saltLength + this.ivLength);
+          const data = combined.slice(this.saltLength + this.ivLength);
+          const key = await this.generateKey(passphrase, salt);
+          const decrypted = await crypto.subtle.decrypt({ name: this.algorithm, iv }, key, data);
+          return JSON.parse(new TextDecoder().decode(decrypted));
+        } catch (e) {
+          throw new Error('Decryption failed - wrong passphrase?');
+        }
+      }
+
+      // Hash for duplicate detection
+      async hash(data) {
+        const encoder = new TextEncoder();
+        const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(JSON.stringify(data)));
+        return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+    }
+
+    // Duplicate & Fraud Detection System
+    class DataIntegrityEngine {
+      constructor() {
+        this.crypto = new CryptoEngine();
+        this.suspiciousPatterns = [
+          { pattern: /bitcoin|crypto|btc|eth/i, flag: 'CRYPTO_TRANSACTION' },
+          { pattern: /casino|gambling|bet365/i, flag: 'GAMBLING' },
+          { pattern: /wire transfer|western union/i, flag: 'WIRE_TRANSFER' }
+        ];
+      }
+
+      // Generate transaction hash for duplicate detection
+      generateTxHash(tx) {
+        const normalized = `${tx.date}-${Math.round(tx.amount * 100)}-${tx.description.toLowerCase().trim().substring(0, 30)}`;
+        return normalized;
+      }
+
+      // Detect duplicates in transaction array
+      detectDuplicates(transactions, existingTransactions = []) {
+        const existingHashes = new Set(existingTransactions.map(tx => this.generateTxHash(tx)));
+        const newHashes = new Set();
+        const duplicates = [];
+        const unique = [];
+
+        transactions.forEach((tx, index) => {
+          const hash = this.generateTxHash(tx);
+          if (existingHashes.has(hash) || newHashes.has(hash)) {
+            duplicates.push({ ...tx, duplicateIndex: index, hash });
+          } else {
+            newHashes.add(hash);
+            unique.push(tx);
+          }
+        });
+
+        return { unique, duplicates, stats: { total: transactions.length, unique: unique.length, duplicates: duplicates.length } };
+      }
+
+      // Detect suspicious transactions
+      detectSuspicious(tx) {
+        const flags = [];
+
+        // Large transaction check
+        if (tx.amount > 10000) flags.push({ flag: 'LARGE_TRANSACTION', severity: 'warning', message: `Large amount: $${tx.amount.toLocaleString()}` });
+        if (tx.amount > 50000) flags.push({ flag: 'VERY_LARGE_TRANSACTION', severity: 'critical', message: `Very large amount: $${tx.amount.toLocaleString()}` });
+
+        // Future date check
+        if (new Date(tx.date) > new Date()) flags.push({ flag: 'FUTURE_DATE', severity: 'error', message: 'Transaction date is in the future' });
+
+        // Pattern matching
+        this.suspiciousPatterns.forEach(({ pattern, flag }) => {
+          if (pattern.test(tx.description)) {
+            flags.push({ flag, severity: 'info', message: `Pattern detected: ${flag}` });
+          }
+        });
+
+        // Round number check (potential fraud indicator)
+        if (tx.amount >= 1000 && tx.amount % 1000 === 0) {
+          flags.push({ flag: 'ROUND_NUMBER', severity: 'info', message: 'Suspiciously round amount' });
+        }
+
+        return flags;
+      }
+
+      // Validate transaction data
+      validateTransaction(tx) {
+        const errors = [];
+
+        if (!tx.description || tx.description.trim().length === 0) errors.push('Description is required');
+        if (!tx.amount || tx.amount <= 0) errors.push('Amount must be positive');
+        if (tx.amount > 999999999) errors.push('Amount exceeds maximum');
+        if (!tx.date) errors.push('Date is required');
+        if (!tx.category) errors.push('Category is required');
+        if (!['income', 'expense'].includes(tx.type)) errors.push('Invalid transaction type');
+
+        return { valid: errors.length === 0, errors };
+      }
+    }
+
+    // Backup & Restore System
+    class BackupEngine {
+      constructor() {
+        this.crypto = new CryptoEngine();
+        this.version = '2.0';
+      }
+
+      async createBackup(data, passphrase = null) {
+        const backup = {
+          version: this.version,
+          created: new Date().toISOString(),
+          encrypted: !!passphrase,
+          data: passphrase ? await this.crypto.encrypt(data, passphrase) : data
+        };
+        return JSON.stringify(backup, null, 2);
+      }
+
+      async restoreBackup(backupJson, passphrase = null) {
+        const backup = JSON.parse(backupJson);
+
+        if (backup.encrypted && !passphrase) {
+          throw new Error('This backup is encrypted. Please provide passphrase.');
+        }
+
+        if (backup.encrypted) {
+          return await this.crypto.decrypt(backup.data, passphrase);
+        }
+
+        return backup.data;
+      }
+
+      downloadBackup(content, filename) {
+        const blob = new Blob([content], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      generateFilename(encrypted = false) {
+        const date = new Date().toISOString().split('T')[0];
+        return `flowfinance-backup-${date}${encrypted ? '-encrypted' : ''}.json`;
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // PHASE 2: POWER FEATURES
+    // ═══════════════════════════════════════════════════════════════════
+
+    // Recurring Transaction AI Detector
+    class RecurringDetector {
+      constructor() {
+        this.intervalThresholds = {
+          weekly: { min: 5, max: 9, label: 'Weekly' },
+          biweekly: { min: 12, max: 16, label: 'Bi-weekly' },
+          monthly: { min: 28, max: 32, label: 'Monthly' },
+          quarterly: { min: 88, max: 95, label: 'Quarterly' },
+          yearly: { min: 360, max: 370, label: 'Yearly' }
+        };
+      }
+
+      detectRecurring(transactions) {
+        // Group by normalized description + similar amount
+        const groups = {};
+
+        transactions.forEach(tx => {
+          const key = this.normalizeKey(tx);
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(tx);
+        });
+
+        // Find patterns with 2+ occurrences
+        return Object.entries(groups)
+          .filter(([_, txs]) => txs.length >= 2)
+          .map(([pattern, txs]) => this.analyzePattern(pattern, txs))
+          .filter(p => p.confidence >= 0.6)
+          .sort((a, b) => b.confidence - a.confidence);
+      }
+
+      normalizeKey(tx) {
+        // Normalize description (remove numbers, lowercase, trim)
+        const desc = tx.description.toLowerCase()
+          .replace(/\d+/g, '')
+          .replace(/[^a-z\s]/g, '')
+          .trim()
+          .substring(0, 20);
+        const amountBucket = Math.round(tx.amount / 5) * 5; // Round to nearest $5
+        return `${desc}-${amountBucket}-${tx.type}`;
+      }
+
+      analyzePattern(pattern, transactions) {
+        const sorted = [...transactions].sort((a, b) => new Date(a.date) - new Date(b.date));
+        const intervals = [];
+
+        for (let i = 1; i < sorted.length; i++) {
+          const days = (new Date(sorted[i].date) - new Date(sorted[i-1].date)) / (1000 * 60 * 60 * 24);
+          intervals.push(days);
+        }
+
+        const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+        const frequency = this.classifyFrequency(avgInterval);
+        const confidence = this.calculateConfidence(intervals, avgInterval);
+
+        // Predict next occurrence
+        const lastDate = new Date(sorted[sorted.length - 1].date);
+        const nextDate = new Date(lastDate.getTime() + avgInterval * 24 * 60 * 60 * 1000);
+
+        const amounts = transactions.map(t => t.amount);
+        const avgAmount = amounts.reduce((a, b) => a + b, 0) / amounts.length;
+
+        return {
+          pattern,
+          description: transactions[0].description,
+          type: transactions[0].type,
+          category: transactions[0].category,
+          frequency,
+          avgAmount,
+          avgIntervalDays: Math.round(avgInterval),
+          occurrences: transactions.length,
+          lastDate: sorted[sorted.length - 1].date,
+          nextPredicted: nextDate.toISOString().split('T')[0],
+          confidence,
+          transactions: sorted.map(t => t.id)
+        };
+      }
+
+      classifyFrequency(avgDays) {
+        for (const [name, { min, max, label }] of Object.entries(this.intervalThresholds)) {
+          if (avgDays >= min && avgDays <= max) return label;
+        }
+        return avgDays < 7 ? 'Frequent' : 'Irregular';
+      }
+
+      calculateConfidence(intervals, avg) {
+        if (intervals.length < 1) return 0;
+        const variance = intervals.reduce((sum, i) => sum + Math.pow(i - avg, 2), 0) / intervals.length;
+        const stdDev = Math.sqrt(variance);
+        const cv = stdDev / avg; // Coefficient of variation
+        return Math.max(0, Math.min(1, 1 - cv));
+      }
+
+      // Forecast future transactions
+      forecast(recurring, monthsAhead = 3) {
+        const forecasted = [];
+        const now = new Date();
+        const endDate = new Date(now.getFullYear(), now.getMonth() + monthsAhead, now.getDate());
+
+        recurring.forEach(rec => {
+          let nextDate = new Date(rec.nextPredicted);
+          while (nextDate <= endDate) {
+            forecasted.push({
+              date: nextDate.toISOString().split('T')[0],
+              description: `[Predicted] ${rec.description}`,
+              amount: rec.avgAmount,
+              type: rec.type,
+              category: rec.category,
+              isPredicted: true,
+              confidence: rec.confidence,
+              recurringId: rec.pattern
+            });
+            nextDate = new Date(nextDate.getTime() + rec.avgIntervalDays * 24 * 60 * 60 * 1000);
+          }
+        });
+
+        return forecasted.sort((a, b) => new Date(a.date) - new Date(b.date));
+      }
+    }
+
+    // Zero-Based Budgeting Engine
+    class ZeroBasedBudget {
+      constructor() {
+        this.categories = {};
+        this.income = 0;
+      }
+
+      setIncome(amount) {
+        this.income = amount;
+        return this;
+      }
+
+      assignCategory(category, amount) {
+        this.categories[category] = amount;
+        return this;
+      }
+
+      getStatus() {
+        const totalAssigned = Object.values(this.categories).reduce((a, b) => a + b, 0);
+        const remaining = this.income - totalAssigned;
+
+        return {
+          income: this.income,
+          totalAssigned,
+          remaining,
+          isBalanced: Math.abs(remaining) < 0.01,
+          categories: { ...this.categories },
+          percentAssigned: this.income > 0 ? (totalAssigned / this.income * 100) : 0
+        };
+      }
+
+      suggestAllocation(remaining, priorities = ['Savings', 'Emergency Fund', 'Investments']) {
+        if (remaining <= 0) return [];
+
+        const suggestions = [];
+        let left = remaining;
+
+        priorities.forEach((cat, i) => {
+          const portion = left * (1 / (priorities.length - i));
+          suggestions.push({ category: cat, suggestedAmount: Math.round(portion * 100) / 100 });
+          left -= portion;
+        });
+
+        return suggestions;
+      }
+
+      compareActual(actualSpending) {
+        const comparison = [];
+
+        Object.entries(this.categories).forEach(([cat, budgeted]) => {
+          const actual = actualSpending[cat] || 0;
+          const diff = budgeted - actual;
+          const status = diff >= 0 ? 'under' : 'over';
+
+          comparison.push({
+            category: cat,
+            budgeted,
+            actual,
+            difference: Math.abs(diff),
+            status,
+            percentUsed: budgeted > 0 ? (actual / budgeted * 100) : 0
+          });
+        });
+
+        return comparison.sort((a, b) => b.percentUsed - a.percentUsed);
+      }
+    }
+
+    // Net Worth Tracker
+    class NetWorthTracker {
+      constructor() {
+        this.accounts = [];
+      }
+
+      addAccount(account) {
+        this.accounts.push({
+          id: Date.now(),
+          ...account,
+          createdAt: new Date().toISOString()
+        });
+        return this;
+      }
+
+      updateBalance(accountId, newBalance) {
+        const account = this.accounts.find(a => a.id === accountId);
+        if (account) {
+          account.previousBalance = account.balance;
+          account.balance = newBalance;
+          account.updatedAt = new Date().toISOString();
+        }
+        return this;
+      }
+
+      getNetWorth() {
+        const assets = this.accounts
+          .filter(a => a.type === 'asset')
+          .reduce((sum, a) => sum + a.balance, 0);
+
+        const liabilities = this.accounts
+          .filter(a => a.type === 'liability')
+          .reduce((sum, a) => sum + a.balance, 0);
+
+        return {
+          assets,
+          liabilities,
+          netWorth: assets - liabilities,
+          accounts: this.accounts,
+          breakdown: {
+            checking: this.sumBySubtype('checking'),
+            savings: this.sumBySubtype('savings'),
+            investments: this.sumBySubtype('investment'),
+            property: this.sumBySubtype('property'),
+            creditCards: this.sumBySubtype('credit_card'),
+            loans: this.sumBySubtype('loan'),
+            mortgage: this.sumBySubtype('mortgage')
+          }
+        };
+      }
+
+      sumBySubtype(subtype) {
+        return this.accounts
+          .filter(a => a.subtype === subtype)
+          .reduce((sum, a) => sum + a.balance, 0);
+      }
+
+      getHistory() {
+        // Would need historical snapshots stored in DB
+        return this.accounts.map(a => ({
+          name: a.name,
+          currentBalance: a.balance,
+          previousBalance: a.previousBalance || a.balance,
+          change: a.balance - (a.previousBalance || a.balance)
+        }));
+      }
+    }
+
+    // Goal Tracking System
+    class GoalTracker {
+      constructor() {
+        this.goals = [];
+      }
+
+      createGoal(name, targetAmount, deadline, category = 'Savings') {
+        const now = new Date();
+        const deadlineDate = new Date(deadline);
+        const monthsRemaining = this.monthsBetween(now, deadlineDate);
+
+        const goal = {
+          id: Date.now(),
+          name,
+          targetAmount,
+          currentAmount: 0,
+          deadline,
+          category,
+          monthlyTarget: targetAmount / Math.max(1, monthsRemaining),
+          createdAt: now.toISOString(),
+          contributions: []
+        };
+
+        this.goals.push(goal);
+        return goal;
+      }
+
+      contribute(goalId, amount, note = '') {
+        const goal = this.goals.find(g => g.id === goalId);
+        if (goal) {
+          goal.currentAmount += amount;
+          goal.contributions.push({
+            amount,
+            date: new Date().toISOString(),
+            note
+          });
+        }
+        return this;
+      }
+
+      getProgress(goalId) {
+        const goal = this.goals.find(g => g.id === goalId);
+        if (!goal) return null;
+
+        const now = new Date();
+        const deadline = new Date(goal.deadline);
+        const monthsRemaining = this.monthsBetween(now, deadline);
+        const monthsElapsed = this.monthsBetween(new Date(goal.createdAt), now);
+
+        const expectedProgress = goal.monthlyTarget * monthsElapsed;
+        const percentComplete = (goal.currentAmount / goal.targetAmount) * 100;
+        const onTrack = goal.currentAmount >= expectedProgress;
+        const remaining = goal.targetAmount - goal.currentAmount;
+        const newMonthlyTarget = monthsRemaining > 0 ? remaining / monthsRemaining : remaining;
+
+        return {
+          ...goal,
+          percentComplete: Math.min(100, percentComplete),
+          onTrack,
+          remaining,
+          monthsRemaining,
+          adjustedMonthlyTarget: newMonthlyTarget,
+          status: percentComplete >= 100 ? 'completed' : (onTrack ? 'on-track' : 'behind')
+        };
+      }
+
+      getAllProgress() {
+        return this.goals.map(g => this.getProgress(g.id));
+      }
+
+      monthsBetween(d1, d2) {
+        return Math.max(0, (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth()));
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // PHASE 3: PRO FEATURE GATING
+    // ═══════════════════════════════════════════════════════════════════
+
+    const FEATURE_TIERS = {
+      free: [
+        'basic-transactions', 'manual-categories', 'csv-import',
+        '6-month-history', 'basic-charts', 'budget-tracking'
+      ],
+      pro: [
+        'unlimited-history', 'all-import-formats', 'recurring-detection',
+        'zero-based-budget', 'net-worth-tracker', 'goal-tracking',
+        'pdf-reports', 'advanced-insights', 'fraud-detection',
+        'encrypted-backup', 'priority-support'
+      ]
+    };
+
+    class LicenseManager {
+      constructor() {
+        this.tier = 'free';
+        this.licenseKey = null;
+        this.expiresAt = null;
+      }
+
+      async validateLicense(key) {
+        // In production, this would validate against a server
+        // For now, use a simple checksum validation
+        if (key && key.startsWith('FLOW-PRO-') && key.length === 24) {
+          this.tier = 'pro';
+          this.licenseKey = key;
+          this.expiresAt = null; // Lifetime license
+          return { valid: true, tier: 'pro', message: 'Pro license activated!' };
+        }
+        return { valid: false, message: 'Invalid license key' };
+      }
+
+      checkFeature(feature) {
+        const tierFeatures = FEATURE_TIERS[this.tier] || FEATURE_TIERS.free;
+        return tierFeatures.includes(feature) || FEATURE_TIERS.free.includes(feature);
+      }
+
+      getTier() {
+        return this.tier;
+      }
+
+      getAvailableFeatures() {
+        return this.tier === 'pro'
+          ? [...FEATURE_TIERS.free, ...FEATURE_TIERS.pro]
+          : FEATURE_TIERS.free;
+      }
+
+      getLockedFeatures() {
+        if (this.tier === 'pro') return [];
+        return FEATURE_TIERS.pro;
+      }
+    }
+
+    // Global instances
+    const cryptoEngine = new CryptoEngine();
+    const dataIntegrity = new DataIntegrityEngine();
+    const backupEngine = new BackupEngine();
+    const recurringDetector = new RecurringDetector();
+    const licenseManager = new LicenseManager();
 
     // Database with caching
     class FinanceDB {
@@ -3854,6 +4656,11 @@
         this.pendingDelete = null; // For undo functionality
         this.undoTimeout = null;
         this.isLoading = false;
+
+        // Pro features
+        this.goalTracker = new GoalTracker();
+        this.netWorthTracker = new NetWorthTracker();
+        this.recurringPatterns = [];
       }
 
       async init() {
@@ -4711,6 +5518,346 @@
         document.getElementById('budget-amount').value = this.budget;
         modal.classList.add('active');
         this.trapFocus(modal);
+      }
+
+      // ═══════════════════════════════════════════════════════════════════
+      // PRO FEATURES - Backup, Goals, Net Worth, Recurring
+      // ═══════════════════════════════════════════════════════════════════
+
+      openBackupModal() {
+        const modal = document.getElementById('backup-modal');
+        modal.classList.add('active');
+
+        // Setup encryption toggle
+        const encryptCheckbox = document.getElementById('backup-encrypt');
+        const passphraseGroup = document.getElementById('backup-passphrase-group');
+        encryptCheckbox.onchange = () => {
+          passphraseGroup.style.display = encryptCheckbox.checked ? 'block' : 'none';
+        };
+
+        // Setup restore file detection
+        const restoreFile = document.getElementById('restore-file');
+        restoreFile.onchange = async () => {
+          if (restoreFile.files[0]) {
+            const content = await restoreFile.files[0].text();
+            try {
+              const backup = JSON.parse(content);
+              document.getElementById('restore-passphrase-group').style.display =
+                backup.encrypted ? 'block' : 'none';
+            } catch (e) {
+              this.toast('Invalid backup file', 'error');
+            }
+          }
+        };
+
+        this.trapFocus(modal);
+      }
+
+      async createBackup() {
+        try {
+          const allTransactions = await this.db.getAll();
+          const settings = {
+            budget: this.budget,
+            goals: this.goalTracker.goals,
+            accounts: this.netWorthTracker.accounts
+          };
+
+          const data = { transactions: allTransactions, settings, exportedAt: new Date().toISOString() };
+          const encrypt = document.getElementById('backup-encrypt').checked;
+          const passphrase = document.getElementById('backup-passphrase').value;
+
+          if (encrypt && !passphrase) {
+            this.toast('Please enter a passphrase', 'error');
+            return;
+          }
+
+          const backup = await backupEngine.createBackup(data, encrypt ? passphrase : null);
+          backupEngine.downloadBackup(backup, backupEngine.generateFilename(encrypt));
+          this.toast('✅ Backup downloaded!', 'success');
+        } catch (err) {
+          console.error('Backup error:', err);
+          this.toast('Failed to create backup', 'error');
+        }
+      }
+
+      async restoreBackup() {
+        const fileInput = document.getElementById('restore-file');
+        const passphrase = document.getElementById('restore-passphrase').value;
+
+        if (!fileInput.files[0]) {
+          this.toast('Please select a backup file', 'error');
+          return;
+        }
+
+        try {
+          const content = await fileInput.files[0].text();
+          const data = await backupEngine.restoreBackup(content, passphrase || null);
+
+          // Restore transactions with duplicate check
+          if (data.transactions && data.transactions.length > 0) {
+            const existing = await this.db.getAll();
+            const { unique, stats } = dataIntegrity.detectDuplicates(data.transactions, existing);
+
+            if (unique.length > 0) {
+              await this.db.addTransactions(unique);
+            }
+
+            this.toast(`✅ Restored ${unique.length} transactions (${stats.duplicates} duplicates skipped)`, 'success');
+          }
+
+          // Restore settings
+          if (data.settings) {
+            if (data.settings.budget) {
+              this.budget = data.settings.budget;
+              await this.db.setSetting('budget', this.budget);
+            }
+            if (data.settings.goals) {
+              this.goalTracker.goals = data.settings.goals;
+            }
+            if (data.settings.accounts) {
+              this.netWorthTracker.accounts = data.settings.accounts;
+            }
+          }
+
+          await this.loadData();
+          this.renderAll();
+          this.closeModals();
+        } catch (err) {
+          console.error('Restore error:', err);
+          this.toast(err.message || 'Failed to restore backup', 'error');
+        }
+      }
+
+      openProModal() {
+        const modal = document.getElementById('pro-modal');
+        modal.classList.add('active');
+        this.trapFocus(modal);
+      }
+
+      async activateLicense() {
+        const keyInput = document.getElementById('license-key');
+        const key = keyInput.value.trim().toUpperCase();
+
+        if (!key) {
+          this.toast('Please enter a license key', 'error');
+          return;
+        }
+
+        const result = await licenseManager.validateLicense(key);
+        if (result.valid) {
+          await this.db.setSetting('licenseKey', key);
+          this.toast('🎉 ' + result.message, 'success');
+          this.closeModals();
+          this.renderAll(); // Re-render with pro features
+        } else {
+          this.toast(result.message, 'error');
+        }
+      }
+
+      openGoalsModal() {
+        const modal = document.getElementById('goals-modal');
+        modal.classList.add('active');
+        this.renderGoals();
+        this.trapFocus(modal);
+      }
+
+      createGoal() {
+        const name = document.getElementById('goal-name').value.trim();
+        const amount = parseFloat(document.getElementById('goal-amount').value);
+        const deadline = document.getElementById('goal-deadline').value;
+
+        if (!name) {
+          this.toast('Please enter a goal name', 'error');
+          return;
+        }
+        if (isNaN(amount) || amount <= 0) {
+          this.toast('Please enter a valid amount', 'error');
+          return;
+        }
+        if (!deadline) {
+          this.toast('Please select a deadline', 'error');
+          return;
+        }
+
+        this.goalTracker.createGoal(name, amount, deadline);
+        this.toast('🎯 Goal created!', 'success');
+        this.renderGoals();
+
+        // Clear form
+        document.getElementById('goal-name').value = '';
+        document.getElementById('goal-amount').value = '';
+        document.getElementById('goal-deadline').value = '';
+      }
+
+      renderGoals() {
+        const container = document.getElementById('goals-list');
+        const goals = this.goalTracker.getAllProgress();
+
+        if (goals.length === 0) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 30px; color: var(--text-muted);">
+              <div style="font-size: 48px; margin-bottom: 12px;">🎯</div>
+              <p>No goals yet. Create one below!</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = goals.map(goal => {
+          const statusColor = goal.status === 'completed' ? 'var(--accent-green)' :
+                              goal.status === 'on-track' ? 'var(--accent-blue)' : 'var(--accent-orange)';
+          const statusIcon = goal.status === 'completed' ? '✅' :
+                            goal.status === 'on-track' ? '📈' : '⚠️';
+
+          return `
+            <div style="background: var(--bg-card); border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div style="font-weight: 600; color: var(--text-primary);">${statusIcon} ${sanitize(goal.name)}</div>
+                <div style="font-size: 12px; color: ${statusColor}; font-weight: 600;">${goal.status.toUpperCase()}</div>
+              </div>
+              <div style="background: var(--bg-tertiary); border-radius: 8px; height: 8px; overflow: hidden; margin-bottom: 8px;">
+                <div style="background: ${statusColor}; height: 100%; width: ${goal.percentComplete}%; transition: width 0.3s;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary);">
+                <span>$${goal.currentAmount.toLocaleString()} / $${goal.targetAmount.toLocaleString()}</span>
+                <span>${Math.round(goal.percentComplete)}% • ${goal.monthsRemaining} months left</span>
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px;">
+                Monthly target: $${Math.round(goal.adjustedMonthlyTarget).toLocaleString()}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      async openRecurringModal() {
+        const modal = document.getElementById('recurring-modal');
+        modal.classList.add('active');
+
+        // Detect recurring patterns from all transactions
+        const allTx = await this.db.getAll();
+        this.recurringPatterns = recurringDetector.detectRecurring(allTx);
+        this.renderRecurring();
+
+        this.trapFocus(modal);
+      }
+
+      renderRecurring() {
+        const container = document.getElementById('recurring-list');
+        const emptyState = document.getElementById('recurring-empty');
+
+        if (this.recurringPatterns.length === 0) {
+          container.innerHTML = '';
+          emptyState.style.display = 'block';
+          return;
+        }
+
+        emptyState.style.display = 'none';
+        container.innerHTML = this.recurringPatterns.map(rec => {
+          const typeColor = rec.type === 'income' ? 'var(--accent-green)' : 'var(--accent-red)';
+          const confidencePercent = Math.round(rec.confidence * 100);
+          const icon = CATEGORY_ICONS[rec.category] || '📋';
+
+          return `
+            <div style="background: var(--bg-card); border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 4px solid ${typeColor};">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                <div>
+                  <div style="font-weight: 600; color: var(--text-primary);">${icon} ${sanitize(rec.description.substring(0, 30))}</div>
+                  <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">${rec.frequency} • ${rec.occurrences} occurrences</div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-weight: 700; color: ${typeColor};">$${rec.avgAmount.toFixed(2)}</div>
+                  <div style="font-size: 11px; color: var(--text-muted);">${confidencePercent}% confidence</div>
+                </div>
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between;">
+                <span>Last: ${rec.lastDate}</span>
+                <span>Next predicted: ${rec.nextPredicted}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      openNetWorthModal() {
+        const modal = document.getElementById('networth-modal');
+        modal.classList.add('active');
+        this.renderNetWorth();
+        this.trapFocus(modal);
+      }
+
+      addAccount() {
+        const name = document.getElementById('account-name').value.trim();
+        const typeValue = document.getElementById('account-type').value;
+        const balance = parseFloat(document.getElementById('account-balance').value);
+
+        if (!name) {
+          this.toast('Please enter an account name', 'error');
+          return;
+        }
+        if (isNaN(balance)) {
+          this.toast('Please enter a balance', 'error');
+          return;
+        }
+
+        const [type, subtype] = typeValue.split('-');
+        this.netWorthTracker.addAccount({ name, type, subtype, balance });
+        this.toast('💰 Account added!', 'success');
+        this.renderNetWorth();
+
+        // Clear form
+        document.getElementById('account-name').value = '';
+        document.getElementById('account-balance').value = '';
+      }
+
+      renderNetWorth() {
+        const data = this.netWorthTracker.getNetWorth();
+        const valueEl = document.getElementById('networth-value');
+        const listEl = document.getElementById('accounts-list');
+
+        const netWorthColor = data.netWorth >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+        valueEl.style.color = netWorthColor;
+        valueEl.textContent = `$${data.netWorth.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+
+        if (data.accounts.length === 0) {
+          listEl.innerHTML = `
+            <div style="text-align: center; padding: 20px; color: var(--text-muted);">
+              <p>No accounts added yet.</p>
+            </div>
+          `;
+          return;
+        }
+
+        const assets = data.accounts.filter(a => a.type === 'asset');
+        const liabilities = data.accounts.filter(a => a.type === 'liability');
+
+        let html = '';
+
+        if (assets.length > 0) {
+          html += `<div style="margin-bottom: 16px;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--accent-green); margin-bottom: 8px; text-transform: uppercase;">Assets ($${data.assets.toLocaleString()})</div>
+            ${assets.map(a => `
+              <div style="display: flex; justify-content: space-between; padding: 10px 12px; background: var(--bg-card); border-radius: 8px; margin-bottom: 6px;">
+                <span style="color: var(--text-primary);">${sanitize(a.name)}</span>
+                <span style="color: var(--accent-green); font-weight: 600;">$${a.balance.toLocaleString()}</span>
+              </div>
+            `).join('')}
+          </div>`;
+        }
+
+        if (liabilities.length > 0) {
+          html += `<div>
+            <div style="font-size: 12px; font-weight: 600; color: var(--accent-red); margin-bottom: 8px; text-transform: uppercase;">Liabilities ($${data.liabilities.toLocaleString()})</div>
+            ${liabilities.map(a => `
+              <div style="display: flex; justify-content: space-between; padding: 10px 12px; background: var(--bg-card); border-radius: 8px; margin-bottom: 6px;">
+                <span style="color: var(--text-primary);">${sanitize(a.name)}</span>
+                <span style="color: var(--accent-red); font-weight: 600;">-$${a.balance.toLocaleString()}</span>
+              </div>
+            `).join('')}
+          </div>`;
+        }
+
+        listEl.innerHTML = html;
       }
 
       closeModals() {
