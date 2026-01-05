@@ -886,28 +886,21 @@
       font-weight: 600;
     }
 
-    /* Insights Cards - Swipeable */
+    /* Insights Cards - 2 column grid like budget */
     .insights-scroll {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: 12px;
       padding: 0 16px 16px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
     }
 
-    .insights-scroll::-webkit-scrollbar { display: none; }
-
     .insight-card {
-      flex-shrink: 0;
-      scroll-snap-align: start;
-      width: 280px;
       background: #14293d;
       border: 2px solid #2a4a6a;
       border-radius: 16px;
       padding: 16px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      min-width: 0;
     }
 
     .insight-card.alert {
@@ -928,18 +921,19 @@
     .insight-header {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
+      gap: 8px;
+      margin-bottom: 8px;
     }
 
     .insight-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 14px;
+      flex-shrink: 0;
     }
 
     .insight-icon.green { background: var(--accent-green-dim); }
@@ -948,13 +942,13 @@
     .insight-icon.orange { background: var(--accent-orange-dim); }
     .insight-icon.purple { background: var(--accent-purple-dim); }
 
-    .insight-label { font-size: 13px; font-weight: 600; }
-    .insight-sublabel { font-size: 11px; color: var(--text-secondary); }
+    .insight-label { font-size: 12px; font-weight: 600; }
+    .insight-sublabel { font-size: 10px; color: var(--text-secondary); }
 
     .insight-value {
-      font-size: 28px;
+      font-size: 22px;
       font-weight: 700;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .insight-value.green { color: var(--accent-green); }
@@ -962,7 +956,7 @@
     .insight-value.orange { color: var(--accent-orange); }
 
     .insight-detail {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-secondary);
     }
 
