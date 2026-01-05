@@ -3491,15 +3491,16 @@
               <input type="number" class="form-input" id="bill-day" min="1" max="31" placeholder="15">
             </div>
             <div class="form-group">
-              <label class="form-label" for="bill-category">Category</label>
-              <select class="form-select" id="bill-category">
-                <option value="Utilities">Utilities</option>
-                <option value="Subscriptions">Subscriptions</option>
-                <option value="Housing">Housing</option>
-                <option value="Insurance">Insurance</option>
-                <option value="Loans">Loans</option>
-                <option value="Other Expenses">Other</option>
-              </select>
+              <label class="form-label">Category</label>
+              <input type="hidden" id="bill-category" value="Utilities">
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                <button type="button" class="bill-cat-btn active" data-value="Utilities" onclick="app.selectBillCategory(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid var(--accent-green); background: rgba(7, 209, 143, 0.15); color: var(--text-primary); font-size: 13px; cursor: pointer; transition: all 0.2s;">💡 Utilities</button>
+                <button type="button" class="bill-cat-btn" data-value="Subscriptions" onclick="app.selectBillCategory(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 13px; cursor: pointer; transition: all 0.2s;">📱 Subs</button>
+                <button type="button" class="bill-cat-btn" data-value="Housing" onclick="app.selectBillCategory(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 13px; cursor: pointer; transition: all 0.2s;">🏠 Housing</button>
+                <button type="button" class="bill-cat-btn" data-value="Insurance" onclick="app.selectBillCategory(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 13px; cursor: pointer; transition: all 0.2s;">🛡️ Insurance</button>
+                <button type="button" class="bill-cat-btn" data-value="Loans" onclick="app.selectBillCategory(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 13px; cursor: pointer; transition: all 0.2s;">💳 Loans</button>
+                <button type="button" class="bill-cat-btn" data-value="Other Expenses" onclick="app.selectBillCategory(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 13px; cursor: pointer; transition: all 0.2s;">📦 Other</button>
+              </div>
             </div>
           </div>
           <button class="submit-btn" onclick="app.addBill()">📅 Add Bill</button>
@@ -6673,6 +6674,21 @@
         modal.classList.add('active');
         this.renderBills();
         this.trapFocus(modal);
+      }
+
+      selectBillCategory(btn) {
+        // Remove active state from all bill category buttons
+        document.querySelectorAll('.bill-cat-btn').forEach(b => {
+          b.classList.remove('active');
+          b.style.border = '2px solid transparent';
+          b.style.background = 'var(--bg-card)';
+        });
+        // Set active state on clicked button
+        btn.classList.add('active');
+        btn.style.border = '2px solid var(--accent-green)';
+        btn.style.background = 'rgba(7, 209, 143, 0.15)';
+        // Update hidden input
+        document.getElementById('bill-category').value = btn.dataset.value;
       }
 
       addBill() {
