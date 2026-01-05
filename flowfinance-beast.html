@@ -5257,15 +5257,8 @@
           insights.push({ type: 'alert', icon: '🚨', color: 'red', title: 'Over Budget', value: `${Math.abs(rate).toFixed(0)}%`, detail: 'Spending exceeds income' });
         }
 
-        // Only show basic subscriptions if Pro recurring detector isn't available
-        const hasProRecurring = typeof recurringDetector !== 'undefined' && this.tx.length > 10;
-        if (!hasProRecurring) {
-          const subs = this.detectSubscriptions();
-          const subTotal = subs.reduce((s, sub) => s + sub.amount, 0);
-          if (subTotal > 0) {
-            insights.push({ type: 'info', icon: '📱', color: 'orange', title: 'Subscriptions', value: `$${subTotal.toFixed(0)}`, detail: `${subs.length} services` });
-          }
-        }
+        // Skip basic subscriptions - Pro recurring detector handles this better
+        // (Removed to prevent duplicate cards)
 
         const expChange = this.getExpenseChange();
         if (this.prev.length > 0 && expChange !== 0) {
@@ -5804,11 +5797,10 @@
       }
 
       renderAll() {
-        // Hide Pro banner if user is already Pro
-        const proBanner = document.getElementById('pro-banner');
-        if (proBanner) {
-          proBanner.style.display = licenseManager.isPro() ? 'none' : 'block';
-        }
+        // Show Pro banner (always visible for demo/marketing)
+        // In production, uncomment to hide for Pro users:
+        // const proBanner = document.getElementById('pro-banner');
+        // if (proBanner) proBanner.style.display = licenseManager.isPro() ? 'none' : 'block';
 
         // Update month display (mobile)
         const d = new Date(this.currentMonth + '-01');
@@ -6914,7 +6906,7 @@
       // VOICE INPUT - Natural language transaction entry
       // ═══════════════════════════════════════════════════════════════════
 
-      startVoiceInput() {
+      async startVoiceInput() {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
         if (!SpeechRecognition) {
@@ -6931,15 +6923,35 @@
           return;
         }
 
+        // Request microphone permission first (required for mobile)
+        voiceStatus.style.display = 'flex';
+        voiceStatus.className = 'voice-status';
+        voiceStatus.innerHTML = '🎤 Requesting microphone access...';
+
+        try {
+          // Request mic permission
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          // Stop the stream immediately - we just needed permission
+          stream.getTracks().forEach(track => track.stop());
+        } catch (err) {
+          voiceStatus.className = 'voice-status error';
+          if (err.name === 'NotAllowedError') {
+            voiceStatus.innerHTML = '❌ Microphone access denied. Please allow mic access.';
+          } else {
+            voiceStatus.innerHTML = '❌ Could not access microphone';
+          }
+          setTimeout(() => { voiceStatus.style.display = 'none'; }, 3000);
+          return;
+        }
+
         this.recognition = new SpeechRecognition();
         this.recognition.continuous = false;
         this.recognition.interimResults = true;
         this.recognition.lang = 'en-US';
 
         voiceBtn.classList.add('listening');
-        voiceStatus.style.display = 'flex';
         voiceStatus.className = 'voice-status';
-        voiceStatus.innerHTML = '🎤 Listening... Try: "50 dollars for lunch" or "paid Netflix 15.99"';
+        voiceStatus.innerHTML = '🎤 Listening... Say: "50 dollars for lunch"';
         this.isListening = true;
 
         this.recognition.onresult = (event) => {
@@ -6954,7 +6966,10 @@
         this.recognition.onerror = (event) => {
           voiceBtn.classList.remove('listening');
           voiceStatus.className = 'voice-status error';
-          voiceStatus.innerHTML = `❌ ${event.error === 'no-speech' ? 'No speech detected' : 'Error: ' + event.error}`;
+          const errorMsg = event.error === 'no-speech' ? 'No speech detected. Try again.'
+            : event.error === 'not-allowed' ? 'Mic access denied'
+            : 'Error: ' + event.error;
+          voiceStatus.innerHTML = `❌ ${errorMsg}`;
           this.isListening = false;
           setTimeout(() => { voiceStatus.style.display = 'none'; }, 3000);
         };
