@@ -1632,78 +1632,6 @@
       color: #6080a0;
     }
 
-    /* Custom Category Picker */
-    .category-picker {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .category-section {
-      background: #14293d;
-      border: 2px solid #2a4a6a;
-      border-radius: 14px;
-      padding: 12px;
-    }
-
-    .category-section.income-section {
-      border-color: #22c55e;
-    }
-
-    .category-section.expense-section {
-      border-color: #f43f5e;
-    }
-
-    .category-section-header {
-      font-size: 24px;
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 12px;
-      padding: 10px 14px;
-      border-radius: 8px;
-    }
-
-    .income-section .category-section-header {
-      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-    }
-
-    .expense-section .category-section-header {
-      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
-    }
-
-    .category-options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .category-option {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 20px;
-      padding: 10px 14px;
-      font-size: 13px;
-      color: var(--text-primary);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .category-option:active {
-      transform: scale(0.95);
-    }
-
-    .category-option.selected {
-      background: var(--accent-green);
-      border-color: var(--accent-green);
-      color: #000;
-      font-weight: 600;
-    }
-
-    .expense-section .category-option.selected {
-      background: #f43f5e;
-      border-color: #f43f5e;
-    }
-
     .form-row {
       display: flex;
       gap: 12px;
@@ -1748,6 +1676,84 @@
       background: rgba(255, 107, 107, 0.15);
       color: var(--accent-red);
       box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
+    }
+
+    /* Custom Category Picker */
+    .category-picker {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .category-section {
+      background: #14293d;
+      border: 2px solid #2a4a6a;
+      border-radius: 14px;
+      padding: 12px;
+      overflow: hidden;
+    }
+
+    .category-section.income-section {
+      border-color: #22c55e;
+      background: linear-gradient(135deg, #0d2d1f 0%, #14293d 100%);
+    }
+
+    .category-section.expense-section {
+      border-color: #f43f5e;
+      background: linear-gradient(135deg, #2d0d1a 0%, #14293d 100%);
+    }
+
+    .category-section-header {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 12px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      letter-spacing: 1px;
+    }
+
+    .income-section .category-section-header {
+      color: #fff;
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    }
+
+    .expense-section .category-section-header {
+      color: #fff;
+      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    }
+
+    .category-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .category-option {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .category-option:active {
+      transform: scale(0.95);
+    }
+
+    .category-option.selected {
+      background: var(--accent-green);
+      border-color: var(--accent-green);
+      color: #000;
+      font-weight: 600;
+    }
+
+    .expense-section .category-option.selected {
+      background: #f43f5e;
+      border-color: #f43f5e;
     }
 
     .submit-btn {
@@ -2949,7 +2955,7 @@
           <div class="form-group">
             <label class="form-label">Category</label>
             <input type="hidden" id="tx-category" value="Salary">
-            <div class="category-picker">
+            <div class="category-picker" id="category-picker">
               <div class="category-section income-section">
                 <div class="category-section-header">💰 INCOME</div>
                 <div class="category-options">
