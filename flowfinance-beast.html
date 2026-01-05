@@ -4732,6 +4732,10 @@
         return this.tier;
       }
 
+      isPro() {
+        return this.tier === 'pro';
+      }
+
       getAvailableFeatures() {
         return this.tier === 'pro'
           ? [...FEATURE_TIERS.free, ...FEATURE_TIERS.pro]
