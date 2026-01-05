@@ -3402,20 +3402,25 @@
               <input type="text" class="form-input" id="account-name" placeholder="e.g., Chase Checking">
             </div>
             <div class="form-group">
-              <label class="form-label" for="account-type">Type</label>
-              <select class="form-select" id="account-type">
-                <optgroup label="Assets">
-                  <option value="asset-checking">Checking</option>
-                  <option value="asset-savings">Savings</option>
-                  <option value="asset-investment">Investment</option>
-                  <option value="asset-property">Property</option>
-                </optgroup>
-                <optgroup label="Liabilities">
-                  <option value="liability-credit_card">Credit Card</option>
-                  <option value="liability-loan">Loan</option>
-                  <option value="liability-mortgage">Mortgage</option>
-                </optgroup>
-              </select>
+              <label class="form-label">Type</label>
+              <input type="hidden" id="account-type" value="asset-checking">
+              <div style="margin-bottom: 8px;">
+                <div style="font-size: 11px; color: var(--accent-green); font-weight: 600; margin-bottom: 6px;">💰 ASSETS</div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
+                  <button type="button" class="acct-type-btn active" data-value="asset-checking" onclick="app.selectAccountType(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid var(--accent-green); background: rgba(7, 209, 143, 0.15); color: var(--text-primary); font-size: 12px; cursor: pointer; transition: all 0.2s;">🏦 Checking</button>
+                  <button type="button" class="acct-type-btn" data-value="asset-savings" onclick="app.selectAccountType(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 12px; cursor: pointer; transition: all 0.2s;">💵 Savings</button>
+                  <button type="button" class="acct-type-btn" data-value="asset-investment" onclick="app.selectAccountType(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 12px; cursor: pointer; transition: all 0.2s;">📈 Investment</button>
+                  <button type="button" class="acct-type-btn" data-value="asset-property" onclick="app.selectAccountType(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 12px; cursor: pointer; transition: all 0.2s;">🏠 Property</button>
+                </div>
+              </div>
+              <div>
+                <div style="font-size: 11px; color: var(--accent-red); font-weight: 600; margin-bottom: 6px;">💸 LIABILITIES</div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                  <button type="button" class="acct-type-btn" data-value="liability-credit_card" onclick="app.selectAccountType(this)" style="padding: 10px 6px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 11px; cursor: pointer; transition: all 0.2s;">💳 Credit</button>
+                  <button type="button" class="acct-type-btn" data-value="liability-loan" onclick="app.selectAccountType(this)" style="padding: 10px 6px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 11px; cursor: pointer; transition: all 0.2s;">📋 Loan</button>
+                  <button type="button" class="acct-type-btn" data-value="liability-mortgage" onclick="app.selectAccountType(this)" style="padding: 10px 6px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 11px; cursor: pointer; transition: all 0.2s;">🏡 Mortgage</button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="form-group">
@@ -6549,6 +6554,21 @@
         this.trapFocus(modal);
       }
 
+      selectAccountType(btn) {
+        // Remove active state from all account type buttons
+        document.querySelectorAll('.acct-type-btn').forEach(b => {
+          b.classList.remove('active');
+          b.style.border = '2px solid transparent';
+          b.style.background = 'var(--bg-card)';
+        });
+        // Set active state on clicked button
+        btn.classList.add('active');
+        btn.style.border = '2px solid var(--accent-green)';
+        btn.style.background = 'rgba(7, 209, 143, 0.15)';
+        // Update hidden input
+        document.getElementById('account-type').value = btn.dataset.value;
+      }
+
       addAccount() {
         const name = document.getElementById('account-name').value.trim();
         const typeValue = document.getElementById('account-type').value;
@@ -6571,6 +6591,19 @@
         // Clear form
         document.getElementById('account-name').value = '';
         document.getElementById('account-balance').value = '';
+      }
+
+      getAccountTypeEmoji(subtype) {
+        const emojiMap = {
+          'checking': '🏦',
+          'savings': '💵',
+          'investment': '📈',
+          'property': '🏠',
+          'credit_card': '💳',
+          'loan': '📋',
+          'mortgage': '🏡'
+        };
+        return emojiMap[subtype] || '💰';
       }
 
       renderNetWorth() {
@@ -6598,11 +6631,15 @@
 
         if (assets.length > 0) {
           html += `<div style="margin-bottom: 16px;">
-            <div style="font-size: 12px; font-weight: 600; color: var(--accent-green); margin-bottom: 8px; text-transform: uppercase;">Assets ($${data.assets.toLocaleString()})</div>
+            <div style="font-size: 12px; font-weight: 600; color: var(--accent-green); margin-bottom: 8px; text-transform: uppercase;">💰 Assets ($${data.assets.toLocaleString()})</div>
             ${assets.map(a => `
-              <div style="display: flex; justify-content: space-between; padding: 10px 12px; background: var(--bg-card); border-radius: 8px; margin-bottom: 6px;">
-                <span style="color: var(--text-primary);">${sanitize(a.name)}</span>
-                <span style="color: var(--accent-green); font-weight: 600;">$${a.balance.toLocaleString()}</span>
+              <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-card); border-radius: 10px; margin-bottom: 6px;">
+                <div style="width: 36px; height: 36px; background: linear-gradient(135deg, rgba(7, 209, 143, 0.2), rgba(6, 163, 111, 0.2)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;">${this.getAccountTypeEmoji(a.subtype)}</div>
+                <div style="flex: 1;">
+                  <div style="color: var(--text-primary); font-weight: 500;">${sanitize(a.name)}</div>
+                  <div style="font-size: 11px; color: var(--text-muted); text-transform: capitalize;">${a.subtype?.replace('_', ' ') || 'Account'}</div>
+                </div>
+                <span style="color: var(--accent-green); font-weight: 700;">$${a.balance.toLocaleString()}</span>
               </div>
             `).join('')}
           </div>`;
@@ -6610,11 +6647,15 @@
 
         if (liabilities.length > 0) {
           html += `<div>
-            <div style="font-size: 12px; font-weight: 600; color: var(--accent-red); margin-bottom: 8px; text-transform: uppercase;">Liabilities ($${data.liabilities.toLocaleString()})</div>
+            <div style="font-size: 12px; font-weight: 600; color: var(--accent-red); margin-bottom: 8px; text-transform: uppercase;">💸 Liabilities ($${data.liabilities.toLocaleString()})</div>
             ${liabilities.map(a => `
-              <div style="display: flex; justify-content: space-between; padding: 10px 12px; background: var(--bg-card); border-radius: 8px; margin-bottom: 6px;">
-                <span style="color: var(--text-primary);">${sanitize(a.name)}</span>
-                <span style="color: var(--accent-red); font-weight: 600;">-$${a.balance.toLocaleString()}</span>
+              <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-card); border-radius: 10px; margin-bottom: 6px;">
+                <div style="width: 36px; height: 36px; background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(185, 28, 28, 0.2)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;">${this.getAccountTypeEmoji(a.subtype)}</div>
+                <div style="flex: 1;">
+                  <div style="color: var(--text-primary); font-weight: 500;">${sanitize(a.name)}</div>
+                  <div style="font-size: 11px; color: var(--text-muted); text-transform: capitalize;">${a.subtype?.replace('_', ' ') || 'Debt'}</div>
+                </div>
+                <span style="color: var(--accent-red); font-weight: 700;">-$${a.balance.toLocaleString()}</span>
               </div>
             `).join('')}
           </div>`;
@@ -6758,9 +6799,12 @@
         emptyEl.style.display = 'none';
         listEl.innerHTML = bills.map((bill, idx) => `
           <div style="background: var(--bg-card); border-radius: 12px; padding: 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-              <div style="font-weight: 600; color: var(--text-primary);">${sanitize(bill.name)}</div>
-              <div style="font-size: 12px; color: var(--text-muted);">Due: ${bill.dueDay}${this.getOrdinalSuffix(bill.dueDay)} of each month • ${bill.category}</div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 40px; height: 40px; background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(91, 33, 182, 0.2)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">${this.getCategoryEmoji(bill.category)}</div>
+              <div>
+                <div style="font-weight: 600; color: var(--text-primary);">${sanitize(bill.name)}</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Due: ${bill.dueDay}${this.getOrdinalSuffix(bill.dueDay)} • ${bill.category}</div>
+              </div>
             </div>
             <div style="display: flex; align-items: center; gap: 12px;">
               <div style="font-weight: 700; color: var(--accent-red);">$${bill.amount.toFixed(2)}</div>
@@ -6774,6 +6818,29 @@
         const s = ['th', 'st', 'nd', 'rd'];
         const v = n % 100;
         return s[(v - 20) % 10] || s[v] || s[0];
+      }
+
+      getCategoryEmoji(category) {
+        const emojiMap = {
+          'Utilities': '💡',
+          'Subscriptions': '📱',
+          'Housing': '🏠',
+          'Insurance': '🛡️',
+          'Loans': '💳',
+          'Other Expenses': '📦',
+          'Food': '🍔',
+          'Transportation': '🚗',
+          'Healthcare': '🏥',
+          'Entertainment': '🎮',
+          'Shopping': '🛍️',
+          'Travel': '✈️',
+          'Education': '📚',
+          'Income': '💰',
+          'Salary': '💼',
+          'Freelance': '💻',
+          'Other Income': '🎁'
+        };
+        return emojiMap[category] || '📦';
       }
 
       deleteBill(index) {
