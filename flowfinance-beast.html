@@ -326,6 +326,57 @@
       font-size: 13px;
     }
 
+    /* Pro Upgrade Banner - Eye-catching pulse */
+    @keyframes proPulse {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(124, 58, 237, 0.4), 0 0 40px rgba(7, 209, 143, 0.2);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 30px rgba(124, 58, 237, 0.6), 0 0 60px rgba(7, 209, 143, 0.4);
+        transform: scale(1.02);
+      }
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes starPulse {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      25% { transform: scale(1.2) rotate(-10deg); }
+      75% { transform: scale(1.2) rotate(10deg); }
+    }
+    .pro-upgrade-banner {
+      background: linear-gradient(135deg, #7c3aed, #5b21b6, #07d18f, #7c3aed);
+      background-size: 300% 300%;
+      animation: gradientShift 4s ease infinite, proPulse 2s ease-in-out infinite;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 0 20px 16px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .pro-upgrade-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+      animation: shine 3s ease-in-out infinite;
+    }
+    @keyframes shine {
+      0% { transform: translateX(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) rotate(45deg); }
+    }
+    .pro-upgrade-banner .star {
+      animation: starPulse 1.5s ease-in-out infinite;
+      display: inline-block;
+    }
+
     /* Import Progress */
     .import-progress {
       margin-top: 16px;
@@ -2840,10 +2891,24 @@
           </div>
         </div>
 
+        <!-- Pro Upgrade Banner -->
+        <div class="pro-upgrade-banner" onclick="app.openProModal()" id="pro-banner">
+          <div style="display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1;">
+            <div>
+              <div style="font-size: 20px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px;">
+                <span class="star" style="font-size: 28px;">⭐</span> Unlock Pro
+              </div>
+              <div style="font-size: 13px; color: rgba(255,255,255,0.85); margin-top: 4px;">9 powerful tools • Lifetime access</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 10px 18px; border-radius: 12px; font-weight: 700; color: #fff; font-size: 14px;">
+              $99 →
+            </div>
+          </div>
+        </div>
+
         <!-- Pro Features -->
-        <div class="section-header">
-          <div class="section-title">⭐ Pro Tools</div>
-          <span class="section-action" onclick="app.openProModal()">Upgrade</span>
+        <div class="section-header" style="padding-top: 0;">
+          <div class="section-title">🛠️ Pro Tools</div>
         </div>
         <div class="pro-tools-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 20px 16px;">
           <div class="pro-tool-btn" onclick="app.openGoalsModal()" style="background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); padding: 14px 8px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);">
@@ -5194,6 +5259,48 @@
           insights.push({ type: 'info', icon: '📊', color: 'purple', title: 'Top Category', value: top[0], detail: `$${top[1].toFixed(0)}` });
         }
 
+        // Pro Feature Insights
+        try {
+          // Bill Reminders
+          if (typeof billReminder !== 'undefined' && billReminder.bills.length > 0) {
+            const overdue = billReminder.getOverdue();
+            const upcoming = billReminder.getUpcoming(7);
+            if (overdue.length > 0) {
+              insights.push({ type: 'alert', icon: '⚠️', color: 'red', title: 'Bills Overdue', value: `${overdue.length}`, detail: 'Tap Bills to pay now' });
+            } else if (upcoming.length > 0) {
+              insights.push({ type: 'warning', icon: '📅', color: 'orange', title: 'Bills Due Soon', value: `${upcoming.length}`, detail: `$${upcoming.reduce((s, b) => s + b.amount, 0).toFixed(0)} due` });
+            }
+          }
+
+          // Goals Progress
+          if (typeof goalTracker !== 'undefined' && goalTracker.goals.length > 0) {
+            const activeGoals = goalTracker.goals.filter(g => g.status === 'active');
+            const nearComplete = activeGoals.filter(g => g.percentComplete >= 80);
+            if (nearComplete.length > 0) {
+              insights.push({ type: 'success', icon: '🎯', color: 'green', title: 'Goal Almost Done!', value: `${nearComplete[0].name}`, detail: `${Math.round(nearComplete[0].percentComplete)}% complete` });
+            }
+          }
+
+          // Net Worth
+          if (typeof netWorthTracker !== 'undefined' && netWorthTracker.accounts.length > 0) {
+            const nw = netWorthTracker.getNetWorth();
+            if (nw.netWorth !== 0) {
+              insights.push({ type: nw.netWorth > 0 ? 'success' : 'info', icon: '💰', color: nw.netWorth > 0 ? 'green' : 'blue', title: 'Net Worth', value: `$${Math.abs(nw.netWorth).toLocaleString()}`, detail: `${nw.accounts.length} accounts tracked` });
+            }
+          }
+
+          // Recurring Detected
+          if (typeof recurringDetector !== 'undefined' && this.tx.length > 10) {
+            const recurring = recurringDetector.detectRecurring(this.tx);
+            if (recurring.length > 0) {
+              const monthlyTotal = recurring.reduce((s, r) => s + r.avgAmount, 0);
+              insights.push({ type: 'info', icon: '🔄', color: 'blue', title: 'Recurring Found', value: `${recurring.length}`, detail: `~$${monthlyTotal.toFixed(0)}/mo detected` });
+            }
+          }
+        } catch (e) {
+          // Pro features may not be initialized yet
+        }
+
         return insights;
       }
 
@@ -5668,6 +5775,12 @@
       }
 
       renderAll() {
+        // Hide Pro banner if user is already Pro
+        const proBanner = document.getElementById('pro-banner');
+        if (proBanner) {
+          proBanner.style.display = licenseManager.isPro() ? 'none' : 'block';
+        }
+
         // Update month display (mobile)
         const d = new Date(this.currentMonth + '-01');
         const monthDisplay = d.toLocaleString('default', { month: 'long', year: 'numeric' });
