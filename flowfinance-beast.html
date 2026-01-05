@@ -377,6 +377,58 @@
       display: inline-block;
     }
 
+    /* Voice Input Button */
+    .voice-btn {
+      width: 52px;
+      height: 52px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+    .voice-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
+    .voice-btn:active {
+      transform: scale(0.95);
+    }
+    .voice-btn.listening {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      animation: voicePulse 1s ease-in-out infinite;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+    }
+    @keyframes voicePulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+      50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(239, 68, 68, 0.7); }
+    }
+    .voice-status {
+      margin-top: 8px;
+      padding: 10px 14px;
+      background: rgba(59, 130, 246, 0.15);
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .voice-status.error {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--accent-red);
+    }
+    .voice-status.success {
+      background: rgba(7, 209, 143, 0.15);
+      color: var(--accent-green);
+    }
+
     /* Import Progress */
     .import-progress {
       margin-top: 16px;
@@ -3049,7 +3101,13 @@
           </div>
           <div class="form-group">
             <label class="form-label" for="tx-desc">Description</label>
-            <input type="text" class="form-input" id="tx-desc" placeholder="What's this for?" required maxlength="200">
+            <div style="display: flex; gap: 8px;">
+              <input type="text" class="form-input" id="tx-desc" placeholder="What's this for?" required maxlength="200" style="flex: 1;">
+              <button type="button" id="voice-btn" class="voice-btn" onclick="app.startVoiceInput()" aria-label="Voice input" title="Speak to fill form">
+                🎤
+              </button>
+            </div>
+            <div id="voice-status" class="voice-status" style="display: none;"></div>
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -6879,6 +6937,165 @@
         rulesEngine.saveCustomRules();
         this.toast('Rule removed', 'success');
         this.renderRules();
+      }
+
+      // ═══════════════════════════════════════════════════════════════════
+      // VOICE INPUT - Natural language transaction entry
+      // ═══════════════════════════════════════════════════════════════════
+
+      startVoiceInput() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (!SpeechRecognition) {
+          this.toast('Voice input not supported in this browser', 'error');
+          return;
+        }
+
+        const voiceBtn = document.getElementById('voice-btn');
+        const voiceStatus = document.getElementById('voice-status');
+
+        // If already listening, stop
+        if (this.recognition && this.isListening) {
+          this.recognition.stop();
+          return;
+        }
+
+        this.recognition = new SpeechRecognition();
+        this.recognition.continuous = false;
+        this.recognition.interimResults = true;
+        this.recognition.lang = 'en-US';
+
+        voiceBtn.classList.add('listening');
+        voiceStatus.style.display = 'flex';
+        voiceStatus.className = 'voice-status';
+        voiceStatus.innerHTML = '🎤 Listening... Try: "50 dollars for lunch" or "paid Netflix 15.99"';
+        this.isListening = true;
+
+        this.recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript.toLowerCase();
+          voiceStatus.innerHTML = `🎤 "${transcript}"`;
+
+          if (event.results[0].isFinal) {
+            this.parseVoiceInput(transcript);
+          }
+        };
+
+        this.recognition.onerror = (event) => {
+          voiceBtn.classList.remove('listening');
+          voiceStatus.className = 'voice-status error';
+          voiceStatus.innerHTML = `❌ ${event.error === 'no-speech' ? 'No speech detected' : 'Error: ' + event.error}`;
+          this.isListening = false;
+          setTimeout(() => { voiceStatus.style.display = 'none'; }, 3000);
+        };
+
+        this.recognition.onend = () => {
+          voiceBtn.classList.remove('listening');
+          this.isListening = false;
+        };
+
+        this.recognition.start();
+      }
+
+      parseVoiceInput(text) {
+        const voiceStatus = document.getElementById('voice-status');
+
+        // Parse amount - look for dollar amounts or numbers
+        let amount = null;
+        const amountPatterns = [
+          /\$?([\d,]+\.?\d*)\s*dollars?/i,
+          /\$?([\d,]+\.?\d*)/,
+          /([\d,]+)\s*(?:bucks?|and)/i
+        ];
+
+        for (const pattern of amountPatterns) {
+          const match = text.match(pattern);
+          if (match) {
+            amount = parseFloat(match[1].replace(',', ''));
+            if (!isNaN(amount) && amount > 0) break;
+          }
+        }
+
+        // Determine type (income vs expense)
+        let type = 'expense'; // Default to expense
+        const incomeKeywords = ['earned', 'received', 'got paid', 'income', 'salary', 'paycheck', 'deposit'];
+        const expenseKeywords = ['spent', 'paid', 'bought', 'expense', 'cost', 'for'];
+
+        if (incomeKeywords.some(k => text.includes(k))) {
+          type = 'income';
+        }
+
+        // Try to detect category
+        let category = null;
+        const categoryMappings = {
+          'food|lunch|dinner|breakfast|restaurant|eating|meal|coffee|groceries': 'Food',
+          'uber|lyft|gas|fuel|parking|car|transit|bus|train|travel': 'Transportation',
+          'rent|mortgage|housing|apartment': 'Housing',
+          'netflix|spotify|subscription|hulu|disney': 'Subscriptions',
+          'shopping|amazon|store|clothes|bought': 'Shopping',
+          'electric|water|utility|internet|phone|bill': 'Utilities',
+          'doctor|medical|pharmacy|health|hospital': 'Healthcare',
+          'movie|game|entertainment|fun|concert': 'Entertainment',
+          'salary|paycheck|work|job|wage': 'Salary',
+          'freelance|client|project|consulting': 'Freelance'
+        };
+
+        for (const [keywords, cat] of Object.entries(categoryMappings)) {
+          if (new RegExp(keywords, 'i').test(text)) {
+            category = cat;
+            break;
+          }
+        }
+
+        // Extract description - clean up the text
+        let description = text
+          .replace(/\$?[\d,]+\.?\d*\s*dollars?/gi, '')
+          .replace(/\$[\d,]+\.?\d*/g, '')
+          .replace(/^(add|spent|paid|bought|for|got|received|earned)\s+/i, '')
+          .replace(/\s+(today|yesterday|expense|income)\s*/gi, ' ')
+          .trim();
+
+        // Capitalize first letter
+        description = description.charAt(0).toUpperCase() + description.slice(1);
+        if (!description) description = text.charAt(0).toUpperCase() + text.slice(1);
+
+        // Fill the form
+        if (description) {
+          document.getElementById('tx-desc').value = description;
+        }
+        if (amount && amount > 0) {
+          document.getElementById('tx-amount').value = amount.toFixed(2);
+        }
+
+        // Set type
+        document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.type-btn.${type}`).classList.add('active');
+        this.txType = type;
+
+        // Set category if detected
+        if (category) {
+          this.selectCategory(category);
+        }
+
+        // Show success
+        voiceStatus.className = 'voice-status success';
+        const filled = [];
+        if (description) filled.push('description');
+        if (amount) filled.push(`$${amount.toFixed(2)}`);
+        if (category) filled.push(category);
+        voiceStatus.innerHTML = `✅ Filled: ${filled.join(', ')}`;
+
+        setTimeout(() => { voiceStatus.style.display = 'none'; }, 4000);
+      }
+
+      selectCategory(categoryName) {
+        const buttons = document.querySelectorAll('.category-option');
+        buttons.forEach(btn => {
+          btn.classList.remove('selected');
+          if (btn.dataset.value === categoryName) {
+            btn.classList.add('selected');
+            document.getElementById('tx-category').value = categoryName;
+          }
+        });
       }
 
       closeModals() {
