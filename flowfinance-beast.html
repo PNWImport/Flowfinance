@@ -326,55 +326,18 @@
       font-size: 13px;
     }
 
-    /* Pro Upgrade Banner - Eye-catching pulse */
-    @keyframes proPulse {
-      0%, 100% {
-        box-shadow: 0 0 20px rgba(124, 58, 237, 0.4), 0 0 40px rgba(7, 209, 143, 0.2);
-        transform: scale(1);
-      }
-      50% {
-        box-shadow: 0 0 30px rgba(124, 58, 237, 0.6), 0 0 60px rgba(7, 209, 143, 0.4);
-        transform: scale(1.02);
-      }
-    }
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    @keyframes starPulse {
-      0%, 100% { transform: scale(1) rotate(0deg); }
-      25% { transform: scale(1.2) rotate(-10deg); }
-      75% { transform: scale(1.2) rotate(10deg); }
-    }
+    /* Pro Upgrade Banner - Clean and simple */
     .pro-upgrade-banner {
-      background: linear-gradient(135deg, #7c3aed, #5b21b6, #07d18f, #7c3aed);
-      background-size: 300% 300%;
-      animation: gradientShift 4s ease infinite, proPulse 2s ease-in-out infinite;
-      border-radius: 16px;
-      padding: 20px;
-      margin: 0 20px 16px;
+      background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin: 0 20px 12px;
       cursor: pointer;
-      position: relative;
-      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .pro-upgrade-banner::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
-      animation: shine 3s ease-in-out infinite;
-    }
-    @keyframes shine {
-      0% { transform: translateX(-100%) rotate(45deg); }
-      100% { transform: translateX(100%) rotate(45deg); }
-    }
-    .pro-upgrade-banner .star {
-      animation: starPulse 1.5s ease-in-out infinite;
-      display: inline-block;
+    .pro-upgrade-banner:active {
+      transform: scale(0.98);
     }
 
     /* Voice Input Button */
@@ -2945,16 +2908,15 @@
 
         <!-- Pro Upgrade Banner -->
         <div class="pro-upgrade-banner" onclick="app.openProModal()" id="pro-banner">
-          <div style="display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1;">
-            <div>
-              <div style="font-size: 20px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px;">
-                <span class="star" style="font-size: 28px;">⭐</span> Unlock Pro
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 20px;">⭐</span>
+              <div>
+                <div style="font-size: 14px; font-weight: 700; color: #fff;">Unlock Pro</div>
+                <div style="font-size: 11px; color: rgba(255,255,255,0.75);">9 tools • $99 lifetime</div>
               </div>
-              <div style="font-size: 13px; color: rgba(255,255,255,0.85); margin-top: 4px;">9 powerful tools • Lifetime access</div>
             </div>
-            <div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 10px 18px; border-radius: 12px; font-weight: 700; color: #fff; font-size: 14px;">
-              $99 →
-            </div>
+            <div style="font-size: 18px;">→</div>
           </div>
         </div>
 
@@ -5291,10 +5253,14 @@
           insights.push({ type: 'alert', icon: '🚨', color: 'red', title: 'Over Budget', value: `${Math.abs(rate).toFixed(0)}%`, detail: 'Spending exceeds income' });
         }
 
-        const subs = this.detectSubscriptions();
-        const subTotal = subs.reduce((s, sub) => s + sub.amount, 0);
-        if (subTotal > 0) {
-          insights.push({ type: 'info', icon: '🔄', color: 'orange', title: 'Subscriptions', value: `$${subTotal.toFixed(0)}`, detail: `${subs.length} active services` });
+        // Only show basic subscriptions if Pro recurring detector isn't available
+        const hasProRecurring = typeof recurringDetector !== 'undefined' && this.tx.length > 10;
+        if (!hasProRecurring) {
+          const subs = this.detectSubscriptions();
+          const subTotal = subs.reduce((s, sub) => s + sub.amount, 0);
+          if (subTotal > 0) {
+            insights.push({ type: 'info', icon: '📱', color: 'orange', title: 'Subscriptions', value: `$${subTotal.toFixed(0)}`, detail: `${subs.length} services` });
+          }
         }
 
         const expChange = this.getExpenseChange();
@@ -5359,7 +5325,8 @@
           // Pro features may not be initialized yet
         }
 
-        return insights;
+        // Limit to 5 insights max to prevent clutter
+        return insights.slice(0, 5);
       }
 
       getSavingsTips() {
