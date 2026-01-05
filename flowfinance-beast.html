@@ -613,9 +613,9 @@
       width: 32px;
       height: 32px;
       border-radius: var(--radius-full);
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      color: var(--text-secondary);
+      background: #1a3050;
+      border: 2px solid #2a4a70;
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -627,7 +627,8 @@
 
     .month-nav-btn:active {
       transform: scale(0.9);
-      background: var(--bg-card-hover);
+      background: #1e3858;
+      border-color: var(--accent-green);
     }
 
     .month-display {
@@ -672,13 +673,13 @@
     }
 
     .icon-btn {
-      width: 36px;
-      height: 36px;
-      min-width: 36px;
-      min-height: 36px;
+      width: 38px;
+      height: 38px;
+      min-width: 38px;
+      min-height: 38px;
       border-radius: var(--radius-md);
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
+      background: #1a3050;
+      border: 2px solid #2a4a70;
       color: var(--text-primary);
       display: flex;
       align-items: center;
@@ -690,7 +691,8 @@
 
     .icon-btn:active {
       transform: scale(0.95);
-      background: var(--bg-card-hover);
+      background: #1e3858;
+      border-color: var(--accent-green);
     }
 
     .icon-btn.primary {
@@ -714,11 +716,11 @@
     }
 
     .quick-month-btn {
-      padding: 6px 12px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      background: #1a3050;
+      border: 2px solid #2a4a70;
       border-radius: var(--radius-full);
-      color: var(--text-secondary);
+      color: var(--text-primary);
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
@@ -1181,7 +1183,7 @@
     .transaction-item {
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
       background-color: var(--bg-card);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 14px;
       padding: 14px;
       margin-bottom: 10px;
@@ -1191,6 +1193,18 @@
       transition: all 0.2s;
       position: relative;
       overflow: hidden;
+    }
+
+    /* Income transactions - green left border and tint */
+    .transaction-item.income {
+      border-left: 4px solid var(--accent-green);
+      background: linear-gradient(90deg, rgba(7, 209, 143, 0.08) 0%, transparent 30%);
+    }
+
+    /* Expense transactions - red left border and tint */
+    .transaction-item.expense {
+      border-left: 4px solid var(--accent-red);
+      background: linear-gradient(90deg, rgba(255, 107, 107, 0.08) 0%, transparent 30%);
     }
 
     .transaction-item:active {
@@ -1213,12 +1227,12 @@
     }
 
     .tx-icon.income {
-      background: rgba(7, 209, 143, 0.15);
-      box-shadow: 0 2px 8px rgba(7, 209, 143, 0.15);
+      background: rgba(7, 209, 143, 0.2);
+      box-shadow: 0 2px 8px rgba(7, 209, 143, 0.2);
     }
     .tx-icon.expense {
-      background: rgba(255, 107, 107, 0.15);
-      box-shadow: 0 2px 8px rgba(255, 107, 107, 0.15);
+      background: rgba(255, 107, 107, 0.2);
+      box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
     }
 
     .tx-info { flex: 1; min-width: 0; }
@@ -1494,9 +1508,9 @@
       position: relative;
       width: 100%;
       max-width: 480px;
-      background: linear-gradient(180deg, #0c2540 0%, #081c30 100%);
+      background: #0d2035;
       border-radius: 24px 24px 0 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 2px solid #2a4a70;
       padding: 16px 20px;
       padding-bottom: calc(20px + var(--safe-bottom));
       transform: translateY(100%);
@@ -1505,7 +1519,7 @@
       display: flex;
       flex-direction: column;
       z-index: 1001;
-      box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.6);
     }
 
     .modal-overlay.active .modal {
@@ -1591,8 +1605,8 @@
 
     .form-input, .form-select {
       width: 100%;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #1a3050;
+      border: 2px solid #2a4a70;
       border-radius: 12px;
       padding: 16px;
       color: var(--text-primary);
@@ -1604,11 +1618,12 @@
     .form-input:focus, .form-select:focus {
       outline: none;
       border-color: var(--accent-green);
-      background: rgba(7, 209, 143, 0.04);
+      background: #1e3858;
+      box-shadow: 0 0 0 3px rgba(7, 209, 143, 0.15);
     }
 
     .form-input::placeholder {
-      color: var(--text-muted);
+      color: #6080a0;
     }
 
     .form-row {
@@ -1622,8 +1637,8 @@
 
     .type-toggle {
       display: flex;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #1a3050;
+      border: 2px solid #2a4a70;
       border-radius: 12px;
       padding: 4px;
     }
@@ -1800,8 +1815,8 @@
     }
 
     .import-option {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-color);
+      background: #1a3050;
+      border: 2px solid #2a4a70;
       border-radius: 14px;
       padding: 20px;
       text-align: center;
@@ -1812,6 +1827,7 @@
     .import-option:active {
       transform: scale(0.97);
       border-color: var(--accent-green);
+      background: #1e3858;
     }
 
     .import-option-icon {
@@ -1822,6 +1838,7 @@
     .import-option-label {
       font-size: 13px;
       font-weight: 600;
+      color: var(--text-primary);
     }
 
     .import-option-detail {
@@ -4413,7 +4430,7 @@
 
         const renderBatch = (start, end) => {
           return this.transactions.slice(start, end).map(tx => `
-            <div class="transaction-item" data-id="${tx.id}" role="listitem">
+            <div class="transaction-item ${tx.type}" data-id="${tx.id}" role="listitem">
               <div class="tx-icon ${tx.type}">${CATEGORY_ICONS[tx.category] || '💰'}</div>
               <div class="tx-info">
                 <div class="tx-desc">${sanitize(tx.description)}</div>
