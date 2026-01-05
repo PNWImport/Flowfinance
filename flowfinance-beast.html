@@ -809,10 +809,12 @@
 
     /* Quick Actions - 2x2 Grid of colorful buttons */
     .quick-actions {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
       gap: 12px;
       padding: 0 16px 20px;
+      overflow: visible;
+      flex-wrap: wrap;
     }
 
     /* Quick action BUTTONS - bright colors that POP */
@@ -820,18 +822,20 @@
       background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
       border: none;
       border-radius: 14px;
-      padding: 18px 14px;
+      padding: 16px 12px;
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      font-size: 14px;
+      gap: 8px;
+      font-size: 13px;
       font-weight: 700;
       color: #fff;
       cursor: pointer;
       transition: all 0.15s ease;
       box-shadow: 0 6px 25px rgba(34, 197, 94, 0.6);
+      min-width: 0;
+      white-space: nowrap;
     }
 
     .quick-action:nth-child(2) {
