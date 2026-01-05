@@ -742,36 +742,33 @@
     .mobile-nav-bar { display: none; }
     .month-bar { display: none; }
 
-    /* Hero Summary Section - Modern Bento Style */
+    /* Hero Summary Section - Stats display (not clickable) */
     .summary-section {
-      padding: 0 20px 20px;
+      padding: 12px 20px 20px;
       flex-shrink: 0;
+      background: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .summary-cards {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      gap: 8px;
     }
 
+    /* Summary cards - DISPLAY ONLY, not clickable */
     .summary-card {
-      background: var(--gradient-card), var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 18px 14px;
+      background: transparent;
+      border: none;
+      padding: 12px 8px;
       text-align: center;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
-      transition: all 0.2s ease;
-    }
-
-    .summary-card:active {
-      transform: scale(0.98);
+      pointer-events: none;
     }
 
     .summary-value {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 800;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       letter-spacing: -0.5px;
     }
 
@@ -820,9 +817,11 @@
 
     .quick-actions::-webkit-scrollbar { display: none; }
 
+    /* Quick action BUTTONS - clearly clickable */
     .quick-action {
-      background: var(--gradient-card), var(--bg-card);
-      border: 1px solid var(--border-color);
+      background: linear-gradient(180deg, #1e4060 0%, #152d45 100%);
+      border: 2px solid #3a6090;
+      border-bottom: 4px solid #2a4a70;
       border-radius: var(--radius-lg);
       padding: 16px 12px;
       display: flex;
@@ -830,17 +829,18 @@
       align-items: center;
       gap: 8px;
       font-size: 12px;
-      font-weight: 600;
-      color: var(--text-primary);
+      font-weight: 700;
+      color: #fff;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
       text-align: center;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
 
     .quick-action:active {
-      transform: scale(0.95);
-      background: var(--bg-card-hover);
+      transform: translateY(2px);
+      border-bottom-width: 2px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     }
 
     .quick-action-icon {
