@@ -3402,25 +3402,20 @@
               <input type="text" class="form-input" id="account-name" placeholder="e.g., Chase Checking">
             </div>
             <div class="form-group">
-              <label class="form-label">Type</label>
-              <input type="hidden" id="account-type" value="asset-checking">
-              <div style="margin-bottom: 8px;">
-                <div style="font-size: 11px; color: var(--accent-green); font-weight: 600; margin-bottom: 6px;">💰 ASSETS</div>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
-                  <button type="button" class="acct-type-btn active" data-value="asset-checking" onclick="app.selectAccountType(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid var(--accent-green); background: rgba(7, 209, 143, 0.15); color: var(--text-primary); font-size: 12px; cursor: pointer; transition: all 0.2s;">🏦 Checking</button>
-                  <button type="button" class="acct-type-btn" data-value="asset-savings" onclick="app.selectAccountType(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 12px; cursor: pointer; transition: all 0.2s;">💵 Savings</button>
-                  <button type="button" class="acct-type-btn" data-value="asset-investment" onclick="app.selectAccountType(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 12px; cursor: pointer; transition: all 0.2s;">📈 Investment</button>
-                  <button type="button" class="acct-type-btn" data-value="asset-property" onclick="app.selectAccountType(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 12px; cursor: pointer; transition: all 0.2s;">🏠 Property</button>
-                </div>
-              </div>
-              <div>
-                <div style="font-size: 11px; color: var(--accent-red); font-weight: 600; margin-bottom: 6px;">💸 LIABILITIES</div>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
-                  <button type="button" class="acct-type-btn" data-value="liability-credit_card" onclick="app.selectAccountType(this)" style="padding: 10px 6px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 11px; cursor: pointer; transition: all 0.2s;">💳 Credit</button>
-                  <button type="button" class="acct-type-btn" data-value="liability-loan" onclick="app.selectAccountType(this)" style="padding: 10px 6px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 11px; cursor: pointer; transition: all 0.2s;">📋 Loan</button>
-                  <button type="button" class="acct-type-btn" data-value="liability-mortgage" onclick="app.selectAccountType(this)" style="padding: 10px 6px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 11px; cursor: pointer; transition: all 0.2s;">🏡 Mortgage</button>
-                </div>
-              </div>
+              <label class="form-label" for="account-type">Type</label>
+              <select class="form-select" id="account-type">
+                <optgroup label="💰 Assets">
+                  <option value="asset-checking">🏦 Checking</option>
+                  <option value="asset-savings">💵 Savings</option>
+                  <option value="asset-investment">📈 Investment</option>
+                  <option value="asset-property">🏠 Property</option>
+                </optgroup>
+                <optgroup label="💸 Liabilities">
+                  <option value="liability-credit_card">💳 Credit Card</option>
+                  <option value="liability-loan">📋 Loan</option>
+                  <option value="liability-mortgage">🏡 Mortgage</option>
+                </optgroup>
+              </select>
             </div>
           </div>
           <div class="form-group">
@@ -3496,16 +3491,15 @@
               <input type="number" class="form-input" id="bill-day" min="1" max="31" placeholder="15">
             </div>
             <div class="form-group">
-              <label class="form-label">Category</label>
-              <input type="hidden" id="bill-category" value="Utilities">
-              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
-                <button type="button" class="bill-cat-btn active" data-value="Utilities" onclick="app.selectBillCategory(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid var(--accent-green); background: rgba(7, 209, 143, 0.15); color: var(--text-primary); font-size: 13px; cursor: pointer; transition: all 0.2s;">💡 Utilities</button>
-                <button type="button" class="bill-cat-btn" data-value="Subscriptions" onclick="app.selectBillCategory(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 13px; cursor: pointer; transition: all 0.2s;">📱 Subs</button>
-                <button type="button" class="bill-cat-btn" data-value="Housing" onclick="app.selectBillCategory(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 13px; cursor: pointer; transition: all 0.2s;">🏠 Housing</button>
-                <button type="button" class="bill-cat-btn" data-value="Insurance" onclick="app.selectBillCategory(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 13px; cursor: pointer; transition: all 0.2s;">🛡️ Insurance</button>
-                <button type="button" class="bill-cat-btn" data-value="Loans" onclick="app.selectBillCategory(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 13px; cursor: pointer; transition: all 0.2s;">💳 Loans</button>
-                <button type="button" class="bill-cat-btn" data-value="Other Expenses" onclick="app.selectBillCategory(this)" style="padding: 10px 8px; border-radius: 10px; border: 2px solid transparent; background: var(--bg-card); color: var(--text-primary); font-size: 13px; cursor: pointer; transition: all 0.2s;">📦 Other</button>
-              </div>
+              <label class="form-label" for="bill-category">Category</label>
+              <select class="form-select" id="bill-category">
+                <option value="Utilities">💡 Utilities</option>
+                <option value="Subscriptions">📱 Subscriptions</option>
+                <option value="Housing">🏠 Housing</option>
+                <option value="Insurance">🛡️ Insurance</option>
+                <option value="Loans">💳 Loans</option>
+                <option value="Other Expenses">📦 Other</option>
+              </select>
             </div>
           </div>
           <button class="submit-btn" onclick="app.addBill()">📅 Add Bill</button>
@@ -6554,21 +6548,6 @@
         this.trapFocus(modal);
       }
 
-      selectAccountType(btn) {
-        // Remove active state from all account type buttons
-        document.querySelectorAll('.acct-type-btn').forEach(b => {
-          b.classList.remove('active');
-          b.style.border = '2px solid transparent';
-          b.style.background = 'var(--bg-card)';
-        });
-        // Set active state on clicked button
-        btn.classList.add('active');
-        btn.style.border = '2px solid var(--accent-green)';
-        btn.style.background = 'rgba(7, 209, 143, 0.15)';
-        // Update hidden input
-        document.getElementById('account-type').value = btn.dataset.value;
-      }
-
       addAccount() {
         const name = document.getElementById('account-name').value.trim();
         const typeValue = document.getElementById('account-type').value;
@@ -6715,21 +6694,6 @@
         modal.classList.add('active');
         this.renderBills();
         this.trapFocus(modal);
-      }
-
-      selectBillCategory(btn) {
-        // Remove active state from all bill category buttons
-        document.querySelectorAll('.bill-cat-btn').forEach(b => {
-          b.classList.remove('active');
-          b.style.border = '2px solid transparent';
-          b.style.background = 'var(--bg-card)';
-        });
-        // Set active state on clicked button
-        btn.classList.add('active');
-        btn.style.border = '2px solid var(--accent-green)';
-        btn.style.background = 'rgba(7, 209, 143, 0.15)';
-        // Update hidden input
-        document.getElementById('bill-category').value = btn.dataset.value;
       }
 
       addBill() {
