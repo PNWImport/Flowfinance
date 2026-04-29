@@ -8899,7 +8899,8 @@
             for (const a of accts) await this.db.deleteAccount(a.id);
           }
           if (Array.isArray(data.transactions)) {
-            await this.db.addTransactions(data.transactions.map(t => ({ ...t, id: undefined })));
+            const stripped = data.transactions.map(t => { const c = { ...t }; delete c.id; return c; });
+            await this.db.addTransactions(stripped);
           }
           if (Array.isArray(data.accounts)) {
             for (const a of data.accounts) await this.db.putAccount(a);
@@ -8998,6 +8999,7 @@
 
     // Init
     const app = new FlowFinanceApp();
+    window.app = app;
     app.init().catch(console.error);
   </script>
 </body>
