@@ -2757,6 +2757,43 @@
     .kbd-help-panel h3 { margin: 0 0 12px; color: var(--accent-green); }
     .kbd-help-panel kbd { display: inline-block; padding: 2px 6px; border-radius: 4px; background: var(--bg-primary); border: 1px solid var(--border-color); font-family: monospace; font-size: 12px; }
     .kbd-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; }
+
+    /* === Wave 2 === */
+    .cal-toolbar { display: flex; gap: 12px; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .cal-cell {
+      aspect-ratio: 1; padding: 4px; border-radius: 6px; background: var(--card-bg);
+      border: 1px solid var(--border-color); font-size: 11px; display: flex; flex-direction: column;
+      cursor: pointer; min-height: 56px;
+    }
+    .cal-cell.muted { opacity: 0.35; }
+    .cal-cell.today { border-color: var(--accent-green); box-shadow: 0 0 0 1px var(--accent-green); }
+    .cal-cell-num { font-weight: 600; }
+    .cal-dots { display: flex; flex-wrap: wrap; gap: 2px; margin-top: auto; }
+    .cal-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; }
+    .cal-dot.in { background: var(--accent-green); }
+    .cal-dot.out { background: #ff6b6b; }
+    .cal-dot.bill { background: #ffc107; }
+    .cal-cell-amt { font-size: 9px; color: var(--text-muted); }
+
+    .debt-row { display: flex; gap: 8px; align-items: center; padding: 8px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 6px; font-size: 13px; }
+    .debt-row .debt-info { flex: 1; min-width: 0; }
+    .debt-row .debt-name { font-weight: 600; }
+    .debt-row .debt-meta { font-size: 11px; color: var(--text-muted); }
+    .debt-row .debt-rm { background: transparent; border: none; color: #ff6b6b; cursor: pointer; }
+    .debt-strategy { padding: 12px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--border-color); margin-bottom: 8px; }
+    .debt-strategy h4 { margin: 0 0 6px; font-size: 14px; }
+    .debt-strategy .stat-row { display: flex; justify-content: space-between; font-size: 12px; padding: 2px 0; }
+    .debt-strategy.winner { border-color: var(--accent-green); }
+
+    .empty-state-cta { display: inline-block; margin-top: 10px; padding: 8px 14px; border-radius: 8px; background: var(--accent-green); color: #000; font-weight: 600; cursor: pointer; border: none; font-size: 13px; }
+
+    .receipt-thumb-btn { background: transparent; border: 1px solid var(--border-color); border-radius: 6px; padding: 2px 6px; font-size: 10px; cursor: pointer; color: var(--text-secondary); margin-left: 4px; }
+
+    .holdings-row { display: flex; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border-color); font-size: 13px; }
+    .holdings-row:last-child { border-bottom: none; }
+    .holdings-row .h-sym { font-weight: 700; min-width: 60px; }
+    .holdings-row .h-qty { font-size: 11px; color: var(--text-muted); }
   </style>
 </head>
 <body>
@@ -2835,6 +2872,18 @@
       <div class="nav-item" id="sidebar-export" role="button" tabindex="0">
         <span class="nav-icon" aria-hidden="true">📤</span>
         <span>Export</span>
+      </div>
+      <div class="nav-item" id="sidebar-calendar" role="button" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📅</span>
+        <span>Calendar</span>
+      </div>
+      <div class="nav-item" id="sidebar-debt" role="button" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">💳</span>
+        <span>Debt Planner</span>
+      </div>
+      <div class="nav-item" id="sidebar-shared" role="button" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">🤝</span>
+        <span>Shared / Sync</span>
       </div>
       <div class="nav-item" id="sidebar-settings" role="button" tabindex="0">
         <span class="nav-icon" aria-hidden="true">⚙️</span>
@@ -3245,10 +3294,17 @@
               </select>
             </div>
           </div>
-          <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+          <div class="form-group" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
             <input type="checkbox" id="tx-tax-deductible" style="width: 18px; height: 18px;">
             <label for="tx-tax-deductible" style="margin: 0; font-size: 13px; color: var(--text-secondary);">🧾 Tax-deductible</label>
+            <label class="split-add-btn" style="cursor: pointer;">📎 Receipt
+              <input type="file" id="tx-receipt-input" accept="image/*" capture="environment" hidden>
+            </label>
             <button type="button" id="tx-toggle-splits" class="split-add-btn" style="margin-left: auto;">＋ Split</button>
+          </div>
+          <div id="tx-receipt-preview" hidden style="margin-top: 8px;">
+            <img id="tx-receipt-img" alt="Receipt preview" style="max-width: 100%; max-height: 180px; border-radius: 8px; border: 1px solid var(--border-color);">
+            <button type="button" id="tx-receipt-remove" class="split-add-btn" style="margin-top: 6px;">✕ Remove receipt</button>
           </div>
           <div class="splits-editor" id="splits-editor" hidden>
             <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Split this transaction across categories. Amounts must sum to the total.</div>
@@ -3581,6 +3637,34 @@
           </div>
           <button class="submit-btn" onclick="app.addAccount()">💾 Add Account</button>
         </div>
+
+        <!-- Investments / Holdings -->
+        <div id="holdings-section" style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 20px;">
+          <h3 style="color: var(--accent-blue); margin-bottom: 8px; font-size: 15px;">📈 Holdings (manual)</h3>
+          <div id="holdings-summary" style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;"></div>
+          <div id="holdings-list" style="margin-bottom: 12px;"></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="hold-symbol">Symbol</label>
+              <input type="text" class="form-input" id="hold-symbol" placeholder="VTI" maxlength="10">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="hold-qty">Qty</label>
+              <input type="number" class="form-input" id="hold-qty" step="0.0001" min="0" placeholder="10">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="hold-cost">Cost / share</label>
+              <input type="number" class="form-input" id="hold-cost" step="0.01" min="0" placeholder="180.00">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="hold-price">Current price</label>
+              <input type="number" class="form-input" id="hold-price" step="0.01" min="0" placeholder="245.00">
+            </div>
+          </div>
+          <button type="button" class="submit-btn" id="holdings-add-btn">➕ Add Holding</button>
+        </div>
       </div>
     </div>
   </div>
@@ -3843,6 +3927,121 @@
             <div class="import-option-detail">Full encrypted backup</div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendar Modal -->
+  <div class="modal-overlay" id="calendar-modal" role="dialog" aria-modal="true" aria-labelledby="calendar-modal-title">
+    <div class="modal" style="max-width: 720px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="calendar-modal-title">📅 Calendar</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="cal-toolbar">
+          <button type="button" class="split-add-btn" id="cal-prev">‹ Prev</button>
+          <span id="cal-month-label" style="font-weight: 700;"></span>
+          <button type="button" class="split-add-btn" id="cal-next">Next ›</button>
+        </div>
+        <div class="cal-grid" id="cal-grid" role="grid"></div>
+        <div id="cal-legend" style="margin-top: 12px; font-size: 12px; color: var(--text-secondary); display: flex; gap: 12px; flex-wrap: wrap;">
+          <span><span class="cal-dot in"></span> Income</span>
+          <span><span class="cal-dot out"></span> Expense</span>
+          <span><span class="cal-dot bill"></span> Bill due</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Debt Paydown Planner Modal -->
+  <div class="modal-overlay" id="debt-modal" role="dialog" aria-modal="true" aria-labelledby="debt-modal-title">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="debt-modal-title">💳 Debt Paydown Planner</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">List your debts. We'll compare snowball (smallest balance first) vs avalanche (highest APR first).</p>
+        <div id="debt-list"></div>
+        <div class="debt-add">
+          <h3 style="color: var(--accent-blue); margin: 12px 0 8px; font-size: 14px;">➕ Add Debt</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="debt-name">Name</label>
+              <input type="text" class="form-input" id="debt-name" placeholder="Visa Card" maxlength="40">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="debt-balance">Balance</label>
+              <input type="number" class="form-input" id="debt-balance" placeholder="2500" step="0.01" min="0">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="debt-apr">APR %</label>
+              <input type="number" class="form-input" id="debt-apr" placeholder="22.99" step="0.01" min="0" max="100">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="debt-min">Min Payment</label>
+              <input type="number" class="form-input" id="debt-min" placeholder="50" step="0.01" min="0">
+            </div>
+          </div>
+          <button type="button" class="submit-btn" id="debt-add-btn">Add Debt</button>
+        </div>
+        <hr style="border-color: var(--border-color); margin: 16px 0;">
+        <div class="form-group">
+          <label class="form-label" for="debt-extra">Extra Monthly Payment (above minimums)</label>
+          <input type="number" class="form-input" id="debt-extra" placeholder="200" step="0.01" min="0">
+        </div>
+        <button type="button" class="submit-btn" id="debt-calc-btn">📊 Compare Strategies</button>
+        <div id="debt-results" style="margin-top: 16px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Bundle Modal (Couples / Multi-device) -->
+  <div class="modal-overlay" id="shared-modal" role="dialog" aria-modal="true" aria-labelledby="shared-modal-title">
+    <div class="modal" style="max-width: 580px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="shared-modal-title">🤝 Shared / Sync</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-secondary); font-size: 13px;">Move data between devices or share with a partner. Encrypted with a passphrase you choose — nothing is uploaded.</p>
+        <div class="form-group">
+          <label class="form-label" for="shared-passphrase">Passphrase (≥ 8 chars)</label>
+          <input type="password" class="form-input" id="shared-passphrase" placeholder="Pick something only you both know" minlength="8" maxlength="128">
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="submit-btn" id="shared-encrypt-btn" style="flex: 1;">🔒 Create encrypted bundle</button>
+          <button type="button" class="submit-btn" id="shared-decrypt-btn" style="flex: 1;">🔓 Restore from bundle</button>
+        </div>
+        <div id="shared-output" hidden style="margin-top: 12px;">
+          <label class="form-label">Bundle (copy this text or save):</label>
+          <textarea id="shared-bundle-text" class="form-input" rows="6" readonly style="font-family: monospace; font-size: 11px;"></textarea>
+          <button type="button" class="split-add-btn" id="shared-copy-btn" style="margin-top: 6px;">📋 Copy</button>
+        </div>
+        <div id="shared-input" hidden style="margin-top: 12px;">
+          <label class="form-label" for="shared-bundle-input">Paste bundle:</label>
+          <textarea id="shared-bundle-input" class="form-input" rows="6" placeholder="Paste the bundle text here" style="font-family: monospace; font-size: 11px;"></textarea>
+          <div style="display: flex; gap: 8px; margin-top: 6px;">
+            <button type="button" class="split-add-btn" id="shared-import-merge">⤴ Merge</button>
+            <button type="button" class="split-add-btn" id="shared-import-replace" style="color: #ff6b6b;">⚠ Replace all</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Receipt Viewer Modal -->
+  <div class="modal-overlay" id="receipt-modal" role="dialog" aria-modal="true" aria-labelledby="receipt-modal-title">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="receipt-modal-title">📎 Receipt</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <img id="receipt-viewer-img" alt="Receipt" style="max-width: 100%; max-height: 70vh; border-radius: 12px;">
       </div>
     </div>
   </div>
@@ -5524,22 +5723,22 @@
 
       detectSubscriptions() {
         const subs = [
-          { name: 'Netflix', keys: ['netflix'], icon: '🎬' },
-          { name: 'Spotify', keys: ['spotify'], icon: '🎵' },
-          { name: 'Disney+', keys: ['disney+', 'disney plus'], icon: '🏰' },
-          { name: 'Amazon Prime', keys: ['prime video', 'amazon prime'], icon: '📦' },
-          { name: 'Hulu', keys: ['hulu'], icon: '📺' },
-          { name: 'HBO Max', keys: ['hbo', 'max'], icon: '🎭' },
-          { name: 'YouTube', keys: ['youtube'], icon: '▶️' },
-          { name: 'Apple', keys: ['apple music', 'icloud', 'apple tv', 'apple one'], icon: '🍎' },
-          { name: 'Google', keys: ['google one', 'google storage'], icon: '🔷' },
-          { name: 'Gym', keys: ['gym', 'fitness', 'planet fitness', 'equinox', 'la fitness'], icon: '💪' },
-          { name: 'Adobe', keys: ['adobe'], icon: '🎨' },
-          { name: 'Microsoft', keys: ['microsoft 365', 'xbox'], icon: '📊' },
-          { name: 'ChatGPT', keys: ['openai', 'chatgpt'], icon: '🤖' },
-          { name: 'Claude', keys: ['anthropic', 'claude'], icon: '🧠' },
-          { name: 'Dropbox', keys: ['dropbox'], icon: '📁' },
-          { name: 'Notion', keys: ['notion'], icon: '📝' },
+          { name: 'Netflix', keys: ['netflix'], icon: '🎬', cancel: 'https://www.netflix.com/cancelplan' },
+          { name: 'Spotify', keys: ['spotify'], icon: '🎵', cancel: 'https://www.spotify.com/account/subscription/' },
+          { name: 'Disney+', keys: ['disney+', 'disney plus'], icon: '🏰', cancel: 'https://www.disneyplus.com/account/subscription' },
+          { name: 'Amazon Prime', keys: ['prime video', 'amazon prime'], icon: '📦', cancel: 'https://www.amazon.com/gp/primecentral' },
+          { name: 'Hulu', keys: ['hulu'], icon: '📺', cancel: 'https://secure.hulu.com/account' },
+          { name: 'HBO Max', keys: ['hbo', 'max'], icon: '🎭', cancel: 'https://play.max.com/settings/subscription' },
+          { name: 'YouTube', keys: ['youtube'], icon: '▶️', cancel: 'https://www.youtube.com/paid_memberships' },
+          { name: 'Apple', keys: ['apple music', 'icloud', 'apple tv', 'apple one'], icon: '🍎', cancel: 'https://apps.apple.com/account/subscriptions' },
+          { name: 'Google', keys: ['google one', 'google storage'], icon: '🔷', cancel: 'https://one.google.com/storage' },
+          { name: 'Gym', keys: ['gym', 'fitness', 'planet fitness', 'equinox', 'la fitness'], icon: '💪', cancel: null },
+          { name: 'Adobe', keys: ['adobe'], icon: '🎨', cancel: 'https://account.adobe.com/plans' },
+          { name: 'Microsoft', keys: ['microsoft 365', 'xbox'], icon: '📊', cancel: 'https://account.microsoft.com/services' },
+          { name: 'ChatGPT', keys: ['openai', 'chatgpt'], icon: '🤖', cancel: 'https://chat.openai.com/' },
+          { name: 'Claude', keys: ['anthropic', 'claude'], icon: '🧠', cancel: 'https://claude.ai/settings/billing' },
+          { name: 'Dropbox', keys: ['dropbox'], icon: '📁', cancel: 'https://www.dropbox.com/account/plan' },
+          { name: 'Notion', keys: ['notion'], icon: '📝', cancel: 'https://www.notion.so/my-account' },
         ];
 
         const detected = [];
@@ -5998,7 +6197,7 @@
         // Add transaction button
         document.getElementById('add-tx-btn').addEventListener('click', () => this.openAddModal());
         document.getElementById('import-btn').addEventListener('click', () => this.openImportModal());
-        document.getElementById('export-btn').addEventListener('click', () => document.getElementById('export-modal').classList.add('open'));
+        document.getElementById('export-btn').addEventListener('click', () => document.getElementById('export-modal').classList.add('active'));
         document.getElementById('edit-budget').addEventListener('click', () => this.openBudgetModal());
 
         // AI Insights button
@@ -6079,7 +6278,7 @@
         const sidebarImport = document.getElementById('sidebar-import');
         const sidebarExport = document.getElementById('sidebar-export');
         if (sidebarImport) sidebarImport.addEventListener('click', () => this.openImportModal());
-        if (sidebarExport) sidebarExport.addEventListener('click', () => document.getElementById('export-modal').classList.add('open'));
+        if (sidebarExport) sidebarExport.addEventListener('click', () => document.getElementById('export-modal').classList.add('active'));
 
         // Keyboard support for sidebar nav items (Enter/Space to activate)
         document.querySelectorAll('.desktop-sidebar .nav-item').forEach(item => {
@@ -6406,27 +6605,31 @@
       renderSubscriptions() {
         const subs = this.analytics.detectSubscriptions();
         const total = subs.reduce((s, sub) => s + sub.amount, 0);
-        document.getElementById('subs-total').textContent = `$${total.toFixed(0)}/mo`;
+        document.getElementById('subs-total').textContent = `${this.fmt(total)}/mo`;
 
         const container = document.getElementById('subscription-list');
         if (subs.length === 0) {
-          container.innerHTML = `<div class="empty-state"><div class="empty-icon">🔄</div><div class="empty-title">No subscriptions detected</div><div class="empty-text">Import transactions to auto-detect recurring charges</div></div>`;
+          container.innerHTML = `<div class="empty-state"><div class="empty-icon">🔄</div><div class="empty-title">No subscriptions detected</div><div class="empty-text">Import transactions to auto-detect recurring charges</div><button type="button" class="empty-state-cta" data-action-empty="open-import">📥 Import a statement</button></div>`;
           return;
         }
 
-        container.innerHTML = subs.map((s, i) => `
+        container.innerHTML = subs.map((s, i) => {
+          const cancelBtn = s.cancel
+            ? `<a href="${s.cancel}" target="_blank" rel="noopener noreferrer" class="receipt-thumb-btn" title="Open ${sanitize(s.name)} cancel page">Cancel ↗</a>`
+            : '';
+          return `
           <div class="subscription-item ${i > 2 ? 'warning' : ''}">
             <div class="sub-icon">${s.icon}</div>
             <div class="sub-info">
-              <div class="sub-name">${sanitize(s.name)}</div>
+              <div class="sub-name">${sanitize(s.name)} ${cancelBtn}</div>
               <div class="sub-detail">${s.count}x this month</div>
             </div>
             <div class="sub-amount">
-              <div class="sub-price">$${s.amount.toFixed(2)}</div>
-              <div class="sub-yearly">$${(s.amount * 12).toFixed(0)}/yr</div>
+              <div class="sub-price">${this.fmt(s.amount)}</div>
+              <div class="sub-yearly">${this.fmt(s.amount * 12)}/yr</div>
             </div>
-          </div>
-        `).join('');
+          </div>`;
+        }).join('');
       }
 
       renderTransactions() {
@@ -6450,7 +6653,7 @@
 
         if (filtered.length === 0) {
           if (all.length === 0) {
-            container.innerHTML = `<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-title">No transactions</div><div class="empty-text">Add or import transactions to get started</div></div>`;
+            container.innerHTML = `<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-title">No transactions</div><div class="empty-text">Add or import transactions to get started</div><div style="display:flex; gap:8px; justify-content:center; margin-top:10px;"><button type="button" class="empty-state-cta" data-action-empty="open-add">＋ Add</button><button type="button" class="empty-state-cta" data-action-empty="open-import" style="background:var(--accent-blue);">📥 Import</button></div></div>`;
           } else {
             container.innerHTML = `<div class="empty-state"><div class="empty-icon">🔎</div><div class="empty-title">No matches</div><div class="empty-text">Try clearing the filters above</div></div>`;
           }
@@ -6471,6 +6674,7 @@
             if (tx.taxDeductible) badges.push('<span class="tx-badge tax">🧾 Tax</span>');
             if (tx.splits && tx.splits.length) badges.push(`<span class="tx-badge split">⤴ ${tx.splits.length} split</span>`);
             if (tx.isTransfer) badges.push('<span class="tx-badge transfer">⇄ Transfer</span>');
+            if (tx.receipt) badges.push(`<button type="button" class="receipt-thumb-btn" data-receipt="${tx.id}">📎</button>`);
             const checked = selected.has(tx.id) ? 'checked' : '';
             const checkbox = bulkMode ? `<input type="checkbox" class="tx-checkbox" data-id="${tx.id}" ${checked} aria-label="Select transaction">` : '';
             return `
@@ -6492,6 +6696,9 @@
         // Render initial batch
         container.innerHTML = renderBatch(0, BATCH_SIZE);
         this._bindTxCheckboxes(container);
+        container.querySelectorAll('button[data-receipt]').forEach(btn => {
+          btn.addEventListener('click', (e) => { e.stopPropagation(); this.openReceipt(Number(btn.dataset.receipt)); });
+        });
 
         // Add "Load More" button if there are more transactions
         if (this.transactions.length > BATCH_SIZE) {
@@ -6983,7 +7190,8 @@
 
         const netWorthColor = data.netWorth >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
         valueEl.style.color = netWorthColor;
-        valueEl.textContent = `$${data.netWorth.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+        valueEl.textContent = this.fmtFull(data.netWorth);
+        this.renderHoldings();
 
         if (data.accounts.length === 0) {
           listEl.innerHTML = `
@@ -7558,10 +7766,20 @@
       closeModals() {
         document.querySelectorAll('.modal-overlay').forEach(m => {
           m.classList.remove('active');
+          m.classList.remove('open');
           this.removeFocusTrap(m);
         });
         document.getElementById('tx-form').reset();
         document.getElementById('file-input').value = '';
+
+        // Reset receipt + splits
+        this._pendingReceipt = null;
+        const rp = document.getElementById('tx-receipt-preview');
+        if (rp) rp.hidden = true;
+        const ri = document.getElementById('tx-receipt-img');
+        if (ri) ri.src = '';
+        const ed = document.getElementById('splits-editor');
+        if (ed) { ed.hidden = true; const r = document.getElementById('splits-rows'); if (r) r.innerHTML = ''; }
 
         // Restore focus to previously focused element
         if (this._previousFocus) {
@@ -7622,6 +7840,7 @@
             accountId: accountId ? Number(accountId) : null,
             taxDeductible,
             splits: splits?.rows || null,
+            receipt: this._pendingReceipt || null,
             createdAt: new Date().toISOString()
           };
 
@@ -7757,7 +7976,7 @@
 
       // AI Insights Methods
       openAIModal() {
-        document.getElementById('ai-modal').classList.add('open');
+        document.getElementById('ai-modal').classList.add('active');
         document.getElementById('ai-loading').style.display = 'block';
         document.getElementById('ai-result').style.display = 'none';
         document.getElementById('ai-error').style.display = 'none';
@@ -8128,7 +8347,7 @@
         this._populateAccountSelects();
         const dflt = document.getElementById('setting-default-account');
         if (dflt) dflt.value = APP_SETTINGS.defaultAccountId || '';
-        document.getElementById('settings-modal').classList.add('open');
+        document.getElementById('settings-modal').classList.add('active');
       }
 
       async saveSettings() {
@@ -8225,7 +8444,7 @@
           b.setAttribute('aria-checked', String(isActive));
         });
         this._populateAccountSelects();
-        document.getElementById('add-modal').classList.add('open');
+        document.getElementById('add-modal').classList.add('active');
         setTimeout(() => document.getElementById('tx-desc')?.focus(), 100);
       }
 
@@ -8275,7 +8494,7 @@
         document.getElementById('kbd-help')?.addEventListener('click', (e) => { if (e.target.id === 'kbd-help') document.getElementById('kbd-help').classList.remove('open'); });
 
         // Trust strip export link
-        document.getElementById('trust-export-link')?.addEventListener('click', () => document.getElementById('export-modal').classList.add('open'));
+        document.getElementById('trust-export-link')?.addEventListener('click', () => document.getElementById('export-modal').classList.add('active'));
 
         // Export modal options
         document.querySelectorAll('#export-modal [data-export]').forEach(opt => {
@@ -8289,6 +8508,433 @@
             else if (fmt === 'json') this.exportJSON();
           });
         });
+
+        // Wave 2: Calendar
+        document.getElementById('sidebar-calendar')?.addEventListener('click', () => this.openCalendarModal());
+        document.getElementById('cal-prev')?.addEventListener('click', () => this._shiftCalendar(-1));
+        document.getElementById('cal-next')?.addEventListener('click', () => this._shiftCalendar(1));
+
+        // Wave 2: Debt
+        document.getElementById('sidebar-debt')?.addEventListener('click', () => this.openDebtModal());
+        document.getElementById('debt-add-btn')?.addEventListener('click', () => this._addDebt());
+        document.getElementById('debt-calc-btn')?.addEventListener('click', () => this._calcDebt());
+
+        // Wave 2: Shared
+        document.getElementById('sidebar-shared')?.addEventListener('click', () => this.openSharedModal());
+        document.getElementById('shared-encrypt-btn')?.addEventListener('click', () => this.createSharedBundle());
+        document.getElementById('shared-decrypt-btn')?.addEventListener('click', () => this.showSharedImport());
+        document.getElementById('shared-import-merge')?.addEventListener('click', () => this.restoreSharedBundle('merge'));
+        document.getElementById('shared-import-replace')?.addEventListener('click', () => this.restoreSharedBundle('replace'));
+        document.getElementById('shared-copy-btn')?.addEventListener('click', async () => {
+          const t = document.getElementById('shared-bundle-text').value;
+          try { await navigator.clipboard.writeText(t); this.toast('📋 Copied', 'success'); }
+          catch { document.getElementById('shared-bundle-text').select(); document.execCommand('copy'); this.toast('📋 Copied', 'success'); }
+        });
+
+        // Wave 2: Holdings
+        document.getElementById('holdings-add-btn')?.addEventListener('click', () => this.addHolding());
+
+        // Wave 2: Receipts
+        this._attachReceiptHandlers();
+
+        // Empty-state delegated CTAs
+        document.body.addEventListener('click', (e) => {
+          const t = e.target.closest('[data-action-empty]');
+          if (!t) return;
+          const a = t.dataset.actionEmpty;
+          if (a === 'open-import') document.getElementById('import-modal').classList.add('active');
+          else if (a === 'open-add') this.openAddModal('expense');
+          else if (a === 'open-debt') this.openDebtModal();
+          else if (a === 'open-budget') document.getElementById('budget-modal').classList.add('active');
+        });
+      }
+
+      // ===== Wave 2: Receipts =====
+      _attachReceiptHandlers() {
+        const input = document.getElementById('tx-receipt-input');
+        const preview = document.getElementById('tx-receipt-preview');
+        const img = document.getElementById('tx-receipt-img');
+        const remove = document.getElementById('tx-receipt-remove');
+        if (!input || input._wired) return;
+        input._wired = true;
+        input.addEventListener('change', async () => {
+          const file = input.files?.[0];
+          if (!file) return;
+          if (file.size > 1.5 * 1024 * 1024) {
+            this.toast('Receipt > 1.5MB. Will be downscaled.', 'warning');
+          }
+          const dataUrl = await this._compressImage(file, 1200, 0.72);
+          img.src = dataUrl;
+          preview.hidden = false;
+          this._pendingReceipt = dataUrl;
+        });
+        remove.addEventListener('click', () => {
+          this._pendingReceipt = null;
+          input.value = '';
+          preview.hidden = true;
+          img.src = '';
+        });
+      }
+
+      _compressImage(file, maxDim = 1200, quality = 0.7) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const im = new Image();
+            im.onload = () => {
+              let { width, height } = im;
+              if (width > maxDim || height > maxDim) {
+                const ratio = Math.min(maxDim / width, maxDim / height);
+                width = Math.round(width * ratio);
+                height = Math.round(height * ratio);
+              }
+              const canvas = document.createElement('canvas');
+              canvas.width = width; canvas.height = height;
+              canvas.getContext('2d').drawImage(im, 0, 0, width, height);
+              resolve(canvas.toDataURL('image/jpeg', quality));
+            };
+            im.onerror = reject;
+            im.src = reader.result;
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      openReceipt(txId) {
+        const tx = this.transactions.find(t => t.id === txId);
+        if (!tx?.receipt) return;
+        document.getElementById('receipt-viewer-img').src = tx.receipt;
+        document.getElementById('receipt-modal').classList.add('active');
+      }
+
+      // ===== Wave 2: Calendar =====
+      openCalendarModal() {
+        this._calMonth = this.currentMonth;
+        document.getElementById('calendar-modal').classList.add('active');
+        this._renderCalendar();
+      }
+
+      _shiftCalendar(delta) {
+        const d = new Date(this._calMonth + '-01');
+        d.setMonth(d.getMonth() + delta);
+        this._calMonth = d.toISOString().substring(0, 7);
+        this._renderCalendar();
+      }
+
+      async _renderCalendar() {
+        const monthKey = this._calMonth;
+        const [y, m] = monthKey.split('-').map(Number);
+        const first = new Date(y, m - 1, 1);
+        const last = new Date(y, m, 0);
+        const startWd = first.getDay();
+        const daysInMonth = last.getDate();
+        const today = new Date();
+        document.getElementById('cal-month-label').textContent =
+          first.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+        const txs = await this.db.getByMonth(monthKey);
+        const byDay = {};
+        txs.forEach(t => {
+          const day = parseInt((t.date || '').slice(8, 10));
+          if (!day) return;
+          (byDay[day] = byDay[day] || { in: 0, out: 0, count: 0 });
+          if (t.type === 'income') byDay[day].in += t.amount;
+          else byDay[day].out += t.amount;
+          byDay[day].count++;
+        });
+
+        // Bills
+        const bills = (typeof billReminder !== 'undefined' ? billReminder.bills : []) || [];
+        const billsByDay = {};
+        bills.forEach(b => {
+          const day = parseInt(b.dueDay || (b.dueDate ? new Date(b.dueDate).getDate() : 0));
+          if (day >= 1 && day <= 31) (billsByDay[day] = billsByDay[day] || []).push(b);
+        });
+
+        const grid = document.getElementById('cal-grid');
+        grid.innerHTML = '';
+        // Weekday header
+        ['S','M','T','W','T','F','S'].forEach(w => {
+          const h = document.createElement('div');
+          h.style.cssText = 'text-align:center; font-size:11px; color: var(--text-muted); padding:4px;';
+          h.textContent = w;
+          grid.appendChild(h);
+        });
+        // Leading blanks
+        for (let i = 0; i < startWd; i++) {
+          const c = document.createElement('div'); c.className = 'cal-cell muted'; grid.appendChild(c);
+        }
+        for (let d = 1; d <= daysInMonth; d++) {
+          const cell = document.createElement('div');
+          cell.className = 'cal-cell';
+          const isToday = (today.getFullYear() === y && today.getMonth() === m - 1 && today.getDate() === d);
+          if (isToday) cell.classList.add('today');
+          const num = document.createElement('div');
+          num.className = 'cal-cell-num';
+          num.textContent = d;
+          cell.appendChild(num);
+          const data = byDay[d];
+          const dayBills = billsByDay[d] || [];
+          const dots = document.createElement('div');
+          dots.className = 'cal-dots';
+          if (data?.in) dots.appendChild(Object.assign(document.createElement('span'), { className: 'cal-dot in' }));
+          if (data?.out) dots.appendChild(Object.assign(document.createElement('span'), { className: 'cal-dot out' }));
+          if (dayBills.length) dots.appendChild(Object.assign(document.createElement('span'), { className: 'cal-dot bill' }));
+          cell.appendChild(dots);
+          if (data) {
+            const a = document.createElement('div');
+            a.className = 'cal-cell-amt';
+            const net = (data.in || 0) - (data.out || 0);
+            a.textContent = (net >= 0 ? '+' : '') + this.fmt(net);
+            cell.appendChild(a);
+          }
+          cell.title = `${monthKey}-${String(d).padStart(2,'0')}: ${data?.count || 0} tx${dayBills.length ? `, ${dayBills.length} bill(s)` : ''}`;
+          grid.appendChild(cell);
+        }
+      }
+
+      // ===== Wave 2: Debt Planner =====
+      _loadDebts() { return JSON.parse(localStorage.getItem('flowfinance_debts') || '[]'); }
+      _saveDebts(arr) { localStorage.setItem('flowfinance_debts', JSON.stringify(arr)); }
+
+      openDebtModal() {
+        document.getElementById('debt-modal').classList.add('active');
+        this._renderDebts();
+      }
+
+      _renderDebts() {
+        const list = document.getElementById('debt-list');
+        const debts = this._loadDebts();
+        if (debts.length === 0) {
+          list.innerHTML = `<div style="color: var(--text-muted); font-size: 12px; padding: 8px;">No debts added yet.</div>`;
+          return;
+        }
+        list.innerHTML = debts.map((d, i) => `
+          <div class="debt-row">
+            <div class="debt-info">
+              <div class="debt-name">${sanitize(d.name)}</div>
+              <div class="debt-meta">${this.fmt(d.balance)} @ ${d.apr}% APR · min ${this.fmt(d.min)}/mo</div>
+            </div>
+            <button type="button" class="debt-rm" data-i="${i}" aria-label="Remove debt">✕</button>
+          </div>
+        `).join('');
+        list.querySelectorAll('.debt-rm').forEach(b => b.addEventListener('click', () => {
+          const i = Number(b.dataset.i);
+          const arr = this._loadDebts();
+          arr.splice(i, 1);
+          this._saveDebts(arr);
+          this._renderDebts();
+        }));
+      }
+
+      _addDebt() {
+        const name = document.getElementById('debt-name').value.trim();
+        const balance = parseFloat(document.getElementById('debt-balance').value);
+        const apr = parseFloat(document.getElementById('debt-apr').value);
+        const min = parseFloat(document.getElementById('debt-min').value);
+        if (!name || isNaN(balance) || balance <= 0 || isNaN(apr) || isNaN(min) || min <= 0) {
+          this.toast('Fill all debt fields with valid values', 'error'); return;
+        }
+        const arr = this._loadDebts();
+        arr.push({ name: sanitize(name), balance, apr, min });
+        this._saveDebts(arr);
+        ['debt-name','debt-balance','debt-apr','debt-min'].forEach(id => document.getElementById(id).value = '');
+        this._renderDebts();
+      }
+
+      _simulatePaydown(debts, extra, strategy) {
+        const list = debts.map(d => ({ ...d }));
+        let months = 0, totalInterest = 0;
+        const MAX = 600;
+        while (list.some(d => d.balance > 0.01) && months < MAX) {
+          months++;
+          // accrue interest
+          list.forEach(d => {
+            if (d.balance <= 0) return;
+            const monthlyRate = d.apr / 100 / 12;
+            const interest = d.balance * monthlyRate;
+            totalInterest += interest;
+            d.balance += interest;
+          });
+          // pay minimums
+          let extraPool = extra;
+          list.forEach(d => {
+            if (d.balance <= 0) return;
+            const pay = Math.min(d.min, d.balance);
+            d.balance -= pay;
+          });
+          // sort by strategy and apply extra
+          const active = list.filter(d => d.balance > 0.01);
+          active.sort((a, b) => strategy === 'snowball' ? a.balance - b.balance : b.apr - a.apr);
+          for (const d of active) {
+            if (extraPool <= 0) break;
+            const pay = Math.min(extraPool, d.balance);
+            d.balance -= pay;
+            extraPool -= pay;
+          }
+        }
+        return { months, totalInterest };
+      }
+
+      _calcDebt() {
+        const debts = this._loadDebts();
+        const extra = parseFloat(document.getElementById('debt-extra').value) || 0;
+        const out = document.getElementById('debt-results');
+        if (debts.length === 0) { out.innerHTML = '<div style="color: var(--text-muted);">Add debts first.</div>'; return; }
+        const sb = this._simulatePaydown(debts, extra, 'snowball');
+        const av = this._simulatePaydown(debts, extra, 'avalanche');
+        const pickAv = av.totalInterest < sb.totalInterest;
+        const totalBalance = debts.reduce((s, d) => s + d.balance, 0);
+        out.innerHTML = `
+          <div class="debt-strategy ${!pickAv ? 'winner' : ''}">
+            <h4>❄️ Snowball ${!pickAv ? '— Winner' : ''}</h4>
+            <div class="stat-row"><span>Total balance</span><span>${this.fmt(totalBalance)}</span></div>
+            <div class="stat-row"><span>Months to debt-free</span><span>${sb.months}</span></div>
+            <div class="stat-row"><span>Total interest</span><span>${this.fmt(sb.totalInterest)}</span></div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Pays smallest balance first — quick wins for motivation.</div>
+          </div>
+          <div class="debt-strategy ${pickAv ? 'winner' : ''}">
+            <h4>🏔️ Avalanche ${pickAv ? '— Winner' : ''}</h4>
+            <div class="stat-row"><span>Months to debt-free</span><span>${av.months}</span></div>
+            <div class="stat-row"><span>Total interest</span><span>${this.fmt(av.totalInterest)}</span></div>
+            <div class="stat-row"><span>Saves vs snowball</span><span>${this.fmt(Math.max(0, sb.totalInterest - av.totalInterest))}</span></div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Pays highest APR first — minimizes total interest.</div>
+          </div>`;
+      }
+
+      // ===== Wave 2: Shared / Couples =====
+      openSharedModal() {
+        document.getElementById('shared-modal').classList.add('active');
+        document.getElementById('shared-output').hidden = true;
+        document.getElementById('shared-input').hidden = true;
+      }
+
+      async _deriveKey(passphrase, salt) {
+        const enc = new TextEncoder();
+        const baseKey = await crypto.subtle.importKey('raw', enc.encode(passphrase), { name: 'PBKDF2' }, false, ['deriveKey']);
+        return crypto.subtle.deriveKey(
+          { name: 'PBKDF2', salt, iterations: 200000, hash: 'SHA-256' },
+          baseKey,
+          { name: 'AES-GCM', length: 256 },
+          false,
+          ['encrypt', 'decrypt']
+        );
+      }
+
+      _b64(buf) { return btoa(String.fromCharCode(...new Uint8Array(buf))); }
+      _unb64(str) { return Uint8Array.from(atob(str), c => c.charCodeAt(0)); }
+
+      async createSharedBundle() {
+        const pass = document.getElementById('shared-passphrase').value;
+        if (!pass || pass.length < 8) { this.toast('Passphrase must be ≥ 8 chars', 'error'); return; }
+        const [txs, accounts] = await Promise.all([this.db.getAll(), this.db.getAccounts()]);
+        const payload = JSON.stringify({ v: 1, exportedAt: new Date().toISOString(), settings: APP_SETTINGS, transactions: txs, accounts });
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const key = await this._deriveKey(pass, salt);
+        const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(payload));
+        const bundle = `FFv1.${this._b64(salt)}.${this._b64(iv)}.${this._b64(ciphertext)}`;
+        document.getElementById('shared-output').hidden = false;
+        document.getElementById('shared-input').hidden = true;
+        document.getElementById('shared-bundle-text').value = bundle;
+        this.toast('🔒 Encrypted bundle ready', 'success');
+      }
+
+      showSharedImport() {
+        document.getElementById('shared-input').hidden = false;
+        document.getElementById('shared-output').hidden = true;
+      }
+
+      async restoreSharedBundle(mode = 'merge') {
+        const pass = document.getElementById('shared-passphrase').value;
+        const bundle = document.getElementById('shared-bundle-input').value.trim();
+        if (!pass) { this.toast('Enter the passphrase', 'error'); return; }
+        if (!bundle.startsWith('FFv1.')) { this.toast('Not a FlowFinance bundle', 'error'); return; }
+        try {
+          const [, saltB64, ivB64, ctB64] = bundle.split('.');
+          const salt = this._unb64(saltB64), iv = this._unb64(ivB64), ct = this._unb64(ctB64);
+          const key = await this._deriveKey(pass, salt);
+          const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
+          const data = JSON.parse(new TextDecoder().decode(pt));
+          if (mode === 'replace') {
+            if (!confirm('This will REPLACE all your transactions and accounts. Continue?')) return;
+            const all = await this.db.getAll();
+            const months = new Set(all.map(t => t.month));
+            await this.db.deleteMany(all.map(t => t.id), [...months]);
+            const accts = await this.db.getAccounts();
+            for (const a of accts) await this.db.deleteAccount(a.id);
+          }
+          if (Array.isArray(data.transactions)) {
+            await this.db.addTransactions(data.transactions.map(t => ({ ...t, id: undefined })));
+          }
+          if (Array.isArray(data.accounts)) {
+            for (const a of data.accounts) await this.db.putAccount(a);
+          }
+          this.accounts = await this.db.getAccounts();
+          this.netWorthTracker.accounts = this.accounts;
+          await this.loadData();
+          this.renderAll();
+          this.closeModals();
+          this.toast(`🔓 Restored ${data.transactions?.length || 0} tx, ${data.accounts?.length || 0} accounts`, 'success');
+        } catch (e) {
+          console.error(e);
+          this.toast('Decrypt failed — wrong passphrase?', 'error');
+        }
+      }
+
+      // ===== Wave 2: Investments — manual holdings =====
+      _loadHoldings() { return JSON.parse(localStorage.getItem('flowfinance_holdings') || '[]'); }
+      _saveHoldings(arr) { localStorage.setItem('flowfinance_holdings', JSON.stringify(arr)); }
+
+      addHolding() {
+        const symbol = (document.getElementById('hold-symbol')?.value || '').trim().toUpperCase().slice(0, 10);
+        const qty = parseFloat(document.getElementById('hold-qty')?.value);
+        const cost = parseFloat(document.getElementById('hold-cost')?.value);
+        const price = parseFloat(document.getElementById('hold-price')?.value);
+        if (!symbol || !(qty > 0) || !(cost >= 0) || !(price >= 0)) { this.toast('Enter symbol, qty, cost, current price', 'error'); return; }
+        const arr = this._loadHoldings();
+        arr.push({ id: Date.now(), symbol, qty, cost, price, updatedAt: new Date().toISOString() });
+        this._saveHoldings(arr);
+        ['hold-symbol','hold-qty','hold-cost','hold-price'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
+        this.renderHoldings();
+      }
+
+      removeHolding(id) {
+        this._saveHoldings(this._loadHoldings().filter(h => h.id !== id));
+        this.renderHoldings();
+      }
+
+      renderHoldings() {
+        const root = document.getElementById('holdings-section');
+        if (!root) return;
+        const arr = this._loadHoldings();
+        const totalValue = arr.reduce((s, h) => s + h.qty * h.price, 0);
+        const totalCost = arr.reduce((s, h) => s + h.qty * h.cost, 0);
+        const gain = totalValue - totalCost;
+        document.getElementById('holdings-summary').innerHTML = `
+          Value: <b>${this.fmt(totalValue)}</b> · Cost: <b>${this.fmt(totalCost)}</b> ·
+          <span style="color: ${gain >= 0 ? 'var(--accent-green)' : '#ff6b6b'}">${gain >= 0 ? '+' : ''}${this.fmt(gain)}${totalCost > 0 ? ` (${(gain / totalCost * 100).toFixed(1)}%)` : ''}</span>
+        `;
+        const list = document.getElementById('holdings-list');
+        if (arr.length === 0) {
+          list.innerHTML = '<div style="color: var(--text-muted); font-size: 12px; padding: 8px;">No holdings yet.</div>';
+          return;
+        }
+        list.innerHTML = arr.map(h => {
+          const value = h.qty * h.price;
+          const g = value - h.qty * h.cost;
+          return `
+            <div class="holdings-row">
+              <div class="h-sym">${sanitize(h.symbol)}</div>
+              <div style="flex: 1;">
+                <div>${this.fmt(value)} <span style="color: ${g >= 0 ? 'var(--accent-green)' : '#ff6b6b'}; font-size: 11px;">${g >= 0 ? '+' : ''}${this.fmt(g)}</span></div>
+                <div class="h-qty">${h.qty} × ${this.fmt(h.price)} (cost ${this.fmt(h.cost)})</div>
+              </div>
+              <button type="button" class="debt-rm" data-id="${h.id}">✕</button>
+            </div>`;
+        }).join('');
+        list.querySelectorAll('button[data-id]').forEach(b => b.addEventListener('click', () => this.removeHolding(Number(b.dataset.id))));
       }
 
       fmt(n, opts = {}) {
