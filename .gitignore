@@ -23,3 +23,5 @@ Thumbs.db
 # Node (for worker)
 node_modules/
 .wrangler/
+.app-extracted.js
+package-lock.json

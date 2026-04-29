@@ -4319,7 +4319,7 @@
           const key = await this.generateKey(passphrase, salt);
           const decrypted = await crypto.subtle.decrypt({ name: this.algorithm, iv }, key, data);
           return JSON.parse(new TextDecoder().decode(decrypted));
-        } catch (e) {
+        } catch {
           throw new Error('Decryption failed - wrong passphrase?');
         }
       }
@@ -5907,7 +5907,7 @@
               insights.push({ type: 'info', icon: '🔄', color: 'blue', title: 'Recurring Found', value: `${recurring.length}`, detail: `~$${monthlyTotal.toFixed(0)}/mo detected` });
             }
           }
-        } catch (e) {
+        } catch {
           // Pro features may not be initialized yet
         }
 
@@ -6925,7 +6925,7 @@
               const backup = JSON.parse(content);
               document.getElementById('restore-passphrase-group').style.display =
                 backup.encrypted ? 'block' : 'none';
-            } catch (e) {
+            } catch {
               this.toast('Invalid backup file', 'error');
             }
           }
@@ -8054,7 +8054,7 @@
           if (!/^https:\/\/[a-z0-9][\w.-]*\.[a-z]{2,}/i.test(endpoint)) {
             throw new Error('Invalid domain');
           }
-        } catch (e) {
+        } catch {
           this.toast('Please enter a valid HTTPS URL', 'error');
           return;
         }

@@ -13,7 +13,7 @@ const RATE_LIMIT_MAX = 10; // requests per window
 const rateLimitMap = new Map();
 
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env, _ctx) {
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return handleCORS(request, env);
@@ -33,7 +33,12 @@ export default {
     // Rate limiting (in-memory, resets on worker restart)
     const clientIP = request.headers.get('CF-Connecting-IP') || 'unknown';
     if (!checkRateLimit(clientIP)) {
-      return jsonResponse({ error: 'Rate limit exceeded. Try again in 1 minute.' }, 429, env, request);
+      return jsonResponse(
+        { error: 'Rate limit exceeded. Try again in 1 minute.' },
+        429,
+        env,
+        request
+      );
     }
 
     try {
@@ -54,34 +59,44 @@ export default {
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful financial advisor assistant. Provide concise, actionable insights based on the user\'s financial data. Be encouraging but honest. Never recommend specific stocks or investments. Keep responses under 200 words.'
+            content:
+              "You are a helpful financial advisor assistant. Provide concise, actionable insights based on the user's financial data. Be encouraging but honest. Never recommend specific stocks or investments. Keep responses under 200 words.",
           },
           {
             role: 'user',
-            content: prompt
-          }
+            content: prompt,
+          },
         ],
         max_tokens: 400,
-        temperature: 0.7
+        temperature: 0.7,
       });
 
-      return jsonResponse({
-        success: true,
-        insights: aiResponse.response,
-        usage: {
-          model: MODEL,
-          timestamp: new Date().toISOString()
-        }
-      }, 200, env, request);
-
+      return jsonResponse(
+        {
+          success: true,
+          insights: aiResponse.response,
+          usage: {
+            model: MODEL,
+            timestamp: new Date().toISOString(),
+          },
+        },
+        200,
+        env,
+        request
+      );
     } catch (error) {
       console.error('AI Error:', error);
-      return jsonResponse({
-        error: 'Failed to generate insights',
-        message: error.message
-      }, 500, env, request);
+      return jsonResponse(
+        {
+          error: 'Failed to generate insights',
+          message: error.message,
+        },
+        500,
+        env,
+        request
+      );
     }
-  }
+  },
 };
 
 function handleCORS(request, env) {
@@ -95,7 +110,7 @@ function handleCORS(request, env) {
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Max-Age': '86400',
-    }
+    },
   });
 }
 
@@ -105,9 +120,11 @@ function isAllowedOrigin(origin, env) {
   if (allowed === '*') return true;
 
   // Support comma-separated list
-  const allowedOrigins = allowed.split(',').map(o => o.trim());
-  return allowedOrigins.includes(origin) ||
-         allowedOrigins.some(o => origin.endsWith(o.replace('*.', '')));
+  const allowedOrigins = allowed.split(',').map((o) => o.trim());
+  return (
+    allowedOrigins.includes(origin) ||
+    allowedOrigins.some((o) => origin.endsWith(o.replace('*.', '')))
+  );
 }
 
 function checkRateLimit(clientIP) {
@@ -141,7 +158,7 @@ function validateInput(data) {
   }
 
   // Required fields
-  const { income, expenses, categories, budget } = data;
+  const { income, expenses, categories } = data;
 
   if (typeof income !== 'number' || income < 0 || income > 1000000000) {
     return { valid: false, error: 'Invalid income value' };
@@ -205,7 +222,7 @@ function jsonResponse(data, status, env, request) {
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': allowedOrigin,
-      'Cache-Control': 'no-store'
-    }
+      'Cache-Control': 'no-store',
+    },
   });
 }
