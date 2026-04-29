@@ -48,8 +48,9 @@ export default {
       // Build prompt with sanitized data
       const prompt = buildPrompt(data);
 
-      // Call Workers AI
-      const aiResponse = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+      // Call Workers AI - production-grade model (much stronger reasoning)
+      const MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
+      const aiResponse = await env.AI.run(MODEL, {
         messages: [
           {
             role: 'system',
@@ -68,7 +69,7 @@ export default {
         success: true,
         insights: aiResponse.response,
         usage: {
-          model: 'llama-3.1-8b-instruct',
+          model: MODEL,
           timestamp: new Date().toISOString()
         }
       }, 200, env, request);

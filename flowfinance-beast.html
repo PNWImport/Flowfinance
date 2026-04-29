@@ -3870,7 +3870,7 @@
 
       // Generate transaction hash for duplicate detection
       generateTxHash(tx) {
-        const normalized = `${tx.date}-${Math.round(tx.amount * 100)}-${tx.description.toLowerCase().trim().substring(0, 30)}`;
+        const normalized = `${tx.date}-${Math.round(tx.amount * 100)}-${sanitize(tx.description || '').toLowerCase().trim().substring(0, 30)}`;
         return normalized;
       }
 
@@ -4604,15 +4604,19 @@
 
     // PDF Report Generator (uses browser print)
     class ReportGenerator {
+      escapeHtml(str) {
+        return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      }
       generateHTML(data) {
         const { period, generated, totalIncome, totalExpenses, netSavings, categories, transactionCount, transactions } = data;
         const totalExpenseAmount = categories.reduce((sum, [cat, amt]) => sum + amt, 0);
+        const esc = (s) => this.escapeHtml(s);
 
         return `
           <!DOCTYPE html>
           <html>
           <head>
-            <title>FlowFinance Report - ${period}</title>
+            <title>FlowFinance Report - ${esc(period)}</title>
             <style>
               body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; background: #fff; color: #333; }
               h1 { color: #07d18f; border-bottom: 3px solid #07d18f; padding-bottom: 10px; }
@@ -4632,7 +4636,7 @@
           </head>
           <body>
             <h1>💰 FlowFinance Financial Report</h1>
-            <p><strong>Period:</strong> Last ${period} | <strong>Generated:</strong> ${generated} | <strong>Transactions:</strong> ${transactionCount}</p>
+            <p><strong>Period:</strong> Last ${esc(period)} | <strong>Generated:</strong> ${esc(generated)} | <strong>Transactions:</strong> ${transactionCount}</p>
 
             <div class="summary">
               <div class="stat">
@@ -4654,7 +4658,7 @@
               <tr><th>Category</th><th>Amount</th><th>% of Expenses</th></tr>
               ${categories.map(([cat, amt]) => `
                 <tr>
-                  <td>${cat}</td>
+                  <td>${esc(cat)}</td>
                   <td>$${amt.toFixed(2)}</td>
                   <td>${totalExpenseAmount > 0 ? ((amt / totalExpenseAmount) * 100).toFixed(1) : 0}%</td>
                 </tr>
@@ -4666,10 +4670,10 @@
               <tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr>
               ${(transactions || []).slice(0, 30).map(t => `
                 <tr>
-                  <td>${t.date}</td>
-                  <td>${t.description || ''}</td>
-                  <td>${t.category || ''}</td>
-                  <td class="${t.type}">${t.type === 'income' ? '+' : '-'}$${(t.amount || 0).toFixed(2)}</td>
+                  <td>${esc(t.date)}</td>
+                  <td>${esc(t.description || '')}</td>
+                  <td>${esc(t.category || '')}</td>
+                  <td class="${t.type === 'income' ? 'income' : 'expense'}">${t.type === 'income' ? '+' : '-'}$${(t.amount || 0).toFixed(2)}</td>
                 </tr>
               `).join('')}
             </table>
@@ -4685,13 +4689,17 @@
       openPrintView(data) {
         try {
           const html = this.generateHTML(data);
-          const printWindow = window.open('', '_blank');
+          const blob = new Blob([html], { type: 'text/html' });
+          const url = URL.createObjectURL(blob);
+          const printWindow = window.open(url, '_blank');
           if (!printWindow) {
+            URL.revokeObjectURL(url);
             throw new Error('Popup blocked');
           }
-          printWindow.document.write(html);
-          printWindow.document.close();
-          setTimeout(() => printWindow.print(), 500);
+          setTimeout(() => {
+            try { printWindow.print(); } catch (e) {}
+            URL.revokeObjectURL(url);
+          }, 500);
         } catch (e) {
           console.error('Report generation error:', e);
           throw e;
@@ -5558,13 +5566,17 @@
 
         const toast = document.createElement('div');
         toast.className = 'undo-toast';
-        toast.innerHTML = `
-          <span class="undo-toast-message">Deleted "${tx.description.substring(0, 20)}..."</span>
-          <button class="undo-toast-btn">Undo</button>
-          <div class="undo-toast-progress"></div>
-        `;
+        const msg = document.createElement('span');
+        msg.className = 'undo-toast-message';
+        msg.textContent = `Deleted "${String(tx.description || '').substring(0, 20)}..."`;
+        const btn = document.createElement('button');
+        btn.className = 'undo-toast-btn';
+        btn.textContent = 'Undo';
+        const progress = document.createElement('div');
+        progress.className = 'undo-toast-progress';
+        toast.append(msg, btn, progress);
 
-        toast.querySelector('.undo-toast-btn').addEventListener('click', async () => {
+        btn.addEventListener('click', async () => {
           clearTimeout(this.undoTimeout);
           toast.remove();
           // Restore transaction
@@ -6509,7 +6521,7 @@
         const emptyState = document.getElementById('recurring-empty');
 
         if (this.recurringPatterns.length === 0) {
-          container.innerHTML = '';
+          container.replaceChildren();
           emptyState.style.display = 'block';
           return;
         }
@@ -6657,7 +6669,7 @@
         if (allTx.length < 5) {
           document.getElementById('forecast-empty').style.display = 'block';
           document.getElementById('forecast-details').style.display = 'none';
-          document.getElementById('forecast-monthly').innerHTML = '';
+          document.getElementById('forecast-monthly').replaceChildren();
           return;
         }
 
@@ -6755,7 +6767,7 @@
         alertsEl.innerHTML = alertsHtml;
 
         if (bills.length === 0) {
-          listEl.innerHTML = '';
+          listEl.replaceChildren();
           emptyEl.style.display = 'block';
           return;
         }
@@ -6825,8 +6837,8 @@
         if (allTx.length < 5) {
           document.getElementById('trends-empty').style.display = 'block';
           document.getElementById('trends-summary').style.display = 'none';
-          document.getElementById('trends-insights').innerHTML = '';
-          document.getElementById('trends-categories').innerHTML = '';
+          document.getElementById('trends-insights').replaceChildren();
+          document.getElementById('trends-categories').replaceChildren();
           return;
         }
 
@@ -7006,7 +7018,7 @@
         // Request microphone permission first (required for mobile)
         voiceStatus.style.display = 'flex';
         voiceStatus.className = 'voice-status';
-        voiceStatus.innerHTML = '🎤 Requesting microphone access...';
+        voiceStatus.textContent = '🎤 Requesting microphone access...';
 
         try {
           // Request mic permission
@@ -7016,9 +7028,9 @@
         } catch (err) {
           voiceStatus.className = 'voice-status error';
           if (err.name === 'NotAllowedError') {
-            voiceStatus.innerHTML = '❌ Microphone access denied. Please allow mic access.';
+            voiceStatus.textContent = '❌ Microphone access denied. Please allow mic access.';
           } else {
-            voiceStatus.innerHTML = '❌ Could not access microphone';
+            voiceStatus.textContent = '❌ Could not access microphone';
           }
           setTimeout(() => { voiceStatus.style.display = 'none'; }, 3000);
           return;
@@ -7031,12 +7043,12 @@
 
         voiceBtn.classList.add('listening');
         voiceStatus.className = 'voice-status';
-        voiceStatus.innerHTML = '🎤 Listening... Say: "50 dollars for lunch"';
+        voiceStatus.textContent = '🎤 Listening... Say: "50 dollars for lunch"';
         this.isListening = true;
 
         this.recognition.onresult = (event) => {
           const transcript = event.results[0][0].transcript.toLowerCase();
-          voiceStatus.innerHTML = `🎤 "${transcript}"`;
+          voiceStatus.textContent = `🎤 "${transcript}"`;
 
           if (event.results[0].isFinal) {
             this.parseVoiceInput(transcript);
@@ -7049,7 +7061,7 @@
           const errorMsg = event.error === 'no-speech' ? 'No speech detected. Try again.'
             : event.error === 'not-allowed' ? 'Mic access denied'
             : 'Error: ' + event.error;
-          voiceStatus.innerHTML = `❌ ${errorMsg}`;
+          voiceStatus.textContent = `❌ ${errorMsg}`;
           this.isListening = false;
           setTimeout(() => { voiceStatus.style.display = 'none'; }, 3000);
         };
@@ -7148,7 +7160,7 @@
         if (description) filled.push('description');
         if (amount) filled.push(`$${amount.toFixed(2)}`);
         if (category) filled.push(category);
-        voiceStatus.innerHTML = `✅ Filled: ${filled.join(', ')}`;
+        voiceStatus.textContent = `✅ Filled: ${filled.join(', ')}`;
 
         setTimeout(() => { voiceStatus.style.display = 'none'; }, 4000);
       }
