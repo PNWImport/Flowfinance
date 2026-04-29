@@ -2686,6 +2686,77 @@
         transition-duration: 0.01ms !important;
       }
     }
+
+    /* === Wave 1 additions === */
+    .safe-to-spend-banner {
+      margin: 12px 20px 16px; padding: 16px 20px; border-radius: 16px;
+      background: linear-gradient(135deg, rgba(7,209,143,0.18), rgba(0,163,255,0.12));
+      border: 1px solid rgba(7,209,143,0.35);
+    }
+    .sts-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .sts-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .5px; }
+    .sts-value { font-size: 28px; font-weight: 800; color: var(--accent-green); margin-top: 2px; }
+    .sts-detail { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .sts-right { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary); }
+    .sts-pill { background: rgba(255,255,255,0.04); padding: 6px 10px; border-radius: 8px; }
+    .sts-pill b { color: var(--text-primary); }
+
+    .trust-strip {
+      margin: 0 20px 12px; padding: 8px 12px; border-radius: 10px;
+      background: rgba(0,163,255,0.07); border: 1px solid rgba(0,163,255,0.2);
+      font-size: 12px; color: var(--text-secondary); text-align: center;
+    }
+    .trust-link { background: none; border: none; color: var(--accent-blue); cursor: pointer; padding: 0 4px; text-decoration: underline; font: inherit; }
+
+    .tx-toolbar { padding: 0 20px 12px; }
+    .tx-search-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .tx-search {
+      flex: 1 1 220px; min-width: 0; padding: 10px 12px; border-radius: 10px;
+      background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-primary); font-size: 14px;
+    }
+    .tx-filter-select {
+      padding: 10px 12px; border-radius: 10px; background: var(--card-bg);
+      border: 1px solid var(--border-color); color: var(--text-primary); font-size: 13px;
+    }
+    .tx-filter-chip {
+      padding: 8px 12px; border-radius: 999px; background: var(--card-bg);
+      border: 1px solid var(--border-color); color: var(--text-secondary); cursor: pointer; font-size: 12px;
+    }
+    .tx-filter-chip[aria-pressed="true"] { background: rgba(7,209,143,0.18); color: var(--accent-green); border-color: rgba(7,209,143,0.4); }
+    .tx-bulk-bar {
+      display: flex; gap: 8px; align-items: center; margin-top: 10px;
+      padding: 10px 12px; border-radius: 10px; background: rgba(0,163,255,0.08);
+      border: 1px solid rgba(0,163,255,0.25); flex-wrap: wrap; font-size: 13px;
+    }
+    .tx-bulk-bar button {
+      padding: 6px 10px; border-radius: 8px; background: var(--card-bg);
+      border: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer; font-size: 12px;
+    }
+    .tx-bulk-bar button.danger { color: #ff6b6b; border-color: rgba(255,107,107,0.4); }
+
+    .tx-checkbox { margin-right: 8px; width: 18px; height: 18px; flex-shrink: 0; cursor: pointer; }
+    .tx-badge { display: inline-block; padding: 1px 6px; border-radius: 6px; font-size: 10px; margin-left: 4px; vertical-align: middle; }
+    .tx-badge.tax { background: rgba(255,193,7,0.15); color: #ffc107; }
+    .tx-badge.split { background: rgba(0,163,255,0.15); color: var(--accent-blue); }
+    .tx-badge.transfer { background: rgba(155,89,182,0.18); color: #b07cff; }
+
+    .splits-editor { border: 1px dashed var(--border-color); border-radius: 10px; padding: 10px; margin-top: 8px; }
+    .split-row { display: flex; gap: 6px; margin-bottom: 6px; }
+    .split-row input, .split-row select {
+      padding: 6px 8px; border-radius: 6px; background: var(--bg-primary);
+      border: 1px solid var(--border-color); color: var(--text-primary); font-size: 12px;
+    }
+    .split-row input.split-amt { width: 90px; }
+    .split-row .split-cat { flex: 1; }
+    .split-row .split-rm { background: transparent; border: none; color: #ff6b6b; cursor: pointer; }
+    .split-add-btn { background: transparent; border: 1px dashed var(--border-color); color: var(--text-secondary); padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 11px; }
+
+    .kbd-help-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .kbd-help-overlay.open { display: flex; }
+    .kbd-help-panel { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 24px; max-width: 420px; width: 100%; }
+    .kbd-help-panel h3 { margin: 0 0 12px; color: var(--accent-green); }
+    .kbd-help-panel kbd { display: inline-block; padding: 2px 6px; border-radius: 4px; background: var(--bg-primary); border: 1px solid var(--border-color); font-family: monospace; font-size: 12px; }
+    .kbd-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; }
   </style>
 </head>
 <body>
@@ -2765,6 +2836,14 @@
         <span class="nav-icon" aria-hidden="true">📤</span>
         <span>Export</span>
       </div>
+      <div class="nav-item" id="sidebar-settings" role="button" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">⚙️</span>
+        <span>Settings</span>
+      </div>
+      <div class="nav-item" id="sidebar-help" role="button" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">⌨️</span>
+        <span>Shortcuts</span>
+      </div>
     </aside>
 
     <!-- Quick Month Jump Bar -->
@@ -2831,6 +2910,23 @@
               <div class="stat-value" id="desktop-budget-remaining">$0</div>
             </div>
           </div>
+        </div>
+
+        <!-- Safe to Spend Banner -->
+        <div class="safe-to-spend-banner" id="safe-to-spend-banner" role="region" aria-label="Safe to spend today">
+          <div class="sts-row">
+            <div class="sts-left">
+              <div class="sts-label">💚 Safe to Spend</div>
+              <div class="sts-value" id="sts-value">$0</div>
+              <div class="sts-detail" id="sts-detail">Income − Bills − Goals</div>
+            </div>
+            <div class="sts-right" id="sts-breakdown" aria-hidden="false"></div>
+          </div>
+        </div>
+
+        <!-- Trust Strip -->
+        <div class="trust-strip" role="status" aria-label="Privacy notice">
+          🔒 Your data never leaves your device. <button type="button" class="trust-link" id="trust-export-link">Export everything</button>
         </div>
 
         <!-- Quick Actions -->
@@ -3016,6 +3112,28 @@
           <div class="section-title">📝 All Transactions</div>
           <span class="section-action" id="tx-count">0</span>
         </div>
+        <div class="tx-toolbar" id="tx-toolbar">
+          <div class="tx-search-row">
+            <input type="search" class="tx-search" id="tx-search" placeholder="🔎 Search description or category…" aria-label="Search transactions" maxlength="100">
+            <select class="tx-filter-select" id="tx-filter-type" aria-label="Filter by type">
+              <option value="">All types</option>
+              <option value="income">Income</option>
+              <option value="expense">Expenses</option>
+            </select>
+            <select class="tx-filter-select" id="tx-filter-category" aria-label="Filter by category">
+              <option value="">All categories</option>
+            </select>
+            <button type="button" class="tx-filter-chip" id="tx-filter-tax" aria-pressed="false" title="Show only tax-deductible">🧾 Tax</button>
+            <button type="button" class="tx-filter-chip" id="tx-filter-clear" title="Clear filters">✕ Clear</button>
+          </div>
+          <div class="tx-bulk-bar" id="tx-bulk-bar" hidden>
+            <span id="tx-bulk-count">0 selected</span>
+            <button type="button" id="tx-bulk-categorize">🏷️ Categorize</button>
+            <button type="button" id="tx-bulk-tax">🧾 Toggle Tax</button>
+            <button type="button" id="tx-bulk-delete" class="danger">🗑️ Delete</button>
+            <button type="button" id="tx-bulk-clear">✕</button>
+          </div>
+        </div>
         <div class="transaction-list" id="transaction-list">
           <!-- Dynamic transactions -->
         </div>
@@ -3112,6 +3230,31 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="tx-account">Account</label>
+              <select class="form-select" id="tx-account">
+                <option value="">— None —</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="tx-transfer-to">Transfer to</label>
+              <select class="form-select" id="tx-transfer-to">
+                <option value="">— Not a transfer —</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="tx-tax-deductible" style="width: 18px; height: 18px;">
+            <label for="tx-tax-deductible" style="margin: 0; font-size: 13px; color: var(--text-secondary);">🧾 Tax-deductible</label>
+            <button type="button" id="tx-toggle-splits" class="split-add-btn" style="margin-left: auto;">＋ Split</button>
+          </div>
+          <div class="splits-editor" id="splits-editor" hidden>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Split this transaction across categories. Amounts must sum to the total.</div>
+            <div id="splits-rows"></div>
+            <button type="button" class="split-add-btn" id="splits-add-row">＋ Add row</button>
+            <div id="splits-summary" style="font-size: 11px; color: var(--text-muted); margin-top: 6px;"></div>
           </div>
           <button type="submit" class="submit-btn">Add Transaction</button>
         </form>
@@ -3340,9 +3483,23 @@
         <div id="goals-list" style="margin-bottom: 20px;"></div>
         <div class="add-goal-form" style="border-top: 1px solid var(--border-color); padding-top: 20px;">
           <h3 style="color: var(--accent-green); margin-bottom: 12px;">➕ Create New Goal</h3>
-          <div class="form-group">
-            <label class="form-label" for="goal-name">Goal Name</label>
-            <input type="text" class="form-input" id="goal-name" placeholder="e.g., Emergency Fund, Vacation">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="goal-name">Goal Name</label>
+              <input type="text" class="form-input" id="goal-name" placeholder="e.g., Emergency Fund, Vacation">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="goal-subtype">Type</label>
+              <select class="form-select" id="goal-subtype">
+                <option value="general">🎯 General</option>
+                <option value="emergency">🆘 Emergency Fund</option>
+                <option value="sinking">🪣 Sinking Fund</option>
+                <option value="vacation">✈️ Vacation</option>
+                <option value="debt">💳 Debt Payoff</option>
+                <option value="investment">📈 Investment</option>
+                <option value="purchase">🛍️ Big Purchase</option>
+              </select>
+            </div>
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -3626,6 +3783,85 @@
 
   <div class="toast-container" id="toast-container"></div>
 
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="settings-modal-title">⚙️ Settings</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="setting-currency">Currency</label>
+          <select class="form-select" id="setting-currency"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setting-locale">Locale (number formatting)</label>
+          <input type="text" class="form-input" id="setting-locale" placeholder="en-US, de-DE, ja-JP…" maxlength="10">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setting-default-account">Default Account</label>
+          <select class="form-select" id="setting-default-account"><option value="">— None —</option></select>
+        </div>
+        <button class="submit-btn" id="settings-save">💾 Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Modal -->
+  <div class="modal-overlay" id="export-modal" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="export-modal-title">📤 Export Data</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="import-options">
+          <div class="import-option" data-export="csv">
+            <div class="import-option-icon">📄</div>
+            <div class="import-option-label">CSV</div>
+            <div class="import-option-detail">All transactions</div>
+          </div>
+          <div class="import-option" data-export="qif">
+            <div class="import-option-icon">🏦</div>
+            <div class="import-option-label">QIF</div>
+            <div class="import-option-detail">Quicken format</div>
+          </div>
+          <div class="import-option" data-export="ofx">
+            <div class="import-option-icon">📊</div>
+            <div class="import-option-label">OFX</div>
+            <div class="import-option-detail">Open Financial Exchange</div>
+          </div>
+          <div class="import-option" data-export="tax">
+            <div class="import-option-icon">🧾</div>
+            <div class="import-option-label">Tax CSV</div>
+            <div class="import-option-detail">Tax-deductible only</div>
+          </div>
+          <div class="import-option" data-export="json">
+            <div class="import-option-icon">💾</div>
+            <div class="import-option-label">JSON</div>
+            <div class="import-option-detail">Full encrypted backup</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Keyboard Shortcuts Help -->
+  <div class="kbd-help-overlay" id="kbd-help" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+    <div class="kbd-help-panel">
+      <h3>⌨️ Keyboard Shortcuts</h3>
+      <div class="kbd-row"><span>New transaction</span><kbd>n</kbd></div>
+      <div class="kbd-row"><span>Search transactions</span><kbd>/</kbd></div>
+      <div class="kbd-row"><span>Go to dashboard</span><kbd>g</kbd> <kbd>d</kbd></div>
+      <div class="kbd-row"><span>Go to transactions</span><kbd>g</kbd> <kbd>t</kbd></div>
+      <div class="kbd-row"><span>Toggle bulk select</span><kbd>b</kbd></div>
+      <div class="kbd-row"><span>Show shortcuts</span><kbd>?</kbd></div>
+      <div class="kbd-row"><span>Close modal / clear</span><kbd>Esc</kbd></div>
+      <button class="submit-btn" style="margin-top: 16px;" onclick="document.getElementById('kbd-help').classList.remove('open')">Close</button>
+    </div>
+  </div>
+
   <script>
     // =====================================================
     // FlowFinance Pro v2.0.0 "MONTY" UPDATE
@@ -3737,6 +3973,14 @@
     }
 
     // Security: Input sanitization
+    // Global app settings (currency, locale) — populated on init from IndexedDB
+    const APP_SETTINGS = {
+      currency: 'USD',
+      locale: navigator.language || 'en-US',
+      defaultAccountId: null
+    };
+    const SUPPORTED_CURRENCIES = ['USD','EUR','GBP','CAD','AUD','JPY','CHF','CNY','INR','MXN','BRL','SEK','NOK','DKK','NZD','SGD','HKD','ZAR','PLN'];
+
     const sanitize = (str) => {
       if (typeof str !== 'string') return '';
       const div = document.createElement('div');
@@ -4249,7 +4493,7 @@
         this.goals = [];
       }
 
-      createGoal(name, targetAmount, deadline, category = 'Savings') {
+      createGoal(name, targetAmount, deadline, category = 'Savings', subtype = 'general') {
         const now = new Date();
         const deadlineDate = new Date(deadline);
         const monthsRemaining = this.monthsBetween(now, deadlineDate);
@@ -4261,6 +4505,7 @@
           currentAmount: 0,
           deadline,
           category,
+          subtype,
           monthlyTarget: targetAmount / Math.max(1, monthsRemaining),
           createdAt: now.toISOString(),
           contributions: []
@@ -4787,7 +5032,7 @@
     class FinanceDB {
       constructor() {
         this.dbName = 'FlowFinanceBeastDB';
-        this.dbVersion = 3;
+        this.dbVersion = 4;
         this.db = null;
         this.cache = new LRUCache(24); // Max 24 months cached
         this.chartCache = new LRUCache(6); // Max 6 chart variations
@@ -4812,6 +5057,9 @@
             }
             if (!db.objectStoreNames.contains('history')) {
               const histStore = db.createObjectStore('history', { keyPath: 'month' });
+            }
+            if (!db.objectStoreNames.contains('accounts')) {
+              db.createObjectStore('accounts', { keyPath: 'id' });
             }
           };
         });
@@ -4891,6 +5139,52 @@
           const request = tx.objectStore('transactions').delete(id);
           request.onsuccess = () => { this.invalidateCache(month); resolve(); };
           request.onerror = () => reject(request.error);
+        });
+      }
+
+      async updateTransaction(tx) {
+        return new Promise((resolve, reject) => {
+          const t = this.db.transaction(['transactions'], 'readwrite');
+          const req = t.objectStore('transactions').put(tx);
+          req.onsuccess = () => { this.invalidateCache(tx.month); resolve(); };
+          req.onerror = () => reject(req.error);
+        });
+      }
+
+      async deleteMany(ids, months = []) {
+        return new Promise((resolve, reject) => {
+          const t = this.db.transaction(['transactions'], 'readwrite');
+          const store = t.objectStore('transactions');
+          ids.forEach(id => store.delete(id));
+          t.oncomplete = () => { months.forEach(m => this.invalidateCache(m)); resolve(); };
+          t.onerror = () => reject(t.error);
+        });
+      }
+
+      async getAccounts() {
+        return new Promise((resolve, reject) => {
+          const t = this.db.transaction(['accounts'], 'readonly');
+          const req = t.objectStore('accounts').getAll();
+          req.onsuccess = () => resolve(req.result || []);
+          req.onerror = () => reject(req.error);
+        });
+      }
+
+      async putAccount(account) {
+        return new Promise((resolve, reject) => {
+          const t = this.db.transaction(['accounts'], 'readwrite');
+          const req = t.objectStore('accounts').put(account);
+          req.onsuccess = () => resolve();
+          req.onerror = () => reject(req.error);
+        });
+      }
+
+      async deleteAccount(id) {
+        return new Promise((resolve, reject) => {
+          const t = this.db.transaction(['accounts'], 'readwrite');
+          const req = t.objectStore('accounts').delete(id);
+          req.onsuccess = () => resolve();
+          req.onerror = () => reject(req.error);
         });
       }
 
@@ -5308,6 +5602,42 @@
           insights.push({ type: 'info', icon: '📊', color: 'purple', title: 'Top Category', value: top[0], detail: `$${top[1].toFixed(0)}` });
         }
 
+        // Anomaly detection: per-category spend vs prior-month average
+        if (this.prev.length > 0) {
+          const prevByCat = {};
+          this.prev.filter(t => t.type === 'expense').forEach(t => prevByCat[t.category] = (prevByCat[t.category] || 0) + t.amount);
+          const anomalies = [];
+          Object.entries(byCat).forEach(([cat, amt]) => {
+            const prevAmt = prevByCat[cat] || 0;
+            if (prevAmt >= 50 && amt >= prevAmt * 2.5) {
+              anomalies.push({ cat, amt, prev: prevAmt, ratio: amt / prevAmt });
+            }
+          });
+          anomalies.sort((a, b) => b.ratio - a.ratio);
+          if (anomalies.length > 0) {
+            const a = anomalies[0];
+            insights.push({
+              type: 'warning', icon: '⚡', color: 'orange',
+              title: 'Spending Spike',
+              value: `${a.ratio.toFixed(1)}× ${a.cat}`,
+              detail: `vs avg $${a.prev.toFixed(0)}/mo`
+            });
+          }
+          // Large single transaction relative to category
+          const largeTx = this.expenses
+            .map(t => ({ t, baseline: (prevByCat[t.category] || 0) }))
+            .filter(({ t, baseline }) => baseline >= 100 && t.amount >= baseline * 0.8)
+            .sort((a, b) => b.t.amount - a.t.amount)[0];
+          if (largeTx && !anomalies.length) {
+            insights.push({
+              type: 'warning', icon: '🔍', color: 'orange',
+              title: 'Unusual Charge',
+              value: `$${largeTx.t.amount.toFixed(0)}`,
+              detail: `${largeTx.t.description?.slice(0,28) || largeTx.t.category}`
+            });
+          }
+        }
+
         // Pro Feature Insights
         try {
           // Bill Reminders
@@ -5416,9 +5746,24 @@
           await this.db.init();
           this.budget = (await this.db.getSetting('budget')) || 0;
           this.aiEndpoint = await this.db.getSetting('aiEndpoint');
+          // Load currency / locale settings
+          const savedCurrency = await this.db.getSetting('currency');
+          if (savedCurrency && SUPPORTED_CURRENCIES.includes(savedCurrency)) APP_SETTINGS.currency = savedCurrency;
+          const savedLocale = await this.db.getSetting('locale');
+          if (savedLocale) APP_SETTINGS.locale = savedLocale;
+          APP_SETTINGS.defaultAccountId = await this.db.getSetting('defaultAccountId');
+          // Load accounts into NetWorthTracker
+          this.accounts = await this.db.getAccounts();
+          this.netWorthTracker.accounts = this.accounts;
+          // UI state
+          this.txFilter = { q: '', category: '', type: '', taxOnly: false };
+          this.selectedTxIds = new Set();
           await this.loadData();
           this.renderAll();
           this.bindEvents();
+          this.bindWave1Events();
+          this.bindKeyboardShortcuts();
+          this._populateAccountSelects();
 
           // Initialize new features
           initOfflineDetection();
@@ -5653,7 +5998,7 @@
         // Add transaction button
         document.getElementById('add-tx-btn').addEventListener('click', () => this.openAddModal());
         document.getElementById('import-btn').addEventListener('click', () => this.openImportModal());
-        document.getElementById('export-btn').addEventListener('click', () => this.exportData());
+        document.getElementById('export-btn').addEventListener('click', () => document.getElementById('export-modal').classList.add('open'));
         document.getElementById('edit-budget').addEventListener('click', () => this.openBudgetModal());
 
         // AI Insights button
@@ -5734,7 +6079,7 @@
         const sidebarImport = document.getElementById('sidebar-import');
         const sidebarExport = document.getElementById('sidebar-export');
         if (sidebarImport) sidebarImport.addEventListener('click', () => this.openImportModal());
-        if (sidebarExport) sidebarExport.addEventListener('click', () => this.exportData());
+        if (sidebarExport) sidebarExport.addEventListener('click', () => document.getElementById('export-modal').classList.add('open'));
 
         // Keyboard support for sidebar nav items (Enter/Space to activate)
         document.querySelectorAll('.desktop-sidebar .nav-item').forEach(item => {
@@ -5864,6 +6209,7 @@
         if (desktopNet) desktopNet.textContent = this.fmt(this.analytics.net);
 
         // Render all sections
+        this.renderSafeToSpend();
         this.renderInsights();
         this.renderBudget();
         this.renderChart(6);
@@ -6084,36 +6430,68 @@
       }
 
       renderTransactions() {
-        document.getElementById('tx-count').textContent = this.transactions.length;
+        const all = this.transactions;
+        const f = this.txFilter || { q: '', category: '', type: '', taxOnly: false };
+        const q = (f.q || '').toLowerCase().trim();
+        const filtered = all.filter(tx => {
+          if (f.type && tx.type !== f.type) return false;
+          if (f.category && tx.category !== f.category) return false;
+          if (f.taxOnly && !tx.taxDeductible) return false;
+          if (q) {
+            const hay = `${tx.description||''} ${tx.category||''}`.toLowerCase();
+            if (!hay.includes(q)) return false;
+          }
+          return true;
+        });
+
+        document.getElementById('tx-count').textContent = `${filtered.length}${filtered.length !== all.length ? ' / ' + all.length : ''}`;
+        this._populateCategoryFilter();
         const container = document.getElementById('transaction-list');
 
-        if (this.transactions.length === 0) {
-          container.innerHTML = `<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-title">No transactions</div><div class="empty-text">Add or import transactions to get started</div></div>`;
+        if (filtered.length === 0) {
+          if (all.length === 0) {
+            container.innerHTML = `<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-title">No transactions</div><div class="empty-text">Add or import transactions to get started</div></div>`;
+          } else {
+            container.innerHTML = `<div class="empty-state"><div class="empty-icon">🔎</div><div class="empty-title">No matches</div><div class="empty-text">Try clearing the filters above</div></div>`;
+          }
           return;
         }
+
+        const bulkMode = this._bulkMode === true;
+        const selected = this.selectedTxIds || new Set();
 
         // Initial batch size for performance
         const BATCH_SIZE = 20;
         this._txDisplayCount = BATCH_SIZE;
+        this._filteredTx = filtered;
 
         const renderBatch = (start, end) => {
-          return this.transactions.slice(start, end).map(tx => `
+          return filtered.slice(start, end).map(tx => {
+            const badges = [];
+            if (tx.taxDeductible) badges.push('<span class="tx-badge tax">🧾 Tax</span>');
+            if (tx.splits && tx.splits.length) badges.push(`<span class="tx-badge split">⤴ ${tx.splits.length} split</span>`);
+            if (tx.isTransfer) badges.push('<span class="tx-badge transfer">⇄ Transfer</span>');
+            const checked = selected.has(tx.id) ? 'checked' : '';
+            const checkbox = bulkMode ? `<input type="checkbox" class="tx-checkbox" data-id="${tx.id}" ${checked} aria-label="Select transaction">` : '';
+            return `
             <div class="transaction-item ${tx.type}" data-id="${tx.id}" role="listitem">
+              ${checkbox}
               <div class="tx-icon ${tx.type}">${CATEGORY_ICONS[tx.category] || '💰'}</div>
               <div class="tx-info">
-                <div class="tx-desc">${sanitize(tx.description)}</div>
+                <div class="tx-desc">${sanitize(tx.description)}${badges.join('')}</div>
                 <div class="tx-meta">
                   <span class="tx-tag">${sanitize(tx.category)}</span>
                   ${new Date(tx.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                 </div>
               </div>
               <span class="tx-amount ${tx.type}">${tx.type === 'income' ? '+' : '-'}${this.fmt(tx.amount)}</span>
-            </div>
-          `).join('');
+            </div>`;
+          }).join('');
         };
 
         // Render initial batch
         container.innerHTML = renderBatch(0, BATCH_SIZE);
+        this._bindTxCheckboxes(container);
 
         // Add "Load More" button if there are more transactions
         if (this.transactions.length > BATCH_SIZE) {
@@ -6453,7 +6831,8 @@
           return;
         }
 
-        this.goalTracker.createGoal(name, amount, deadline);
+        const subtype = document.getElementById('goal-subtype')?.value || 'general';
+        this.goalTracker.createGoal(name, amount, deadline, 'Savings', subtype);
         this.toast('🎯 Goal created!', 'success');
         this.renderGoals();
 
@@ -7197,6 +7576,10 @@
         const amount = parseFloat(document.getElementById('tx-amount').value);
         const date = document.getElementById('tx-date').value;
         const category = document.getElementById('tx-category').value;
+        const accountId = document.getElementById('tx-account')?.value || '';
+        const transferTo = document.getElementById('tx-transfer-to')?.value || '';
+        const taxDeductible = !!document.getElementById('tx-tax-deductible')?.checked;
+        const splits = this._readSplits(amount);
 
         // Validation
         if (!desc || desc.length < 1 || desc.length > 200) {
@@ -7209,6 +7592,14 @@
         }
         if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
           this.toast('Please select a date', 'error');
+          return;
+        }
+        if (transferTo && transferTo === accountId) {
+          this.toast('Transfer source and destination must differ', 'error');
+          return;
+        }
+        if (splits && splits.error) {
+          this.toast(splits.error, 'error');
           return;
         }
 
@@ -7228,10 +7619,23 @@
             category: safeCategory,
             date,
             month: date.substring(0, 7),
+            accountId: accountId ? Number(accountId) : null,
+            taxDeductible,
+            splits: splits?.rows || null,
             createdAt: new Date().toISOString()
           };
 
-          await this.db.addTransaction(tx);
+          if (transferTo) {
+            // Create transfer pair: this side as expense out of accountId,
+            // and a mirrored income into the destination account.
+            const pairId = 'tr_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+            const out = { ...tx, type: 'expense', category: 'Transfer', transferPairId: pairId, isTransfer: true, accountId: accountId ? Number(accountId) : null };
+            const inn = { ...tx, type: 'income', category: 'Transfer', transferPairId: pairId, isTransfer: true, accountId: Number(transferTo) };
+            await this.db.addTransaction(out);
+            await this.db.addTransaction(inn);
+          } else {
+            await this.db.addTransaction(tx);
+          }
           await this.loadData();
           this.renderAll();
           this.closeModals();
@@ -7243,6 +7647,22 @@
           submitBtn.classList.remove('loading');
           submitBtn.disabled = false;
         }
+      }
+
+      _readSplits(total) {
+        const editor = document.getElementById('splits-editor');
+        if (!editor || editor.hidden) return null;
+        const rows = [...editor.querySelectorAll('.split-row')].map(r => ({
+          category: r.querySelector('.split-cat')?.value || 'Other Expenses',
+          amount: parseFloat(r.querySelector('.split-amt')?.value || '0') || 0,
+          note: (r.querySelector('.split-note')?.value || '').slice(0, 80)
+        })).filter(r => r.amount > 0);
+        if (rows.length === 0) return null;
+        const sum = rows.reduce((s, r) => s + r.amount, 0);
+        if (Math.abs(sum - total) > 0.01) {
+          return { error: `Splits sum to ${sum.toFixed(2)}, must equal ${total.toFixed(2)}` };
+        }
+        return { rows };
       }
 
       async saveBudget() {
@@ -7440,10 +7860,451 @@
         }
       }
 
-      fmt(n) {
-        if (n >= 1000) return '$' + (n / 1000).toFixed(1) + 'k';
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: n % 1 === 0 ? 0 : 2 }).format(n);
+      // ===== Wave 1: filters, bulk-select, accounts, splits, exports, shortcuts =====
+      _populateCategoryFilter() {
+        const sel = document.getElementById('tx-filter-category');
+        if (!sel) return;
+        const cats = [...new Set(this.transactions.map(t => t.category).filter(Boolean))].sort();
+        const current = sel.value;
+        sel.innerHTML = `<option value="">All categories</option>` + cats.map(c => `<option value="${sanitize(c)}">${sanitize(c)}</option>`).join('');
+        sel.value = cats.includes(current) ? current : '';
       }
+
+      _populateAccountSelects() {
+        const accts = this.accounts || [];
+        const opts = `<option value="">— None —</option>` + accts.map(a => `<option value="${a.id}">${sanitize(a.name)} (${sanitize(a.subtype || a.type || '')})</option>`).join('');
+        ['tx-account', 'tx-transfer-to', 'setting-default-account'].forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          const cur = el.value;
+          el.innerHTML = id === 'tx-transfer-to' ? `<option value="">— Not a transfer —</option>` + accts.map(a => `<option value="${a.id}">${sanitize(a.name)}</option>`).join('') : opts;
+          el.value = cur;
+        });
+        const def = APP_SETTINGS.defaultAccountId;
+        const txAcct = document.getElementById('tx-account');
+        if (txAcct && def && !txAcct.value) txAcct.value = def;
+      }
+
+      _bindTxCheckboxes(container) {
+        container.querySelectorAll('.tx-checkbox').forEach(cb => {
+          cb.addEventListener('change', (e) => {
+            const id = Number(cb.dataset.id);
+            if (cb.checked) this.selectedTxIds.add(id); else this.selectedTxIds.delete(id);
+            this._updateBulkBar();
+          });
+          cb.addEventListener('click', e => e.stopPropagation());
+        });
+      }
+
+      _updateBulkBar() {
+        const bar = document.getElementById('tx-bulk-bar');
+        if (!bar) return;
+        const n = this.selectedTxIds.size;
+        bar.hidden = n === 0;
+        document.getElementById('tx-bulk-count').textContent = `${n} selected`;
+      }
+
+      toggleBulkMode() {
+        this._bulkMode = !this._bulkMode;
+        if (!this._bulkMode) this.selectedTxIds.clear();
+        this._updateBulkBar();
+        this.renderTransactions();
+      }
+
+      async bulkCategorize() {
+        if (this.selectedTxIds.size === 0) return;
+        const cats = Object.keys(CATEGORY_ICONS);
+        const choice = prompt(`Set category for ${this.selectedTxIds.size} transactions:\n${cats.join(', ')}`);
+        if (!choice || !cats.includes(choice)) {
+          if (choice) this.toast('Unknown category', 'error');
+          return;
+        }
+        const ids = [...this.selectedTxIds];
+        const months = new Set();
+        for (const id of ids) {
+          const tx = this.transactions.find(t => t.id === id);
+          if (!tx) continue;
+          await this.db.updateTransaction({ ...tx, category: choice });
+          months.add(tx.month);
+        }
+        months.forEach(m => this.db.invalidateCache(m));
+        this.selectedTxIds.clear();
+        await this.loadData();
+        this.renderAll();
+        this.toast(`Updated ${ids.length}`, 'success');
+      }
+
+      async bulkToggleTax() {
+        if (this.selectedTxIds.size === 0) return;
+        for (const id of this.selectedTxIds) {
+          const tx = this.transactions.find(t => t.id === id);
+          if (!tx) continue;
+          await this.db.updateTransaction({ ...tx, taxDeductible: !tx.taxDeductible });
+        }
+        this.selectedTxIds.clear();
+        await this.loadData();
+        this.renderAll();
+        this.toast('🧾 Tax flag toggled', 'success');
+      }
+
+      async bulkDelete() {
+        if (this.selectedTxIds.size === 0) return;
+        if (!confirm(`Delete ${this.selectedTxIds.size} transactions? This cannot be undone.`)) return;
+        const ids = [...this.selectedTxIds];
+        const months = new Set();
+        ids.forEach(id => {
+          const tx = this.transactions.find(t => t.id === id);
+          if (tx) months.add(tx.month);
+        });
+        await this.db.deleteMany(ids, [...months]);
+        this.selectedTxIds.clear();
+        await this.loadData();
+        this.renderAll();
+        this.toast(`🗑️ Deleted ${ids.length}`, 'success');
+      }
+
+      async addAccount() {
+        const name = document.getElementById('account-name')?.value.trim();
+        const typeFull = document.getElementById('account-type')?.value || 'asset-checking';
+        const balance = parseFloat(document.getElementById('account-balance')?.value || '0') || 0;
+        if (!name) { this.toast('Account name required', 'error'); return; }
+        const [type, subtype] = typeFull.split('-');
+        const account = {
+          id: Date.now(),
+          name: sanitize(name),
+          type, subtype,
+          balance: sanitizeNumber(balance, -1e9, 1e9),
+          createdAt: new Date().toISOString()
+        };
+        await this.db.putAccount(account);
+        this.accounts = await this.db.getAccounts();
+        this.netWorthTracker.accounts = this.accounts;
+        this._populateAccountSelects();
+        this.toast('💰 Account added', 'success');
+        if (typeof this.renderNetWorth === 'function') this.renderNetWorth();
+        ['account-name', 'account-balance'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
+      }
+
+      // ===== Safe to spend =====
+      computeSafeToSpend() {
+        const today = new Date();
+        const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+        const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        const daysLeft = Math.max(1, Math.ceil((monthEnd - today) / 86400000) + 1);
+        const totalIncome = this.analytics?.totalIncome || 0;
+        const totalSpent = this.analytics?.totalExpenses || 0;
+        // Upcoming bills (if BillReminder available)
+        let upcomingBills = 0;
+        try {
+          if (typeof billReminder !== 'undefined') {
+            upcomingBills = (billReminder.getUpcoming?.(31) || []).reduce((s, b) => s + (b.amount || 0), 0);
+          }
+        } catch {}
+        // Goal contributions remaining this month
+        let goalReserve = 0;
+        try {
+          if (typeof goalTracker !== 'undefined' && goalTracker.goals?.length) {
+            goalReserve = goalTracker.goals.reduce((s, g) => s + Math.max(0, (g.monthlyTarget || 0)), 0);
+          }
+        } catch {}
+        const reservedFromBudget = this.budget ? Math.max(0, this.budget - totalSpent) : 0;
+        const baseAvailable = totalIncome - totalSpent - upcomingBills - goalReserve;
+        const safe = Math.max(0, baseAvailable);
+        return {
+          safe,
+          perDay: safe / daysLeft,
+          daysLeft,
+          totalIncome, totalSpent, upcomingBills, goalReserve,
+          budgetRemaining: reservedFromBudget
+        };
+      }
+
+      renderSafeToSpend() {
+        const el = document.getElementById('safe-to-spend-banner');
+        if (!el) return;
+        const s = this.computeSafeToSpend();
+        document.getElementById('sts-value').textContent = this.fmtFull(s.safe);
+        const detail = `${this.fmtFull(s.perDay)}/day for ${s.daysLeft} day${s.daysLeft===1?'':'s'} · Income ${this.fmt(s.totalIncome)} − Spent ${this.fmt(s.totalSpent)}${s.upcomingBills?` − Bills ${this.fmt(s.upcomingBills)}`:''}${s.goalReserve?` − Goals ${this.fmt(s.goalReserve)}`:''}`;
+        document.getElementById('sts-detail').textContent = detail;
+        const bd = document.getElementById('sts-breakdown');
+        bd.innerHTML = '';
+        const pills = [
+          { label: 'Income', val: this.fmt(s.totalIncome) },
+          { label: 'Spent', val: this.fmt(s.totalSpent) },
+        ];
+        if (s.upcomingBills) pills.push({ label: 'Bills due', val: this.fmt(s.upcomingBills) });
+        if (s.goalReserve) pills.push({ label: 'Goals', val: this.fmt(s.goalReserve) });
+        pills.forEach(p => {
+          const pill = document.createElement('div');
+          pill.className = 'sts-pill';
+          pill.innerHTML = `${sanitize(p.label)} <b>${sanitize(p.val)}</b>`;
+          bd.appendChild(pill);
+        });
+      }
+
+      // ===== Exports: QIF, OFX, Tax CSV, JSON =====
+      _downloadBlob(content, filename, mime) {
+        const blob = new Blob([content], { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = filename; a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+
+      async exportQIF() {
+        const txs = await this.db.getAll();
+        const lines = ['!Type:Bank'];
+        txs.forEach(t => {
+          const [y, m, d] = (t.date || '').split('-');
+          if (!y) return;
+          const amt = (t.type === 'income' ? 1 : -1) * (t.amount || 0);
+          lines.push(`D${m}/${d}/${y}`);
+          lines.push(`T${amt.toFixed(2)}`);
+          lines.push(`P${(t.description || '').replace(/[\r\n]/g, ' ')}`);
+          lines.push(`L${t.category || ''}`);
+          lines.push('^');
+        });
+        this._downloadBlob(lines.join('\n'), `flowfinance-${new Date().toISOString().slice(0,10)}.qif`, 'application/qif');
+        this.toast('📤 QIF exported', 'success');
+      }
+
+      async exportOFX() {
+        const txs = await this.db.getAll();
+        const now = new Date().toISOString().replace(/[-:]/g, '').slice(0, 14);
+        const stmt = txs.map((t, i) => {
+          const [y, m, d] = (t.date || '').split('-');
+          if (!y) return '';
+          const amt = ((t.type === 'income' ? 1 : -1) * (t.amount || 0)).toFixed(2);
+          const tType = t.type === 'income' ? 'CREDIT' : 'DEBIT';
+          const desc = (t.description || '').replace(/[<>&]/g, '');
+          return `<STMTTRN><TRNTYPE>${tType}<DTPOSTED>${y}${m}${d}<TRNAMT>${amt}<FITID>${t.id || i}<NAME>${desc}<MEMO>${(t.category||'').replace(/[<>&]/g, '')}</STMTTRN>`;
+        }).filter(Boolean).join('\n');
+        const ofx = `OFXHEADER:100\nDATA:OFXSGML\nVERSION:102\nSECURITY:NONE\nENCODING:USASCII\nCHARSET:1252\nCOMPRESSION:NONE\nOLDFILEUID:NONE\nNEWFILEUID:NONE\n\n<OFX><BANKMSGSRSV1><STMTTRNRS><TRNUID>1<STATUS><CODE>0<SEVERITY>INFO</STATUS><STMTRS><CURDEF>${APP_SETTINGS.currency}<BANKACCTFROM><BANKID>FLOWFIN<ACCTID>EXPORT<ACCTTYPE>CHECKING</BANKACCTFROM><BANKTRANLIST><DTSTART>${now}<DTEND>${now}\n${stmt}\n</BANKTRANLIST></STMTRS></STMTTRNRS></BANKMSGSRSV1></OFX>`;
+        this._downloadBlob(ofx, `flowfinance-${new Date().toISOString().slice(0,10)}.ofx`, 'application/x-ofx');
+        this.toast('📤 OFX exported', 'success');
+      }
+
+      async exportTaxCSV() {
+        const txs = (await this.db.getAll()).filter(t => t.taxDeductible);
+        if (txs.length === 0) { this.toast('No tax-flagged transactions yet', 'warning'); return; }
+        const escapeCSV = (val) => {
+          const s = String(val ?? '');
+          if (/^[=+\-@\t\r]/.test(s)) return `"'${s.replace(/"/g, '""')}"`;
+          if (s.includes(',') || s.includes('"') || s.includes('\n')) return `"${s.replace(/"/g, '""')}"`;
+          return s;
+        };
+        const total = txs.reduce((s, t) => s + (t.amount || 0), 0);
+        const csv = [
+          ['Date', 'Description', 'Category', 'Type', 'Amount'].join(','),
+          ...txs.map(t => [t.date, escapeCSV(t.description), escapeCSV(t.category), t.type, t.amount].join(',')),
+          ['', '', '', 'TOTAL', total.toFixed(2)].join(',')
+        ].join('\n');
+        this._downloadBlob(csv, `flowfinance-tax-${new Date().toISOString().slice(0,10)}.csv`, 'text/csv');
+        this.toast(`🧾 Exported ${txs.length} tax-deductible (${this.fmtFull(total)})`, 'success');
+      }
+
+      async exportJSON() {
+        const [txs, accounts] = await Promise.all([this.db.getAll(), this.db.getAccounts()]);
+        const data = {
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          settings: { ...APP_SETTINGS, budget: this.budget },
+          transactions: txs,
+          accounts
+        };
+        this._downloadBlob(JSON.stringify(data, null, 2), `flowfinance-backup-${new Date().toISOString().slice(0,10)}.json`, 'application/json');
+        this.toast('💾 JSON backup downloaded', 'success');
+      }
+
+      // ===== Settings =====
+      openSettingsModal() {
+        const curSel = document.getElementById('setting-currency');
+        if (curSel) {
+          curSel.innerHTML = SUPPORTED_CURRENCIES.map(c => `<option value="${c}">${c}</option>`).join('');
+          curSel.value = APP_SETTINGS.currency;
+        }
+        const locInput = document.getElementById('setting-locale');
+        if (locInput) locInput.value = APP_SETTINGS.locale;
+        this._populateAccountSelects();
+        const dflt = document.getElementById('setting-default-account');
+        if (dflt) dflt.value = APP_SETTINGS.defaultAccountId || '';
+        document.getElementById('settings-modal').classList.add('open');
+      }
+
+      async saveSettings() {
+        const cur = document.getElementById('setting-currency').value;
+        const loc = document.getElementById('setting-locale').value.trim();
+        const def = document.getElementById('setting-default-account').value;
+        if (SUPPORTED_CURRENCIES.includes(cur)) APP_SETTINGS.currency = cur;
+        if (loc) APP_SETTINGS.locale = loc;
+        APP_SETTINGS.defaultAccountId = def ? Number(def) : null;
+        await this.db.setSetting('currency', APP_SETTINGS.currency);
+        await this.db.setSetting('locale', APP_SETTINGS.locale);
+        await this.db.setSetting('defaultAccountId', APP_SETTINGS.defaultAccountId);
+        this.renderAll();
+        this.closeModals();
+        this.toast('⚙️ Settings saved', 'success');
+      }
+
+      // ===== Splits UI =====
+      _addSplitRow() {
+        const rows = document.getElementById('splits-rows');
+        if (!rows) return;
+        const cats = Object.keys(CATEGORY_ICONS);
+        const row = document.createElement('div');
+        row.className = 'split-row';
+        row.innerHTML = `
+          <select class="split-cat">${cats.map(c => `<option value="${c}">${CATEGORY_ICONS[c]||''} ${c}</option>`).join('')}</select>
+          <input type="number" class="split-amt" step="0.01" min="0" placeholder="0.00">
+          <input type="text" class="split-note" placeholder="Note (optional)" maxlength="80">
+          <button type="button" class="split-rm" aria-label="Remove split">✕</button>
+        `;
+        row.querySelector('.split-rm').addEventListener('click', () => { row.remove(); this._updateSplitsSummary(); });
+        row.querySelectorAll('input,select').forEach(el => el.addEventListener('input', () => this._updateSplitsSummary()));
+        rows.appendChild(row);
+        this._updateSplitsSummary();
+      }
+
+      _updateSplitsSummary() {
+        const editor = document.getElementById('splits-editor');
+        if (!editor) return;
+        const total = parseFloat(document.getElementById('tx-amount')?.value || '0') || 0;
+        const sum = [...editor.querySelectorAll('.split-amt')]
+          .reduce((s, i) => s + (parseFloat(i.value) || 0), 0);
+        const remaining = total - sum;
+        const summary = document.getElementById('splits-summary');
+        if (summary) {
+          summary.textContent = `Sum: ${this.fmtFull(sum)} / ${this.fmtFull(total)} · ${remaining === 0 ? '✓ matches' : `${remaining > 0 ? '+' : ''}${this.fmtFull(remaining)} remaining`}`;
+          summary.style.color = Math.abs(remaining) < 0.01 ? 'var(--accent-green)' : 'var(--text-muted)';
+        }
+      }
+
+      toggleSplitsEditor() {
+        const editor = document.getElementById('splits-editor');
+        if (!editor) return;
+        editor.hidden = !editor.hidden;
+        if (!editor.hidden && document.getElementById('splits-rows').children.length === 0) {
+          this._addSplitRow();
+        }
+      }
+
+      // ===== Keyboard shortcuts =====
+      bindKeyboardShortcuts() {
+        let chord = null;
+        document.addEventListener('keydown', (e) => {
+          // Ignore when typing
+          const tag = (e.target?.tagName || '').toLowerCase();
+          const editing = ['input', 'textarea', 'select'].includes(tag) || e.target?.isContentEditable;
+          if (editing && e.key !== 'Escape') return;
+          if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+          if (e.key === 'Escape') {
+            this.closeModals();
+            document.getElementById('kbd-help').classList.remove('open');
+            if (this._bulkMode) this.toggleBulkMode();
+            return;
+          }
+          if (e.key === '?') { e.preventDefault(); document.getElementById('kbd-help').classList.toggle('open'); return; }
+          if (e.key === 'n' || e.key === 'N') { e.preventDefault(); this.openAddModal('expense'); return; }
+          if (e.key === '/') { e.preventDefault(); this.switchPage('transactions'); setTimeout(() => document.getElementById('tx-search')?.focus(), 100); return; }
+          if (e.key === 'b' || e.key === 'B') { e.preventDefault(); this.switchPage('transactions'); this.toggleBulkMode(); return; }
+          if (e.key === 'g' || e.key === 'G') { chord = 'g'; setTimeout(() => { chord = null; }, 1000); return; }
+          if (chord === 'g') {
+            chord = null;
+            if (e.key === 'd' || e.key === 'D') { this.switchPage('dashboard'); return; }
+            if (e.key === 't' || e.key === 'T') { this.switchPage('transactions'); return; }
+          }
+        });
+      }
+
+      openAddModal(type = 'expense') {
+        this.txType = type;
+        document.querySelectorAll('.type-btn').forEach(b => {
+          const isActive = b.dataset.type === type;
+          b.classList.toggle('active', isActive);
+          b.setAttribute('aria-checked', String(isActive));
+        });
+        this._populateAccountSelects();
+        document.getElementById('add-modal').classList.add('open');
+        setTimeout(() => document.getElementById('tx-desc')?.focus(), 100);
+      }
+
+      bindWave1Events() {
+        // Search & filter
+        const search = document.getElementById('tx-search');
+        if (search) search.addEventListener('input', () => {
+          this.txFilter.q = search.value;
+          this.renderTransactions();
+        });
+        const ftype = document.getElementById('tx-filter-type');
+        if (ftype) ftype.addEventListener('change', () => { this.txFilter.type = ftype.value; this.renderTransactions(); });
+        const fcat = document.getElementById('tx-filter-category');
+        if (fcat) fcat.addEventListener('change', () => { this.txFilter.category = fcat.value; this.renderTransactions(); });
+        const ftax = document.getElementById('tx-filter-tax');
+        if (ftax) ftax.addEventListener('click', () => {
+          this.txFilter.taxOnly = !this.txFilter.taxOnly;
+          ftax.setAttribute('aria-pressed', String(this.txFilter.taxOnly));
+          this.renderTransactions();
+        });
+        const fclear = document.getElementById('tx-filter-clear');
+        if (fclear) fclear.addEventListener('click', () => {
+          this.txFilter = { q: '', category: '', type: '', taxOnly: false };
+          if (search) search.value = '';
+          if (ftype) ftype.value = '';
+          if (fcat) fcat.value = '';
+          if (ftax) ftax.setAttribute('aria-pressed', 'false');
+          this.renderTransactions();
+        });
+
+        // Bulk
+        document.getElementById('tx-bulk-categorize')?.addEventListener('click', () => this.bulkCategorize());
+        document.getElementById('tx-bulk-tax')?.addEventListener('click', () => this.bulkToggleTax());
+        document.getElementById('tx-bulk-delete')?.addEventListener('click', () => this.bulkDelete());
+        document.getElementById('tx-bulk-clear')?.addEventListener('click', () => { this.selectedTxIds.clear(); this._updateBulkBar(); this.renderTransactions(); });
+
+        // Splits
+        document.getElementById('tx-toggle-splits')?.addEventListener('click', () => this.toggleSplitsEditor());
+        document.getElementById('splits-add-row')?.addEventListener('click', () => this._addSplitRow());
+
+        // Settings
+        document.getElementById('sidebar-settings')?.addEventListener('click', () => this.openSettingsModal());
+        document.getElementById('settings-save')?.addEventListener('click', () => this.saveSettings());
+
+        // Help
+        document.getElementById('sidebar-help')?.addEventListener('click', () => document.getElementById('kbd-help').classList.add('open'));
+        document.getElementById('kbd-help')?.addEventListener('click', (e) => { if (e.target.id === 'kbd-help') document.getElementById('kbd-help').classList.remove('open'); });
+
+        // Trust strip export link
+        document.getElementById('trust-export-link')?.addEventListener('click', () => document.getElementById('export-modal').classList.add('open'));
+
+        // Export modal options
+        document.querySelectorAll('#export-modal [data-export]').forEach(opt => {
+          opt.addEventListener('click', () => {
+            const fmt = opt.dataset.export;
+            this.closeModals();
+            if (fmt === 'csv') this.exportData();
+            else if (fmt === 'qif') this.exportQIF();
+            else if (fmt === 'ofx') this.exportOFX();
+            else if (fmt === 'tax') this.exportTaxCSV();
+            else if (fmt === 'json') this.exportJSON();
+          });
+        });
+      }
+
+      fmt(n, opts = {}) {
+        const cur = APP_SETTINGS.currency;
+        const loc = APP_SETTINGS.locale;
+        const compact = opts.compact !== false && Math.abs(n) >= 1000;
+        try {
+          if (compact) {
+            return new Intl.NumberFormat(loc, { style: 'currency', currency: cur, notation: 'compact', maximumFractionDigits: 1 }).format(n);
+          }
+          return new Intl.NumberFormat(loc, { style: 'currency', currency: cur, minimumFractionDigits: n % 1 === 0 ? 0 : 2 }).format(n);
+        } catch {
+          return '$' + n.toFixed(2);
+        }
+      }
+      fmtFull(n) { return this.fmt(n, { compact: false }); }
 
       toast(msg, type = 'success') {
         const container = document.getElementById('toast-container');
