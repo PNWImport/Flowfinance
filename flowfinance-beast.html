@@ -156,38 +156,39 @@
   <!-- XLSX loaded lazily on first import for better performance -->
   <style>
     :root {
-      /* Navy Blue Professional Theme - High Contrast */
-      --bg-primary: #040810;
-      --bg-secondary: #0a1520;
-      --bg-tertiary: #0f1f30;
-      --bg-card: #152840;
-      --bg-card-hover: #1a3352;
-      --border-color: rgba(255, 255, 255, 0.12);
-      --text-primary: #f0f4f8;
-      --text-secondary: #a8b8c8;
-      --text-muted: #708090;
+      /* Refined dark palette — Linear/Mercury-inspired */
+      --bg-primary: #0b0d12;
+      --bg-secondary: #0f1218;
+      --bg-tertiary: #161a23;
+      --bg-card: #161a23;
+      --bg-card-hover: #1c2129;
+      --border-color: rgba(255, 255, 255, 0.07);
+      --border-strong: rgba(255, 255, 255, 0.10);
+      --text-primary: #e6e8eb;
+      --text-secondary: #9ba1ad;
+      --text-muted: #5f6673;
 
-      /* Vibrant Accent Colors */
-      --accent-green: #07d18f;
-      --accent-green-dim: rgba(7, 209, 143, 0.12);
-      --accent-red: #ff6b6b;
-      --accent-red-dim: rgba(255, 107, 107, 0.12);
-      --accent-blue: #00a3ff;
-      --accent-blue-dim: rgba(0, 163, 255, 0.12);
-      --accent-purple: #7c3aed;
-      --accent-purple-dim: rgba(124, 58, 237, 0.12);
-      --accent-orange: #ffb020;
-      --accent-orange-dim: rgba(255, 176, 32, 0.12);
+      /* Calmer accents (still recognizable) */
+      --accent-green: #34d399;
+      --accent-green-dim: rgba(52, 211, 153, 0.10);
+      --accent-red: #f87171;
+      --accent-red-dim: rgba(248, 113, 113, 0.10);
+      --accent-blue: #60a5fa;
+      --accent-blue-dim: rgba(96, 165, 250, 0.10);
+      --accent-purple: #a78bfa;
+      --accent-purple-dim: rgba(167, 139, 250, 0.10);
+      --accent-orange: #fbbf24;
+      --accent-orange-dim: rgba(251, 191, 36, 0.10);
 
       /* Gradients */
-      --gradient-green: linear-gradient(90deg, #07d18f 0%, #00a3ff 100%);
+      --gradient-green: linear-gradient(90deg, #34d399 0%, #60a5fa 100%);
       --gradient-card: linear-gradient(180deg, rgba(255,255,255,0.015), transparent);
 
       /* Spacing */
-      --radius-sm: 8px;
-      --radius-md: 10px;
-      --radius-lg: 12px;
-      --radius-xl: 14px;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 10px;
+      --radius-xl: 12px;
       --radius-full: 9999px;
 
       /* Safe Areas */
@@ -1097,12 +1098,11 @@
 
     /* Spending History Chart */
     .chart-container {
-      padding: 16px;
-      background: #14293d;
-      border: 2px solid #2a4a6a;
-      border-radius: 16px;
-      margin: 0 16px 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      margin: 0 20px 16px;
     }
 
     .chart-header {
@@ -1844,33 +1844,14 @@
 
     /* AI Insights Button */
     .ai-insights-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-      border: none;
-      border-radius: 20px;
-      padding: 8px 14px;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-left: auto;
+      display: flex; align-items: center; gap: 6px;
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: var(--radius-md); padding: 6px 12px;
+      color: var(--text-secondary); font-size: 12px; font-weight: 500;
+      cursor: pointer; transition: opacity 0.15s, color 0.15s; margin-left: auto;
     }
-
-    .ai-insights-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
-    }
-
-    .ai-insights-btn:active {
-      transform: scale(0.98);
-    }
-
-    .ai-insights-btn .ai-icon {
-      font-size: 14px;
-    }
+    .ai-insights-btn:hover { color: var(--text-primary); }
+    .ai-insights-btn .ai-icon { font-size: 13px; opacity: 0.8; }
 
     /* AI Modal Styles */
     .ai-modal {
@@ -2267,23 +2248,33 @@
       }
 
       .header-add-btn {
-        background: linear-gradient(135deg, var(--accent-green) 0%, #00b8a4 100%);
-        color: #001a14;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 10px;
-        font-weight: 700;
+        background: var(--accent-green);
+        color: #06180f;
+        border: 1px solid transparent;
+        padding: 7px 14px;
+        border-radius: var(--radius-md);
+        font-weight: 600;
         font-size: 13px;
         cursor: pointer;
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        box-shadow: 0 4px 14px rgba(7,209,143,0.30);
-        transition: transform 0.15s, box-shadow 0.15s;
+        transition: opacity 0.15s;
       }
-      .header-add-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(7,209,143,0.40);
+      .header-add-btn:hover { opacity: 0.9; }
+      .icon-btn {
+        background: var(--bg-card) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: var(--radius-md) !important;
+        opacity: 0.85;
+      }
+      .icon-btn:hover { opacity: 1; }
+      .header::before {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 1.4px;
+        color: var(--text-muted);
+        text-transform: uppercase;
       }
 
       /* Hide mobile elements on desktop */
@@ -2725,6 +2716,15 @@
     /* === Wave 1 additions === */
     [hidden] { display: none !important; }
 
+    /* Refined typography */
+    body {
+      font-feature-settings: 'cv11', 'ss01', 'ss03';
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .tx-amount, .stat-value, .summary-value, .sts-value, #networth-value,
+    [class*="tabular"] { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+
     /* Desktop polish */
     @media (min-width: 1024px) {
       .tx-toolbar, .transaction-list, #page-transactions .section-header { max-width: 960px; margin-left: auto; margin-right: auto; }
@@ -2732,42 +2732,94 @@
       .trust-strip { max-width: 1100px; margin-left: auto; margin-right: auto; }
       .quick-actions { max-width: 1100px; margin-left: auto; margin-right: auto; }
 
-      /* Surface elevation: page is darker, sidebar darker still, cards lift up */
-      body, .main-content { background: #050b15; }
+      body, .main-content { background: var(--bg-primary); }
       .desktop-sidebar {
-        background: linear-gradient(180deg, #06101c 0%, #050b15 100%);
-        border-right: 1px solid rgba(7,209,143,0.10);
-        box-shadow: inset -1px 0 0 rgba(255,255,255,0.04);
+        background: var(--bg-secondary);
+        border-right: 1px solid var(--border-color);
+      }
+      .desktop-sidebar .sidebar-section {
+        font-size: 10px; letter-spacing: 1.2px; color: var(--text-muted);
+        padding: 16px 20px 6px; text-transform: uppercase; font-weight: 600;
+      }
+      .desktop-sidebar .sidebar-logo {
+        color: var(--text-primary);
+        padding: 18px 20px;
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .desktop-sidebar .logo-mark {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 24px; height: 24px;
+        background: var(--accent-green); color: #06180f;
+        border-radius: 6px; font-weight: 700; font-size: 14px;
+      }
+      .desktop-sidebar .nav-item {
+        font-weight: 500;
       }
       .desktop-sidebar .nav-item.active {
-        background: linear-gradient(90deg, rgba(7,209,143,0.10), transparent);
+        background: var(--bg-tertiary);
         border-left-color: var(--accent-green);
-        color: var(--accent-green);
+        color: var(--text-primary);
       }
-      /* Cards: lighter surface + clearer borders + soft shadow so they read as elevated panels */
+      .desktop-sidebar .nav-item .nav-icon { opacity: 0.85; }
+      /* Cards: muted surface + hairline border (no neon shadows) */
       .insight-card, .desktop-stat-card, .summary-card, .subscription-item, .transaction-item {
-        background: #11243a;
-        border: 1px solid rgba(255,255,255,0.06);
-        box-shadow: 0 1px 0 rgba(255,255,255,0.03), 0 6px 18px rgba(0,0,0,0.35);
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        box-shadow: none;
+        border-radius: var(--radius-xl);
       }
-      /* Section headers: stronger, with a left accent bar */
-      .section-header { padding: 20px 20px 12px; }
+      .insight-card:hover, .subscription-item:hover, .transaction-item:hover {
+        border-color: var(--border-strong);
+      }
+      /* Section headers: clean, no decorative bars */
+      .section-header { padding: 24px 20px 8px; }
       .section-title {
-        position: relative; padding-left: 14px; font-weight: 700; letter-spacing: 0.3px;
-        color: var(--text-primary);
+        font-size: 11px; font-weight: 600; letter-spacing: 1.2px;
+        color: var(--text-muted); text-transform: uppercase;
       }
-      .section-title::before {
-        content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 4px;
-        background: var(--accent-green); border-radius: 2px;
+      .section-action {
+        font-size: 12px; color: var(--text-secondary);
       }
-      /* Trust strip: more visible */
+      .section-action:hover { color: var(--text-primary); }
+      /* Trust strip: subtle */
       .trust-strip {
-        background: linear-gradient(90deg, rgba(0,163,255,0.12), rgba(7,209,143,0.08));
-        border: 1px solid rgba(0,163,255,0.30);
-        color: var(--text-primary);
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        font-size: 11px;
       }
-      /* Header bar — give it a thin separator from content */
-      .top-bar { border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.15); }
+      .trust-link { color: var(--accent-green); text-decoration: none; }
+      .trust-link:hover { text-decoration: underline; }
+      /* Tools grid: uniform muted tiles, accent dot per tool */
+      .pro-tools-grid { gap: 12px !important; }
+      .pro-tool-btn {
+        background: var(--bg-card) !important;
+        border: 1px solid var(--border-color);
+        box-shadow: none !important;
+        padding: 18px 14px !important;
+        border-radius: var(--radius-xl) !important;
+        text-align: left !important;
+        position: relative;
+        transition: border-color 0.15s, transform 0.15s;
+      }
+      .pro-tool-btn > div:first-child {
+        font-size: 18px !important;
+        opacity: 0.9;
+        margin-bottom: 8px !important;
+      }
+      .pro-tool-btn > div:last-child {
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        color: var(--text-primary) !important;
+      }
+      .pro-tool-btn:hover {
+        border-color: var(--border-strong);
+        transform: translateY(-1px);
+      }
+      /* Type/category buttons in modal — muted */
+      .type-btn { background: var(--bg-tertiary); border: 1px solid var(--border-color); }
+      .category-section { background: var(--bg-tertiary) !important; border: 1px solid var(--border-color) !important; }
     }
     /* Count pill on page-transactions */
     #tx-count {
@@ -2777,24 +2829,21 @@
     }
 
     .safe-to-spend-banner {
-      margin: 12px 20px 16px; padding: 16px 20px; border-radius: 16px;
-      background:
-        radial-gradient(ellipse at top right, rgba(0,163,255,0.18), transparent 60%),
-        linear-gradient(135deg, rgba(7,209,143,0.22), rgba(7,209,143,0.06));
-      border: 1px solid rgba(7,209,143,0.45);
-      box-shadow: 0 8px 30px rgba(7,209,143,0.10);
+      margin: 16px 20px 20px; padding: 20px 24px; border-radius: var(--radius-xl);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
     }
     .sts-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-    .sts-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .5px; }
-    .sts-value { font-size: 28px; font-weight: 800; color: var(--accent-green); margin-top: 2px; }
-    .sts-detail { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .sts-right { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary); }
+    .sts-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600; }
+    .sts-value { font-size: 32px; font-weight: 700; color: var(--text-primary); margin-top: 4px; letter-spacing: -0.5px; }
+    .sts-detail { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .sts-right { display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary); }
     .sts-pill {
-      background: rgba(0,0,0,0.35);
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 6px 10px; border-radius: 8px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      padding: 8px 12px; border-radius: var(--radius-md);
     }
-    .sts-pill b { color: var(--accent-green); }
+    .sts-pill b { color: var(--text-primary); font-weight: 600; }
 
     .trust-strip {
       margin: 0 20px 12px; padding: 8px 12px; border-radius: 10px;
@@ -2925,8 +2974,8 @@
     <!-- Desktop Sidebar Navigation (hidden on mobile) -->
     <aside class="desktop-sidebar" role="navigation" aria-label="Main navigation">
       <div class="sidebar-logo">
-        <span aria-hidden="true">🚀</span>
-        <span>FlowFinance</span>
+        <span class="logo-mark" aria-hidden="true">F</span>
+        <span class="logo-text">FlowFinance</span>
       </div>
       <div class="sidebar-section">Navigation</div>
       <div class="nav-item active" data-page="dashboard" role="button" tabindex="0" aria-current="page">
@@ -3096,7 +3145,7 @@
 
         <!-- Insights -->
         <div class="section-header">
-          <div class="section-title">💡 Smart Insights</div>
+          <div class="section-title">Smart Insights</div>
           <button class="ai-insights-btn" id="ai-insights-btn" title="Get AI-powered insights">
             <span class="ai-icon">🤖</span>
             <span class="ai-label">AI Analysis</span>
@@ -3108,7 +3157,7 @@
 
         <!-- Budget Progress -->
         <div class="section-header">
-          <div class="section-title">🎯 Budget Progress</div>
+          <div class="section-title">Budget</div>
           <span class="section-action" id="edit-budget">Edit</span>
         </div>
         <div class="insight-card" style="margin: 0 20px 16px;" id="budget-card">
@@ -3136,7 +3185,7 @@
         <!-- Spending History Chart -->
         <div class="chart-container" id="chart-container">
           <div class="chart-header">
-            <div class="chart-title">📊 6-Month Trend</div>
+            <div class="chart-title">6-Month Trend</div>
             <div class="chart-period">
               <button class="period-btn active" data-period="6">6M</button>
               <button class="period-btn" data-period="12">1Y</button>
@@ -3164,7 +3213,7 @@
 
         <!-- Tools -->
         <div class="section-header" style="padding-top: 0;">
-          <div class="section-title">🛠️ Tools</div>
+          <div class="section-title">Tools</div>
         </div>
         <div class="pro-tools-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 20px 16px;">
           <div class="pro-tool-btn" onclick="app.openGoalsModal()" style="background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); padding: 14px 8px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);">
@@ -3240,7 +3289,7 @@
       <!-- Flow Page -->
       <div class="page" id="page-flow">
         <div class="section-header">
-          <div class="section-title">🔄 Cash Flow</div>
+          <div class="section-title">Cash Flow</div>
         </div>
         <div class="flow-section">
           <div class="flow-chart" id="flow-chart">
@@ -3250,7 +3299,7 @@
 
         <!-- Category Breakdown -->
         <div class="section-header">
-          <div class="section-title">📊 By Category</div>
+          <div class="section-title">By Category</div>
         </div>
         <div class="category-breakdown" id="category-breakdown">
           <!-- Dynamic categories -->
@@ -3260,7 +3309,7 @@
       <!-- Subscriptions Page -->
       <div class="page" id="page-subs">
         <div class="section-header">
-          <div class="section-title">🔄 Subscriptions</div>
+          <div class="section-title">Subscriptions</div>
           <span class="section-action" id="subs-total">$0/mo</span>
         </div>
         <div class="subscription-list" id="subscription-list">
@@ -3271,7 +3320,7 @@
       <!-- Transactions Page -->
       <div class="page" id="page-transactions">
         <div class="section-header">
-          <div class="section-title">📝 All Transactions</div>
+          <div class="section-title">Transactions</div>
           <span class="section-action" id="tx-count">0</span>
         </div>
         <div class="tx-toolbar" id="tx-toolbar">
