@@ -50,11 +50,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FlowFinance">
   <meta name="application-name" content="FlowFinance Pro">
-  <meta name="theme-color" content="#071019" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#07d18f" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b0d12" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#34d399" media="(prefers-color-scheme: light)">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="msapplication-TileColor" content="#0a0a0f">
-  <meta name="msapplication-navbutton-color" content="#00d4aa">
+  <meta name="msapplication-TileColor" content="#0b0d12">
+  <meta name="msapplication-navbutton-color" content="#34d399">
   <meta name="msapplication-config" content="none">
   <meta name="format-detection" content="telephone=no">
 
@@ -64,9 +64,9 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2300d4aa' width='100' height='100' rx='20'/><text x='50' y='70' font-size='60' text-anchor='middle'>💰</text></svg>">
-  <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%2300d4aa' width='32' height='32' rx='6'/><text x='16' y='23' font-size='20' text-anchor='middle'>💰</text></svg>">
-  <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%2300d4aa' width='180' height='180' rx='36'/><text x='90' y='126' font-size='108' text-anchor='middle'>💰</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2334d399' width='100' height='100' rx='20'/><text x='50' y='70' font-size='60' text-anchor='middle'>💰</text></svg>">
+  <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%2334d399' width='32' height='32' rx='6'/><text x='16' y='23' font-size='20' text-anchor='middle'>💰</text></svg>">
+  <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%2334d399' width='180' height='180' rx='36'/><text x='90' y='126' font-size='108' text-anchor='middle'>💰</text></svg>">
 
   <!-- Canonical & Alternate -->
   <link rel="canonical" href="https://flowfinance.app/">
@@ -94,25 +94,28 @@
       "price": "0",
       "priceCurrency": "USD"
     },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "ratingCount": "150",
-      "bestRating": "5",
-      "worstRating": "1"
-    },
     "featureList": [
-      "Expense tracking",
+      "Expense and income tracking",
+      "Multi-account ledger with transfers",
+      "Split transactions",
       "Budget management",
-      "Subscription detection",
-      "Multi-format import (CSV, Excel, OFX, QIF)",
-      "Offline storage",
+      "Subscription detection with cancellation links",
+      "Cash flow calendar",
+      "Debt paydown planner (snowball / avalanche)",
+      "Net worth and manual investment tracking",
+      "Tax-deductible flagging and CSV export",
+      "Multi-format import (CSV, Excel, OFX, QIF, Mint, Chase)",
+      "Multi-format export (CSV, QIF, OFX, JSON, Tax CSV)",
+      "Encrypted shared / sync bundle (AES-GCM)",
+      "Multi-currency support",
+      "Offline storage (IndexedDB)",
       "No account required",
       "Privacy-first design"
     ],
     "screenshot": "https://flowfinance.app/screenshot.png",
-    "softwareVersion": "1.0.0",
+    "softwareVersion": "2.0.0",
     "datePublished": "2024-12-31",
+    "dateModified": "2026-04-30",
     "author": {
       "@type": "Organization",
       "name": "FlowFinance Contributors"
@@ -1752,42 +1755,25 @@
     }
 
     .category-section {
-      background: #14293d;
-      border: 2px solid #2a4a6a;
-      border-radius: 14px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
       padding: 12px;
       overflow: hidden;
     }
-
-    .category-section.income-section {
-      border-color: #22c55e;
-      background: linear-gradient(135deg, #0d2d1f 0%, #14293d 100%);
-    }
-
-    .category-section.expense-section {
-      border-color: #f43f5e;
-      background: linear-gradient(135deg, #2d0d1a 0%, #14293d 100%);
-    }
-
+    .category-section.income-section { border-color: var(--accent-green-dim); }
+    .category-section.expense-section { border-color: var(--accent-red-dim); }
     .category-section-header {
-      font-size: 22px;
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 12px;
-      padding: 8px 12px;
-      border-radius: 8px;
-      letter-spacing: 1px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      padding: 0 4px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
     }
-
-    .income-section .category-section-header {
-      color: #fff;
-      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-    }
-
-    .expense-section .category-section-header {
-      color: #fff;
-      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
-    }
+    .income-section .category-section-header { color: var(--accent-green); }
+    .expense-section .category-section-header { color: var(--accent-red); }
 
     .category-options {
       display: flex;
@@ -2725,6 +2711,33 @@
     .tx-amount, .stat-value, .summary-value, .sts-value, #networth-value,
     [class*="tabular"] { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
 
+    /* Tools tiles & quick actions: muted across all viewports */
+    .pro-tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 20px 16px; }
+    .pro-tool-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 16px 12px;
+      border-radius: var(--radius-xl);
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .pro-tool-btn > div:first-child { font-size: 18px; opacity: 0.9; margin-bottom: 8px; }
+    .pro-tool-btn > div:last-child { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+    .pro-tool-btn:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+
+    .quick-action {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+    .quick-action .quick-action-icon { opacity: 0.9; }
+
+    /* Mobile: hide desktop-only header CTA, button doubles in FAB */
+    @media (max-width: 1023px) {
+      .header-add-btn { display: none; }
+    }
+
     /* Desktop polish */
     @media (min-width: 1024px) {
       .tx-toolbar, .transaction-list, #page-transactions .section-header { max-width: 960px; margin-left: auto; margin-right: auto; }
@@ -2791,32 +2804,8 @@
       }
       .trust-link { color: var(--accent-green); text-decoration: none; }
       .trust-link:hover { text-decoration: underline; }
-      /* Tools grid: uniform muted tiles, accent dot per tool */
+      .pro-tool-btn { padding: 18px 14px !important; }
       .pro-tools-grid { gap: 12px !important; }
-      .pro-tool-btn {
-        background: var(--bg-card) !important;
-        border: 1px solid var(--border-color);
-        box-shadow: none !important;
-        padding: 18px 14px !important;
-        border-radius: var(--radius-xl) !important;
-        text-align: left !important;
-        position: relative;
-        transition: border-color 0.15s, transform 0.15s;
-      }
-      .pro-tool-btn > div:first-child {
-        font-size: 18px !important;
-        opacity: 0.9;
-        margin-bottom: 8px !important;
-      }
-      .pro-tool-btn > div:last-child {
-        font-size: 13px !important;
-        font-weight: 500 !important;
-        color: var(--text-primary) !important;
-      }
-      .pro-tool-btn:hover {
-        border-color: var(--border-strong);
-        transform: translateY(-1px);
-      }
       /* Type/category buttons in modal — muted */
       .type-btn { background: var(--bg-tertiary); border: 1px solid var(--border-color); }
       .category-section { background: var(--bg-tertiary) !important; border: 1px solid var(--border-color) !important; }
@@ -3215,56 +3204,56 @@
         <div class="section-header" style="padding-top: 0;">
           <div class="section-title">Tools</div>
         </div>
-        <div class="pro-tools-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 20px 16px;">
-          <div class="pro-tool-btn" onclick="app.openGoalsModal()" style="background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); padding: 14px 8px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);">
+        <div class="pro-tools-grid">
+          <div class="pro-tool-btn" onclick="app.openGoalsModal()">
             <div style="font-size: 22px; margin-bottom: 4px;">🎯</div>
             <div style="color: #fff; font-weight: 600; font-size: 11px;">Goals</div>
           </div>
-          <div class="pro-tool-btn" onclick="app.openNetWorthModal()" style="background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%); padding: 14px 8px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(8, 145, 178, 0.3);">
+          <div class="pro-tool-btn" onclick="app.openNetWorthModal()">
             <div style="font-size: 22px; margin-bottom: 4px;">💰</div>
             <div style="color: #fff; font-weight: 600; font-size: 11px;">Net Worth</div>
           </div>
-          <div class="pro-tool-btn" onclick="app.openRecurringModal()" style="background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%); padding: 14px 8px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3);">
+          <div class="pro-tool-btn" onclick="app.openRecurringModal()">
             <div style="font-size: 22px; margin-bottom: 4px;">🔄</div>
             <div style="color: #fff; font-weight: 600; font-size: 11px;">Recurring</div>
           </div>
-          <div class="pro-tool-btn" onclick="app.openForecastModal()" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); padding: 14px 8px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);">
+          <div class="pro-tool-btn" onclick="app.openForecastModal()">
             <div style="font-size: 22px; margin-bottom: 4px;">📈</div>
             <div style="color: #fff; font-weight: 600; font-size: 11px;">Forecast</div>
           </div>
-          <div class="pro-tool-btn" onclick="app.openBillsModal()" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); padding: 14px 8px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);">
+          <div class="pro-tool-btn" onclick="app.openBillsModal()">
             <div style="font-size: 22px; margin-bottom: 4px;">📅</div>
             <div style="color: #fff; font-weight: 600; font-size: 11px;">Bills</div>
           </div>
-          <div class="pro-tool-btn" onclick="app.openTrendsModal()" style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); padding: 14px 8px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(13, 148, 136, 0.3);">
+          <div class="pro-tool-btn" onclick="app.openTrendsModal()">
             <div style="font-size: 22px; margin-bottom: 4px;">📊</div>
             <div style="color: #fff; font-weight: 600; font-size: 11px;">Trends</div>
           </div>
-          <div class="pro-tool-btn" onclick="app.openReportsModal()" style="background: linear-gradient(135deg, #be185d 0%, #9d174d 100%); padding: 14px 8px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(190, 24, 93, 0.3);">
+          <div class="pro-tool-btn" onclick="app.openReportsModal()">
             <div style="font-size: 22px; margin-bottom: 4px;">📄</div>
             <div style="color: #fff; font-weight: 600; font-size: 11px;">Reports</div>
           </div>
-          <div class="pro-tool-btn" onclick="app.openRulesModal()" style="background: linear-gradient(135deg, #ca8a04 0%, #a16207 100%); padding: 14px 8px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(202, 138, 4, 0.3);">
+          <div class="pro-tool-btn" onclick="app.openRulesModal()">
             <div style="font-size: 22px; margin-bottom: 4px;">⚙️</div>
             <div style="color: #fff; font-weight: 600; font-size: 11px;">Auto-Rules</div>
           </div>
-          <div class="pro-tool-btn" onclick="app.openBackupModal()" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); padding: 14px 8px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);">
+          <div class="pro-tool-btn" onclick="app.openBackupModal()">
             <div style="font-size: 22px; margin-bottom: 4px;">💾</div>
             <div style="color: #fff; font-weight: 600; font-size: 11px;">Backup</div>
           </div>
-          <div class="pro-tool-btn" onclick="app.openCalendarModal()" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); padding: 14px 8px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);">
+          <div class="pro-tool-btn" onclick="app.openCalendarModal()">
             <div style="font-size: 22px; margin-bottom: 4px;">📅</div>
             <div style="color: #fff; font-weight: 600; font-size: 11px;">Calendar</div>
           </div>
-          <div class="pro-tool-btn" onclick="app.openDebtModal()" style="background: linear-gradient(135deg, #db2777 0%, #be185d 100%); padding: 14px 8px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(219, 39, 119, 0.3);">
+          <div class="pro-tool-btn" onclick="app.openDebtModal()">
             <div style="font-size: 22px; margin-bottom: 4px;">💳</div>
             <div style="color: #fff; font-weight: 600; font-size: 11px;">Debt Plan</div>
           </div>
-          <div class="pro-tool-btn" onclick="app.openSharedModal()" style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); padding: 14px 8px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);">
+          <div class="pro-tool-btn" onclick="app.openSharedModal()">
             <div style="font-size: 22px; margin-bottom: 4px;">🤝</div>
             <div style="color: #fff; font-weight: 600; font-size: 11px;">Shared</div>
           </div>
-          <div class="pro-tool-btn" onclick="app.openSettingsModal()" style="background: linear-gradient(135deg, #475569 0%, #334155 100%); padding: 14px 8px; border-radius: 14px; text-align: center; cursor: pointer; box-shadow: 0 4px 15px rgba(71, 85, 105, 0.3);">
+          <div class="pro-tool-btn" onclick="app.openSettingsModal()">
             <div style="font-size: 22px; margin-bottom: 4px;">⚙️</div>
             <div style="color: #fff; font-weight: 600; font-size: 11px;">Settings</div>
           </div>

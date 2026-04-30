@@ -10,6 +10,7 @@ A powerful, privacy-first personal finance management app that runs entirely in 
 ## Features
 
 ### Core Functionality
+
 - **Transaction Tracking** - Add income and expenses with categories, dates, and descriptions
 - **Monthly Overview** - Navigate between months to see historical data
 - **Budget Management** - Set monthly budgets with visual progress tracking
@@ -17,12 +18,14 @@ A powerful, privacy-first personal finance management app that runs entirely in 
 - **Subscription Detection** - Automatically identifies recurring charges (Netflix, Spotify, etc.)
 
 ### Data Management
+
 - **Multi-Format Import** - CSV, Excel (XLSX/XLS), OFX/QFX (bank exports), QIF (Quicken), Mint, Chase
 - **CSV Export** - Export all transactions for backup or analysis
 - **Offline Storage** - Uses IndexedDB for persistent local storage
 - **No Cloud Required** - All data stays on your device
 
 ### User Experience
+
 - **Responsive Design** - Optimized for desktop, tablet, AND mobile
 - **Desktop Mode** - Full sidebar navigation with proper dashboard layout
 - **Mobile Mode** - Full-width layout with touch gestures and quick month navigation
@@ -33,6 +36,7 @@ A powerful, privacy-first personal finance management app that runs entirely in 
 - **AI Insights** - Optional Cloudflare Workers AI integration for financial analysis
 
 ### Accessibility (WCAG 2.1 AA)
+
 - Full keyboard navigation with visible focus indicators
 - Screen reader compatible with ARIA labels
 - Skip navigation link for keyboard users
@@ -44,6 +48,7 @@ A powerful, privacy-first personal finance management app that runs entirely in 
 ## Quick Start
 
 ### Option 1: Direct Use
+
 Simply open `flowfinance-beast.html` in any modern browser. That's it!
 
 ```bash
@@ -58,6 +63,7 @@ start flowfinance-beast.html      # Windows
 ```
 
 ### Option 2: Serve Locally
+
 For PWA features and better caching:
 
 ```bash
@@ -74,7 +80,9 @@ php -S localhost:8000
 Then visit `http://localhost:8000/flowfinance-beast.html`
 
 ### Option 3: Deploy to Web
+
 Upload `flowfinance-beast.html` to any static hosting:
+
 - GitHub Pages
 - Netlify
 - Vercel
@@ -84,48 +92,57 @@ Upload `flowfinance-beast.html` to any static hosting:
 ## Usage Guide
 
 ### Adding Transactions
+
 1. Tap the **+** button in the bottom navigation
 2. Select **Income** or **Expense**
 3. Enter description, amount, date, and category
 4. Tap **Add Transaction**
 
 ### Setting a Budget
+
 1. Tap **Set Budget** in Quick Actions or the **Edit** link
 2. Enter your monthly spending limit
 3. Watch the progress ring track your spending
 
 ### Importing Data
+
 1. Tap the **Import** button (📥) in the header
 2. Select your file format
 3. Choose your bank export file
 4. Transactions are automatically categorized
 
 ### Navigating Months
+
 - Use the **◀** and **▶** arrows to move between months
 - All data is preserved and instantly accessible
 
 ### Deleting Transactions
+
 - On mobile: Swipe left on any transaction, then release
 - Keyboard: Focus the transaction and use the delete action
 
 ## Technical Details
 
 ### Architecture
+
 - **Single HTML File** - Complete application in one portable file
 - **Vanilla JavaScript** - No frameworks, minimal dependencies
 - **IndexedDB** - Browser-native database for persistence
 - **CSS Custom Properties** - Themeable design system
 
 ### Browser Support
+
 - Chrome 80+
 - Firefox 75+
 - Safari 13+
 - Edge 80+
 
 ### External Dependencies
+
 - [SheetJS (xlsx)](https://sheetjs.com/) - Excel file parsing (loaded from CDN with SRI)
 
 ### Security
+
 - Content Security Policy (CSP) headers
 - Subresource Integrity (SRI) for external scripts
 - Input sanitization for XSS prevention
@@ -136,11 +153,13 @@ Upload `flowfinance-beast.html` to any static hosting:
 - No cookies or tracking
 
 ### Testing
+
 - **Comprehensive Test Suite** - HTML, security, accessibility, performance checks
 - **Stress Testing** - Parser limits, edge cases, large data handling
 - **Red Team Security** - XSS, injection, prototype pollution, ReDoS testing
 
 ### Performance
+
 - LRU caching for database queries
 - Lazy loading for transaction lists
 - Cached chart rendering
@@ -181,6 +200,7 @@ To clear all data, use your browser's "Clear site data" function.
 Contributions are welcome! Please feel free to submit issues and pull requests.
 
 ### Development
+
 Since this is a single HTML file, development is straightforward:
 
 1. Edit `flowfinance-beast.html`
@@ -189,6 +209,7 @@ Since this is a single HTML file, development is straightforward:
 4. Submit PR with clear description
 
 ### Code Style
+
 - Use 2-space indentation
 - Prefer `const` over `let`
 - Use template literals for HTML
@@ -196,6 +217,7 @@ Since this is a single HTML file, development is straightforward:
 - Test with keyboard navigation
 
 ### Running Tests
+
 ```bash
 # Create virtual environment
 python -m venv venv
