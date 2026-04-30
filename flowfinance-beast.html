@@ -3301,6 +3301,9 @@
           <div class="section-title">Subscriptions</div>
           <span class="section-action" id="subs-total">$0/mo</span>
         </div>
+        <div style="padding: 0 20px 12px;">
+          <button type="button" class="empty-state-cta" id="sub-add-btn" style="background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-color);">＋ Add Subscription</button>
+        </div>
         <div class="subscription-list" id="subscription-list">
           <!-- Dynamic subscriptions -->
         </div>
@@ -4180,6 +4183,46 @@
             <button type="button" class="split-add-btn" id="shared-import-replace" style="color: #ff6b6b;">⚠ Replace all</button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Subscription Modal -->
+  <div class="modal-overlay" id="sub-modal" role="dialog" aria-modal="true" aria-labelledby="sub-modal-title">
+    <div class="modal" style="max-width: 520px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="sub-modal-title">Add Subscription</h2>
+        <button class="modal-close" aria-label="Close" onclick="app.closeModals()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">
+          Track a recurring charge that auto-detection missed. Stored locally on this device.
+        </p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="sub-name">Name</label>
+            <input type="text" class="form-input" id="sub-name" placeholder="ChatGPT Plus" maxlength="40">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="sub-icon">Icon (emoji)</label>
+            <input type="text" class="form-input" id="sub-icon" placeholder="📱" maxlength="4" style="text-align: center;">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="sub-amount">Monthly Amount</label>
+            <input type="number" class="form-input" id="sub-amount" placeholder="20.00" step="0.01" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="sub-billing-day">Billing Day</label>
+            <input type="number" class="form-input" id="sub-billing-day" placeholder="15" min="1" max="31">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="sub-cancel-url">Cancel URL (optional)</label>
+          <input type="url" class="form-input" id="sub-cancel-url" placeholder="https://example.com/account" maxlength="300">
+        </div>
+        <button type="button" class="submit-btn" id="sub-save-btn">Add Subscription</button>
       </div>
     </div>
   </div>
@@ -6764,26 +6807,40 @@
       }
 
       renderSubscriptions() {
-        const subs = this.analytics.detectSubscriptions();
+        const detected = this.analytics.detectSubscriptions();
+        const manual = this._loadManualSubs().map(m => ({
+          ...m, manual: true, count: m.billingDay ? `due day ${m.billingDay}` : 'monthly'
+        }));
+        // Merge: skip detected if a manual entry already covers the same name
+        const manualNames = new Set(manual.map(m => m.name.toLowerCase()));
+        const subs = [
+          ...manual,
+          ...detected.filter(d => !manualNames.has(d.name.toLowerCase()))
+        ];
         const total = subs.reduce((s, sub) => s + sub.amount, 0);
         document.getElementById('subs-total').textContent = `${this.fmt(total)}/mo`;
 
         const container = document.getElementById('subscription-list');
         if (subs.length === 0) {
-          container.innerHTML = `<div class="empty-state"><div class="empty-icon">🔄</div><div class="empty-title">No subscriptions detected</div><div class="empty-text">Import transactions to auto-detect recurring charges</div><button type="button" class="empty-state-cta" data-action-empty="open-import">📥 Import a statement</button></div>`;
+          container.innerHTML = `<div class="empty-state"><div class="empty-icon">🔄</div><div class="empty-title">No subscriptions yet</div><div class="empty-text">Add one manually or import transactions to auto-detect</div><div style="display:flex; gap:8px; justify-content:center; margin-top:10px;"><button type="button" class="empty-state-cta" data-action-empty="open-add-sub">＋ Add</button><button type="button" class="empty-state-cta" data-action-empty="open-import" style="background:var(--accent-blue);">📥 Import</button></div></div>`;
           return;
         }
 
         container.innerHTML = subs.map((s, i) => {
           const cancelBtn = s.cancel
-            ? `<a href="${s.cancel}" target="_blank" rel="noopener noreferrer" class="receipt-thumb-btn" title="Open ${sanitize(s.name)} cancel page">Cancel ↗</a>`
+            ? `<a href="${sanitize(s.cancel)}" target="_blank" rel="noopener noreferrer" class="receipt-thumb-btn" title="Open ${sanitize(s.name)} cancel page">Cancel ↗</a>`
             : '';
+          const removeBtn = s.manual
+            ? `<button type="button" class="receipt-thumb-btn" data-rm-sub="${s.id}" title="Remove">✕</button>`
+            : '';
+          const detailText = typeof s.count === 'number' ? `${s.count}× this month` : (s.count || '');
+          const manualBadge = s.manual ? '<span class="tx-badge" style="background: rgba(255,255,255,0.06); color: var(--text-muted); margin-left:4px;">manual</span>' : '';
           return `
           <div class="subscription-item ${i > 2 ? 'warning' : ''}">
-            <div class="sub-icon">${s.icon}</div>
+            <div class="sub-icon">${sanitize(s.icon || '📱')}</div>
             <div class="sub-info">
-              <div class="sub-name">${sanitize(s.name)} ${cancelBtn}</div>
-              <div class="sub-detail">${s.count}x this month</div>
+              <div class="sub-name">${sanitize(s.name)}${manualBadge} ${cancelBtn} ${removeBtn}</div>
+              <div class="sub-detail">${sanitize(detailText)}</div>
             </div>
             <div class="sub-amount">
               <div class="sub-price">${this.fmt(s.amount)}</div>
@@ -6791,6 +6848,60 @@
             </div>
           </div>`;
         }).join('');
+        container.querySelectorAll('button[data-rm-sub]').forEach(b => {
+          b.addEventListener('click', () => this.removeManualSub(Number(b.dataset.rmSub)));
+        });
+      }
+
+      _loadManualSubs() {
+        try { return JSON.parse(localStorage.getItem('flowfinance_manual_subs') || '[]'); }
+        catch { return []; }
+      }
+      _saveManualSubs(arr) { localStorage.setItem('flowfinance_manual_subs', JSON.stringify(arr)); }
+
+      openSubModal() {
+        ['sub-name','sub-icon','sub-amount','sub-billing-day','sub-cancel-url'].forEach(id => {
+          const e = document.getElementById(id); if (e) e.value = '';
+        });
+        document.getElementById('sub-modal').classList.add('active');
+        setTimeout(() => document.getElementById('sub-name')?.focus(), 100);
+      }
+
+      saveManualSub() {
+        const name = (document.getElementById('sub-name').value || '').trim().slice(0, 40);
+        const amount = parseFloat(document.getElementById('sub-amount').value);
+        const icon = (document.getElementById('sub-icon').value || '📱').trim().slice(0, 4);
+        const billingDay = parseInt(document.getElementById('sub-billing-day').value);
+        const cancelRaw = (document.getElementById('sub-cancel-url').value || '').trim();
+        if (!name) { this.toast('Name required', 'error'); return; }
+        if (isNaN(amount) || amount <= 0) { this.toast('Valid amount required', 'error'); return; }
+        let cancel = '';
+        if (cancelRaw) {
+          try {
+            const u = new URL(cancelRaw);
+            if (u.protocol !== 'https:' && u.protocol !== 'http:') throw new Error();
+            cancel = u.toString();
+          } catch { this.toast('Cancel URL must be http(s)://', 'error'); return; }
+        }
+        const arr = this._loadManualSubs();
+        arr.push({
+          id: Date.now(),
+          name: sanitize(name), icon: sanitize(icon),
+          amount: sanitizeNumber(amount, 0.01),
+          billingDay: (billingDay >= 1 && billingDay <= 31) ? billingDay : null,
+          cancel,
+          createdAt: new Date().toISOString()
+        });
+        this._saveManualSubs(arr);
+        this.closeModals();
+        this.renderSubscriptions();
+        this.toast('Subscription added', 'success');
+      }
+
+      removeManualSub(id) {
+        if (!confirm('Remove this subscription?')) return;
+        this._saveManualSubs(this._loadManualSubs().filter(s => s.id !== id));
+        this.renderSubscriptions();
       }
 
       renderTransactions() {
@@ -8721,7 +8832,12 @@
           else if (a === 'open-add') this.openAddModal('expense');
           else if (a === 'open-debt') this.openDebtModal();
           else if (a === 'open-budget') document.getElementById('budget-modal').classList.add('active');
+          else if (a === 'open-add-sub') this.openSubModal();
         });
+
+        // Manual subscriptions
+        document.getElementById('sub-add-btn')?.addEventListener('click', () => this.openSubModal());
+        document.getElementById('sub-save-btn')?.addEventListener('click', () => this.saveManualSub());
       }
 
       // ===== Wave 2: Receipts =====
