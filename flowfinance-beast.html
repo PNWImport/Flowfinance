@@ -2236,19 +2236,54 @@
       .header {
         grid-area: header;
         border-radius: 0;
-        padding: 0 32px;
-        border-bottom: 1px solid var(--border-color);
-        background: var(--bg-primary);
+        padding: 0 24px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        background: rgba(0,0,0,0.15);
         display: flex;
         align-items: center;
+        gap: 12px;
+        min-height: 56px;
       }
 
       .header .logo {
         display: none;
       }
 
+      .header::before {
+        content: attr(data-page-title);
+        color: var(--text-primary);
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        opacity: 0.65;
+      }
+
       .header .header-actions {
         margin-left: auto;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .header-add-btn {
+        background: linear-gradient(135deg, var(--accent-green) 0%, #00b8a4 100%);
+        color: #001a14;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 4px 14px rgba(7,209,143,0.30);
+        transition: transform 0.15s, box-shadow 0.15s;
+      }
+      .header-add-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(7,209,143,0.40);
       }
 
       /* Hide mobile elements on desktop */
@@ -2881,6 +2916,7 @@
         <button class="month-nav-btn" id="next-month" aria-label="Next month">▶</button>
       </div>
       <div class="header-actions" role="toolbar" aria-label="Main actions">
+        <button class="header-add-btn" id="header-add-btn" type="button" aria-label="Add transaction">＋ New Transaction</button>
         <button class="icon-btn" id="import-btn" aria-label="Import transactions" title="Import transactions">📥</button>
         <button class="icon-btn" id="export-btn" aria-label="Export transactions" title="Export transactions">📤</button>
       </div>
@@ -6278,6 +6314,10 @@
         document.getElementById('add-tx-btn').addEventListener('click', () => this.openAddModal());
         document.getElementById('import-btn').addEventListener('click', () => this.openImportModal());
         document.getElementById('export-btn').addEventListener('click', () => document.getElementById('export-modal').classList.add('active'));
+        document.getElementById('header-add-btn')?.addEventListener('click', () => this.openAddModal('expense'));
+        // Set initial header title
+        const header = document.querySelector('header.header');
+        if (header) header.dataset.pageTitle = 'Dashboard';
         document.getElementById('edit-budget').addEventListener('click', () => this.openBudgetModal());
 
         // AI Insights button
@@ -6450,6 +6490,9 @@
           n.classList.add('active');
           n.setAttribute('aria-current', 'page');
         });
+        const titles = { dashboard: 'Dashboard', flow: 'Cash Flow', subs: 'Subscriptions', transactions: 'All Transactions' };
+        const header = document.querySelector('header.header');
+        if (header) header.dataset.pageTitle = titles[page] || '';
       }
 
       renderAll() {
