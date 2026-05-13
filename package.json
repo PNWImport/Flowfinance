@@ -1,0 +1,15 @@
+{
+  "name": "flowfinance",
+  "version": "2.0.0",
+  "description": "Privacy-first single-file budget & expense tracker",
+  "private": true,
+  "scripts": {
+    "lint": "node scripts/lint-html.mjs && eslint worker/src/**/*.js",
+    "lint:fix": "node scripts/lint-html.mjs --fix && eslint --fix worker/src/**/*.js",
+    "fmt": "prettier --write worker/src/**/*.js scripts/*.mjs *.json *.md",
+    "fmt:check": "prettier --check worker/src/**/*.js scripts/*.mjs *.json *.md",
+    "test": "python3 test_suite.py flowfinance-beast.html && python3 stress_test.py && python3 redteam_test.py",
+    "test:browser": "node scripts/walkthrough.mjs",
+    "serve": "python3 -m http.server 8767 --bind 127.0.0.1"
+  }
+}
